@@ -93,20 +93,21 @@ public class Solutions {
 
   private long solveDay3a(List<String> lines, int dX, int dY) {
     int width = lines.get(0).length();
-    int x = 0;
-    int y = 0;
+    int x = dX;
+    int y = dY;
 
     long treeCount = 0;
-    while (y <= lines.size()) {
+    do {
+      if (lines.get(y).charAt(x) == '#') {
+        treeCount++;
+      }
+
       x += dX;
-      y += dY;
       if (x >= width) {
         x -= width;
       }
-      if (y < lines.size() && lines.get(y).charAt(x) == '#') {
-        treeCount++;
-      }
-    }
+      y += dY;
+    } while (y < lines.size());
     return treeCount;
   }
 

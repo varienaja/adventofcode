@@ -16,14 +16,14 @@ import org.junit.Test;
 /**
  * Solutions for Advent of Code 2020.
  *
- * @author Arjan Verstoep
+ * @author Varienaja
  * @see <a href="https://adventofcode.com/2020">adventofcode.com</a>
  */
 public class Solutions {
 
   private int solveDay1a(int[] numbers) {
     for (int i = 0; i < numbers.length - 1; i++) {
-      for (int j = i; j < numbers.length; j++) {
+      for (int j = i + 1; j < numbers.length; j++) {
         if (numbers[i] + numbers[j] == 2020) {
           return numbers[i] * numbers[j];
         }
@@ -34,8 +34,8 @@ public class Solutions {
 
   private int solveDay1b(int[] numbers) {
     for (int i = 0; i < numbers.length - 2; i++) {
-      for (int j = i; j < numbers.length - 1; j++) {
-        for (int k = j; k < numbers.length; k++) {
+      for (int j = i + 1; j < numbers.length - 1; j++) {
+        for (int k = j + 1; k < numbers.length; k++) {
           if (numbers[i] + numbers[j] + numbers[k] == 2020) {
             return numbers[i] * numbers[j] * numbers[k];
           }
@@ -77,18 +77,45 @@ public class Solutions {
     for (String line : lines) {
       Matcher m = p.matcher(line);
       if (m.matches()) {
-        int pos1 = Integer.valueOf(m.group(1));
-        int pos2 = Integer.valueOf(m.group(2));
+        int pos1 = Integer.valueOf(m.group(1)) - 1;
+        int pos2 = Integer.valueOf(m.group(2)) - 1;
         char theChar = m.group(3).charAt(0);
         String pwd = m.group(4);
 
-        if (pwd.charAt(pos1 - 1) == theChar ^ pwd.charAt(pos2 - 1) == theChar) {
+        if (pwd.charAt(pos1) == theChar ^ pwd.charAt(pos2) == theChar) {
           matches++;
         }
       }
 
     }
     return matches;
+  }
+
+  private long solveDay3a(List<String> lines, int dX, int dY) {
+    int width = lines.get(0).length();
+    int x = 0;
+    int y = 0;
+
+    long treeCount = 0;
+    while (y <= lines.size()) {
+      x += dX;
+      y += dY;
+      if (x >= width) {
+        x -= width;
+      }
+      if (y < lines.size() && lines.get(y).charAt(x) == '#') {
+        treeCount++;
+      }
+    }
+    return treeCount;
+  }
+
+  private long solveDay3b(List<String> lines) {
+    return solveDay3a(lines, 1, 1) * //
+        solveDay3a(lines, 3, 1) * //
+        solveDay3a(lines, 5, 1) * //
+        solveDay3a(lines, 7, 1) * //
+        solveDay3a(lines, 1, 2);
   }
 
   @Test
@@ -120,6 +147,30 @@ public class Solutions {
     assertEquals(1, solveDay2b(input));
     System.out.print("Solution 2b: ");
     System.out.println(solveDay2b(lines));
+  }
+
+  @Test
+  public void testDay03() throws IOException, URISyntaxException {
+    List<String> input = Arrays.asList("..##.......", //
+        "#...#...#..", //
+        ".#....#..#.", //
+        "..#.#...#.#", //
+        ".#...##..#.", //
+        "..#.##.....", //
+        ".#.#.#....#", //
+        ".#........#", //
+        "#.##...#...", //
+        "#...##....#", //
+        ".#..#...#.#");
+    assertEquals(7, solveDay3a(input, 3, 1));
+
+    System.out.print("Solution 3a: ");
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2020/day3.txt").toURI()));
+    System.out.println(solveDay3a(lines, 3, 1));
+
+    assertEquals(336, solveDay3b(input));
+    System.out.print("Solution 3b: ");
+    System.out.println(solveDay3b(lines));
   }
 
 }

@@ -27,432 +27,15 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 /**
  * TODO.
  *
- * @author Arjan Verstoep
+ * @author Varienaja
  */
 public class Solutions {
-
-  @Test
-  public void testDay10() throws IOException, URISyntaxException {
-    List<String> lines = new LinkedList<>();
-    lines.add("value 5 goes to bot 2");
-    lines.add("bot 2 gives low to bot 1 and high to bot 0");
-    lines.add("value 3 goes to bot 1");
-    lines.add("bot 1 gives low to output 1 and high to bot 0");
-    lines.add("bot 0 gives low to output 2 and high to output 0");
-    lines.add("value 2 goes to bot 2");
-    assertEquals(2, calculateSolution10a(lines, 5, 2));
-
-    System.out.print("Solution 10a: ");
-    lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day10.txt").toURI()));
-    System.out.println(calculateSolution10a(lines, 61, 17));
-
-    lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day10.txt").toURI()));
-    System.out.print("Solution 10b: ");
-    System.out.println(calculateSolution10b(lines));
-  }
-
-  @Test
-  public void testDay11() throws IOException, URISyntaxException {
-    List<String> floor1 = new LinkedList<>();
-    List<String> floor2 = new LinkedList<>();
-    List<String> floor3 = new LinkedList<>();
-    List<String> floor4 = new LinkedList<>();
-
-    floor1.add("HM");
-    floor1.add("LM");
-    floor2.add("HG");
-    floor3.add("LG");
-    List<List<String>> stuff = Arrays.asList(floor1, floor2, floor3, floor4);
-    Queue<String> steps = new LinkedList<>();
-    assertEquals(11, calculateSteps(steps, 0, stuff));
-
-    floor1.clear();
-    floor2.clear();
-    floor3.clear();
-    floor4.clear();
-    floor1.add("PG");
-    floor1.add("TG");
-    floor1.add("TM");
-    floor1.add("pG");
-    floor1.add("RG");
-    floor1.add("RM");
-    floor1.add("CG");
-    floor1.add("CM");
-    floor2.add("PM");
-    floor3.add("pM");
-    steps.clear();
-    System.out.print("Solution 10a: ");
-    System.out.println(calculateSteps(steps, 0, stuff));
-  }
-
-  @Test
-  public void testDay1a() {
-    int x = 0;
-    int y = 0;
-    int direction = 0; // 0,1,2,3: north, west, south, east
-    String input = "R1, R3, L2, L5, L2, L1, R3, L4, R2, L2, L4, R2, L1, R1, L2, R3, L1, L4, R2, L5, R3, R4, L1, R2, L1, R3, L4, R5, L4, L5, R5, L3, R2, L3, L3, R1, R3, L4, R2, R5, L4, R1, L1, L1, R5, L2, R1, L2, R188, L5, L3, R5, R1, L2, L4, R3, R5, L3, R3, R45, L4, R4, R72, R2, R3, L1, R1, L1, L1, R192, L1, L1, L1, L4, R1, L2, L5, L3, R5, L3, R3, L4, L3, R1, R4, L2, R2, R3, L5, R3, L1, R1, R4, L2, L3, R1, R3, L4, L3, L4, L2, L2, R1, R3, L5, L1, R4, R2, L4, L1, R3, R3, R1, L5, L2, R4, R4, R2, R1, R5, R5, L4, L1, R5, R3, R4, R5, R3, L1, L2, L4, R1, R4, R5, L2, L3, R4, L4, R2, L2, L4, L2, R5, R1, R4, R3, R5, L4, L4, L5, L5, R3, R4, L1, L3, R2, L2, R1, L3, L5, R5, R5, R3, L4, L2, R4, R5, R1, R4, L3";
-
-    String[] steps = input.split(",\\s");
-    for (String step : steps) {
-      int a = Integer.parseInt(step.substring(1));
-      if (step.startsWith("R")) {
-        direction--;
-      } else if (step.startsWith("L")) {
-        direction++;
-      }
-
-      if (direction < 0) {
-        direction = 3;
-      }
-      if (direction > 3) {
-        direction = 0;
-      }
-
-      switch (direction) {
-        case 0:
-          x -= a;
-          break;
-        case 1:
-          y -= a;
-          break;
-        case 2:
-          x += a;
-          break;
-        case 3:
-          y += a;
-          break;
-      }
-    }
-
-    System.out.println("x=" + x + ", y=" + y + ", sum=" + (Math.abs(x) + Math.abs(y)));
-  }
-
-  @Test
-  public void testDay1b() {
-    int x = 0;
-    int y = 0;
-    int direction = 0; // 0,1,2,3: north, west, south, east
-    String input = "R1, R3, L2, L5, L2, L1, R3, L4, R2, L2, L4, R2, L1, R1, L2, R3, L1, L4, R2, L5, R3, R4, L1, R2, L1, R3, L4, R5, L4, L5, R5, L3, R2, L3, L3, R1, R3, L4, R2, R5, L4, R1, L1, L1, R5, L2, R1, L2, R188, L5, L3, R5, R1, L2, L4, R3, R5, L3, R3, R45, L4, R4, R72, R2, R3, L1, R1, L1, L1, R192, L1, L1, L1, L4, R1, L2, L5, L3, R5, L3, R3, L4, L3, R1, R4, L2, R2, R3, L5, R3, L1, R1, R4, L2, L3, R1, R3, L4, L3, L4, L2, L2, R1, R3, L5, L1, R4, R2, L4, L1, R3, R3, R1, L5, L2, R4, R4, R2, R1, R5, R5, L4, L1, R5, R3, R4, R5, R3, L1, L2, L4, R1, R4, R5, L2, L3, R4, L4, R2, L2, L4, L2, R5, R1, R4, R3, R5, L4, L4, L5, L5, R3, R4, L1, L3, R2, L2, R1, L3, L5, R5, R5, R3, L4, L2, R4, R5, R1, R4, L3";
-    Set<Point> visited = new LinkedHashSet<>();
-    visited.add(new Point(0, 0));
-
-    String[] steps = input.split(",\\s");
-    for (String step : steps) {
-      int a = Integer.parseInt(step.substring(1));
-      if (step.startsWith("R")) {
-        direction--;
-      } else if (step.startsWith("L")) {
-        direction++;
-      }
-
-      if (direction < 0) {
-        direction = 3;
-      }
-      if (direction > 3) {
-        direction = 0;
-      }
-
-      while (a > 0) {
-        switch (direction) {
-          case 0:
-            x -= 1;
-            break;
-          case 1:
-            y -= 1;
-            break;
-          case 2:
-            x += 1;
-            break;
-          case 3:
-            y += 1;
-            break;
-        }
-        a--;
-        Point p = new Point(x, y);
-        if (!visited.add(p)) {
-          System.out.println("x=" + x + ", y=" + y + ", sum=" + (Math.abs(x) + Math.abs(y)));
-          return;
-        }
-      }
-    }
-  }
-
-  @Test
-  public void testDay2() {
-    String[] pad = new String[] {
-        "     ", //
-        " 123 ", //
-        " 456 ", //
-        " 789 ", //
-        "     "
-    };
-    String testInput = "ULL\nRRDDD\nLURDL\nUUUUD";
-    assertEquals("1985", calcDay2b(testInput, pad));
-    String input = "URULLLLLRLDDUURRRULLLDURRDRDRDLURURURLDLLLLRUDDRRLUDDDDDDLRLRDDDUUDUDLDULUDLDURDULLRDDURLLLRRRLLRURLLUDRDLLRRLDDRUDULRRDDLUUUDRLDLURRRULURRDLLLDDDLUDURDDRLDDDLLRULDRUDDDLUDLURUDLLRURRUURUDLLLUUUUDDURDRDDDLDRRUDURDLLLULUDURURDUUULRULUDRUUUUDLRLUUUUUDDRRDDDURULLLRRLDURLDLDRDLLLUULLRRLLLLDRLRDRRDRRUDDLULUUDDDDRRUUDDLURLRDUUDRRLDUDLRRRLRRUUDURDRULULRDURDRRRDLDUUULRDDLRLRDLUUDDUDDRLRRULLLULULLDDDRRDUUUDDRURDDURDRLRDLDRDRULRLUURUDRLULRLURLRRULDRLRDUDLDURLLRLUDLUDDURDUURLUDRLUL\nLLLUUURUULDDDULRRDLRLLLLLLLLRURRDLURLUDRRDDULDRRRRRRLDURRULDDULLDDDRUUDLUDULLDLRRLUULULRULURDURLLDULURDUDLRRLRLLDULLRLDURRUULDLDULLRDULULLLULDRLDLDLDLDDLULRLDUDRULUDDRDDRLRLURURRDULLUULLDRRDRRDLDLLRDLDDUUURLUULDDRRRUULDULDDRDDLULUDRURUULLUDRURDRULDRUULLRRDURUDDLDUULLDDRLRRDUDRLRRRLDRLRULDRDRRUDRLLLDDUDLULLURRURRLUURDRLLDLLDUDLUUURRLRDDUDRLUDLLRULLDUUURDLUUUDUDULRLDLDRUUDULRDRRUDLULRLRDLDRRDDDUDLDLDLRUURLDLLUURDLDLRDLDRUDDUURLLLRDRDRRULLRLRDULUDDDLUDURLDUDLLRULRDURDRDLLULRRDLLLDUURRDUDDLDDRULRRRRLRDDRURLLRRLLL\nDRURLDDDDRLUDRDURUDDULLRRLLRLDDRLULURLDURRLDRRLRLUURDDRRDLRDLDLULDURUDRLRUDULRURURLRUDRLLDDUDDRDLDRLLDDLRRDRUUULDUUDRUULRLLDLLULLLRRDRURDLDDRRDDUDDULLDUUULDRUDLDLURLDRURUDLRDDDURRLRDDUDLLLRRUDRULRULRRLLUUULDRLRRRLLLDLLDUDDUUDRURLDLRRUUURLUDDDRRDDLDDDDLUURDDULDRLRURLULLURRDRLLURLLLURDURLDLUDUUDUULLRLDLLLLULRDDLDUDUDDDUULURRLULDLDRLRDRLULLUDDUUUUURDRURLDUULDRRDULUDUDLDDRDLUDDURUDURLDULRUDRRDLRLRDRRURLDLURLULULDDUUDLRLLLLURRURULDDRUUULLDULDRDULDDDLLLRLULDDUDLRUDUDUDURLURLDDLRULDLURD\nDRUDRDURUURDLRLUUUUURUDLRDUURLLDUULDUULDLURDDUULDRDDRDULUDDDRRRRLDDUURLRDLLRLRURDRRRDURDULRLDRDURUDLLDDULRDUDULRRLLUDLLUUURDULRDDLURULRURDDLRLLULUDURDRRUDLULLRLDUDLURUDRUULDUDLRDUDRRDULDDLDRLRRULURULUURDULRRLDLDULULRUUUUULUURLURLRDLLRRRRLURRUDLRLDDDLDRDRURLULRDUDLRLURRDRRLRLLDLDDLLRRULRLRLRUDRUUULLDUULLDDRLUDDRURLRLDLULDURLLRRLDLLRDDDUDDUULLUDRUDURLLRDRUDLUDLLUDRUUDLRUURRRLLUULLUUURLLLRURUULLDLLDURUUUULDDDLRLURDRLRRRRRRUDLLLRUUULDRRDLRDLLDRDLDDLDLRDUDLDDRDDDDRULRRLRDULLDULULULRULLRRLLUURUUUDLDLUDUDDDLUUDDDDUDDDUURUUDRDURRLUULRRDUUDDUDRRRDLRDRLDLRRURUUDRRRUUDLDRLRDURD\nDDDLRURUDRRRURUUDLRLRDULDRDUULRURRRUULUDULDDLRRLLRLDDLURLRUDRLRRLRDLRLLDDLULDLRRURDDRDLLDDRUDRRRURRDUDULUDDULRRDRLDUULDLLLDRLUDRDURDRRDLLLLRRLRLLULRURUUDDRULDLLRULDRDLUDLULDDDLLUULRRLDDUURDLULUULULRDDDLDUDDLLLRRLLLDULRDDLRRUDDRDDLLLLDLDLULRRRDUDURRLUUDLLLLDUUULDULRDRULLRDRUDULRUUDULULDRDLDUDRRLRRDRLDUDLULLUDDLURLUUUDRDUDRULULDRDLRDRRLDDRRLUURDRULDLRRLLRRLDLRRLDLDRULDDRLURDULRRUDURRUURDUUURULUUUDLRRLDRDLULDURUDUDLUDDDULULRULDRRRLRURLRLRLUDDLUUDRRRLUUUDURLDRLRRDRRDURLLL";
-    System.out.print("Solution 2a: ");
-    System.out.println(calcDay2b(input, pad));
-
-    pad = new String[] {
-        "       ", //
-        "   1   ", //
-        "  234  ", //
-        " 56789 ", //
-        "  ABC  ", //
-        "   D   ", //
-        "       "
-    };
-    assertEquals("5DB3", calcDay2b(testInput, pad));
-    System.out.print("Solution 2b: ");
-    System.out.println(calcDay2b(input, pad));
-
-  }
-
-  @Test
-  public void testDay3() throws IOException, URISyntaxException {
-    assertFalse(isValidTriangle("5 10 25"));
-
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day3.txt").toURI()));
-    System.out.print("Solution 3a: ");
-    System.out.println(lines.stream().filter(t -> isValidTriangle(t)).count());
-
-    // So, we create a new List<String> which in a transformation from the original one.
-    // We move in steps of three
-    List<String> transformed = new LinkedList<>();
-    int i = 0;
-    do {
-      String l1 = lines.get(i++);
-      String l2 = lines.get(i++);
-      String l3 = lines.get(i++);
-
-      String[] parts1 = l1.trim().split("\\s+");
-      String[] parts2 = l2.trim().split("\\s+");
-      String[] parts3 = l3.trim().split("\\s+");
-
-      transformed.add(parts1[0] + " " + parts2[0] + " " + parts3[0]);
-      transformed.add(parts1[1] + " " + parts2[1] + " " + parts3[1]);
-      transformed.add(parts1[2] + " " + parts2[2] + " " + parts3[2]);
-    } while (i < lines.size());
-    System.out.print("Solution 3b: ");
-    System.out.println(transformed.stream().filter(t -> isValidTriangle(t)).count());
-
-    // Now, our pairs of three are top-down..., so we should transform the input or alter the algorithm.
-  }
-
-  /**
-   * Each room consists of an encrypted name (lowercase letters separated by
-   * dashes) followed by a dash, a sector ID,* and a checksum in square
-   * brackets. A room is real (not a decoy) if the checksum is the five most
-   * common letters in the encrypted name, in order, with ties broken by
-   * alphabetization. For example:
-   * aaaaa-bbb-z-y-x-123[abxyz] is a real room because the most common letters
-   * are a (5), b (3), and then a tie between x, y, and z, which are listed
-   * alphabetically.
-   * a-b-c-d-e-f-g-h-987[abcde] is a real room because although the letters are
-   * all tied (1 of each), the first five are listed alphabetically.
-   * not-a-real-room-404[oarel] is a real room.
-   * totally-real-room-200[decoy] is not.
-   * Of the real rooms from the list above, the sum of their sector IDs is 1514.
-   * What is the sum of the sector IDs of the real rooms?
-   *
-   * @throws URISyntaxException not expected
-   * @throws IOException not expected
-   */
-  @Test
-  public void testDay4() throws IOException, URISyntaxException {
-    assertEquals(123, isRealRoom("aaaaa-bbb-z-y-x-123[abxyz]"));
-    assertEquals(987, isRealRoom("a-b-c-d-e-f-g-h-987[abcde]"));
-    assertEquals(404, isRealRoom("not-a-real-room-404[oarel]"));
-    assertEquals(0, isRealRoom("totally-real-room-200[decoy]"));
-
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day4.txt").toURI()));
-    long sum = lines.stream().map(l -> isRealRoom(l)).mapToInt(i -> i).sum();
-    System.out.print("Solution 4a: ");
-    System.out.println(sum);
-
-    assertEquals("very encrypted name", decryptRoom("qzmt-zixmtkozy-ivhz-343[lalal]"));
-    System.out.print("Solution 4b: ");
-    for (String line : lines) {
-      if (decryptRoom(line).startsWith("north")) {
-        System.out.println(isRealRoom(line));
-      }
-    }
-  }
-
-  /**
-   * A hash indicates the next character in the password if its hexadecimal
-   * representation starts with five zeroes. If it does, the sixth character in
-   * the hash is the next character of the password.
-   * For example, if the Door ID is abc:
-   * The first index which produces a hash that starts with five zeroes is
-   * 3231929, which we find by hashing abc3231929; the sixth character of the
-   * hash, and thus the first character of the password, is 1.
-   * 5017308 produces the next interesting hash, which starts with
-   * 000008f82..., so the second character of the password is 8.
-   * The third time a hash starts with five zeroes is for abc5278568,
-   * discovering the character f. In this example, after continuing this search
-   * a total of eight times, the password is 18f47a30.
-   * Given the actual Door ID, what is the password?
-   * Your puzzle input is uqwqemis.
-   */
-  @Test
-  public void testDay5() {
-    assertEquals("18f47a30", pwdFor("abc"));
-    System.out.print("Solution 5a: ");
-    System.out.println(pwdFor("uqwqemis"));
-
-    assertEquals("05ace8e3", altPwdFor("abc"));
-    System.out.print("Solution 5b: ");
-    System.out.println(altPwdFor("uqwqemis"));
-  }
-
-  @Test
-  public void testDay6() throws IOException, URISyntaxException {
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day6.txt").toURI()));
-
-    System.out.print("Solution 6a: ");
-    int mx = lines.get(0).length();
-    int i = 0;
-    while (i < mx) {
-      Map<Character, Integer> frequency = new HashMap<>();
-      for (String line : lines) {
-        char c = line.charAt(i);
-        Integer count = frequency.getOrDefault(c, 0);
-        frequency.put(c, ++count);
-      }
-      List<Character> res = frequency.entrySet().stream().sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())).map(e -> e.getKey()).limit(1)
-          .collect(Collectors.toList());
-      System.out.print(res.get(0));
-      i++;
-    }
-    System.out.println();
-
-    System.out.print("Solution 6a: ");
-    i = 0;
-    while (i < mx) {
-      Map<Character, Integer> frequency = new HashMap<>();
-      for (String line : lines) {
-        char c = line.charAt(i);
-        Integer count = frequency.getOrDefault(c, 0);
-        frequency.put(c, ++count);
-      }
-      List<Character> res = frequency.entrySet().stream().sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue())).map(e -> e.getKey()).limit(1)
-          .collect(Collectors.toList());
-      System.out.print(res.get(0));
-      i++;
-    }
-    System.out.println();
-  }
-
-  @Test
-  public void testDay7() throws IOException, URISyntaxException {
-    assertTrue(supportsTLS("abba[mnop]qrst"));
-    assertFalse(supportsTLS("abcd[bddb]xyyx"));
-    assertFalse(supportsTLS("aaaa[qwer]tyui"));
-    assertTrue(supportsTLS("ioxxoj[asdfgh]zxcvbn"));
-
-    assertTrue(supportsTLS("vjqhodfzrrqjshbhx[lezezbbswydnjnz]ejcflwytgzvyigz[hjdilpgdyzfkloa]mxtkrysovvotkuyekba"));
-
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day7.txt").toURI()));
-
-    System.out.print("Solution 7a: ");
-    int counter = 0;
-    for (String line : lines) {
-      if (supportsTLS(line)) {
-        counter++;
-        // System.out.println(line);
-      }
-    }
-    System.out.println(counter);
-
-    assertTrue(supportsSSL("aba[bab]xyz"));
-    assertFalse(supportsSSL("xyx[xyx]xyx"));
-    assertTrue(supportsSSL("aaa[kek]eke"));
-    assertTrue(supportsSSL("zazbz[bzb]cdb"));
-
-    System.out.print("Solution 7b: ");
-    counter = 0;
-    for (String line : lines) {
-      if (supportsSSL(line)) {
-        counter++;
-        // System.out.println(line);
-      }
-    }
-    System.out.println(counter);
-  }
-
-  @Test
-  public void testDay8() throws IOException, URISyntaxException {
-    StringBuilder[] grid = new StringBuilder[3];
-    for (int i = 0; i < grid.length; i++) {
-      grid[i] = new StringBuilder(".......");
-    }
-
-    transformGrid(grid, "rect 3x2");
-    assertEquals("[###...., ###...., .......]", Arrays.toString(grid));
-    transformGrid(grid, "rotate column x=1 by 1");
-    assertEquals("[#.#...., ###...., .#.....]", Arrays.toString(grid));
-    transformGrid(grid, "rotate row y=0 by 4");
-    assertEquals("[....#.#, ###...., .#.....]", Arrays.toString(grid));
-    transformGrid(grid, "rotate column x=1 by 1");
-    assertEquals("[.#..#.#, #.#...., .#.....]", Arrays.toString(grid));
-
-    System.out.print("Solution 8a: ");
-    grid = new StringBuilder[6];
-    for (int i = 0; i < grid.length; i++) {
-      grid[i] = new StringBuilder("..................................................");
-    }
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day8.txt").toURI()));
-    for (String operation : lines) {
-      transformGrid(grid, operation);
-    }
-    int counter = 0;
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[i].length(); j++) {
-        if (grid[i].charAt(j) == '#') {
-          counter++;
-        }
-      }
-    }
-    System.out.println(counter);
-
-    System.out.println("Solution 8b: ");
-    for (int i = 0; i < grid.length; i++) {
-      System.out.println(grid[i]);
-    } // ZFHFSFOGPO
-  }
-
-  @Test
-  public void testDay9() throws IOException, URISyntaxException {
-    assertEquals("ADVENT", decompress("ADVENT"));
-    assertEquals("ABBBBBC", decompress("A(1x5)BC"));
-    assertEquals("ABCBCDEFEFG", decompress("A(2x2)BCD(2x2)EFG"));
-    assertEquals("(1x3)A", decompress("(6x1)(1x3)A"));
-    assertEquals("X(3x3)ABC(3x3)ABCY", decompress("X(8x2)(3x3)ABCY"));
-
-    System.out.print("Solution 9a: ");
-    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day9.txt").toURI()));
-    assertEquals(1, lines.size());
-    final String decompressed = decompress(lines.get(0));
-    long counter = 0L;
-    for (char c : decompressed.toCharArray()) {
-      if (c != ' ') {
-        counter++;
-      }
-    }
-    System.out.println(counter);
-
-    assertEquals(20, decompressB(decompress("X(8x2)(3x3)ABCY")));
-    assertEquals(241920, decompressB(decompress("(27x12)(20x12)(13x14)(7x10)(1x12)A")));
-    assertEquals(445, decompressB(decompress("(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN")));
-    System.out.print("Solution 9b: ");
-    counter = decompressB(decompressed);
-    System.out.println(counter);
-  }
 
   private String altPwdFor(String inStart) {
     int i = 0;
@@ -999,6 +582,424 @@ public class Solutions {
       (hyperNet ? hyper : normal).append(c);
     }
     return containsABBA(normal.toString()) && !containsABBA(hyper.toString());
+  }
+
+  @Test
+  public void testDay10() throws IOException, URISyntaxException {
+    List<String> lines = new LinkedList<>();
+    lines.add("value 5 goes to bot 2");
+    lines.add("bot 2 gives low to bot 1 and high to bot 0");
+    lines.add("value 3 goes to bot 1");
+    lines.add("bot 1 gives low to output 1 and high to bot 0");
+    lines.add("bot 0 gives low to output 2 and high to output 0");
+    lines.add("value 2 goes to bot 2");
+    assertEquals(2, calculateSolution10a(lines, 5, 2));
+
+    System.out.print("Solution 10a: ");
+    lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day10.txt").toURI()));
+    System.out.println(calculateSolution10a(lines, 61, 17));
+
+    lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day10.txt").toURI()));
+    System.out.print("Solution 10b: ");
+    System.out.println(calculateSolution10b(lines));
+  }
+
+  @Test
+  public void testDay11() throws IOException, URISyntaxException {
+    List<String> floor1 = new LinkedList<>();
+    List<String> floor2 = new LinkedList<>();
+    List<String> floor3 = new LinkedList<>();
+    List<String> floor4 = new LinkedList<>();
+
+    floor1.add("HM");
+    floor1.add("LM");
+    floor2.add("HG");
+    floor3.add("LG");
+    List<List<String>> stuff = Arrays.asList(floor1, floor2, floor3, floor4);
+    Queue<String> steps = new LinkedList<>();
+    assertEquals(11, calculateSteps(steps, 0, stuff));
+
+    floor1.clear();
+    floor2.clear();
+    floor3.clear();
+    floor4.clear();
+    floor1.add("PG");
+    floor1.add("TG");
+    floor1.add("TM");
+    floor1.add("pG");
+    floor1.add("RG");
+    floor1.add("RM");
+    floor1.add("CG");
+    floor1.add("CM");
+    floor2.add("PM");
+    floor3.add("pM");
+    steps.clear();
+    System.out.print("Solution 10a: ");
+    System.out.println(calculateSteps(steps, 0, stuff));
+  }
+
+  @Test
+  public void testDay1a() {
+    int x = 0;
+    int y = 0;
+    int direction = 0; // 0,1,2,3: north, west, south, east
+    String input = "R1, R3, L2, L5, L2, L1, R3, L4, R2, L2, L4, R2, L1, R1, L2, R3, L1, L4, R2, L5, R3, R4, L1, R2, L1, R3, L4, R5, L4, L5, R5, L3, R2, L3, L3, R1, R3, L4, R2, R5, L4, R1, L1, L1, R5, L2, R1, L2, R188, L5, L3, R5, R1, L2, L4, R3, R5, L3, R3, R45, L4, R4, R72, R2, R3, L1, R1, L1, L1, R192, L1, L1, L1, L4, R1, L2, L5, L3, R5, L3, R3, L4, L3, R1, R4, L2, R2, R3, L5, R3, L1, R1, R4, L2, L3, R1, R3, L4, L3, L4, L2, L2, R1, R3, L5, L1, R4, R2, L4, L1, R3, R3, R1, L5, L2, R4, R4, R2, R1, R5, R5, L4, L1, R5, R3, R4, R5, R3, L1, L2, L4, R1, R4, R5, L2, L3, R4, L4, R2, L2, L4, L2, R5, R1, R4, R3, R5, L4, L4, L5, L5, R3, R4, L1, L3, R2, L2, R1, L3, L5, R5, R5, R3, L4, L2, R4, R5, R1, R4, L3";
+
+    String[] steps = input.split(",\\s");
+    for (String step : steps) {
+      int a = Integer.parseInt(step.substring(1));
+      if (step.startsWith("R")) {
+        direction--;
+      } else if (step.startsWith("L")) {
+        direction++;
+      }
+
+      if (direction < 0) {
+        direction = 3;
+      }
+      if (direction > 3) {
+        direction = 0;
+      }
+
+      switch (direction) {
+        case 0:
+          x -= a;
+          break;
+        case 1:
+          y -= a;
+          break;
+        case 2:
+          x += a;
+          break;
+        case 3:
+          y += a;
+          break;
+      }
+    }
+
+    System.out.println("x=" + x + ", y=" + y + ", sum=" + (Math.abs(x) + Math.abs(y)));
+  }
+
+  @Test
+  public void testDay1b() {
+    int x = 0;
+    int y = 0;
+    int direction = 0; // 0,1,2,3: north, west, south, east
+    String input = "R1, R3, L2, L5, L2, L1, R3, L4, R2, L2, L4, R2, L1, R1, L2, R3, L1, L4, R2, L5, R3, R4, L1, R2, L1, R3, L4, R5, L4, L5, R5, L3, R2, L3, L3, R1, R3, L4, R2, R5, L4, R1, L1, L1, R5, L2, R1, L2, R188, L5, L3, R5, R1, L2, L4, R3, R5, L3, R3, R45, L4, R4, R72, R2, R3, L1, R1, L1, L1, R192, L1, L1, L1, L4, R1, L2, L5, L3, R5, L3, R3, L4, L3, R1, R4, L2, R2, R3, L5, R3, L1, R1, R4, L2, L3, R1, R3, L4, L3, L4, L2, L2, R1, R3, L5, L1, R4, R2, L4, L1, R3, R3, R1, L5, L2, R4, R4, R2, R1, R5, R5, L4, L1, R5, R3, R4, R5, R3, L1, L2, L4, R1, R4, R5, L2, L3, R4, L4, R2, L2, L4, L2, R5, R1, R4, R3, R5, L4, L4, L5, L5, R3, R4, L1, L3, R2, L2, R1, L3, L5, R5, R5, R3, L4, L2, R4, R5, R1, R4, L3";
+    Set<Point> visited = new LinkedHashSet<>();
+    visited.add(new Point(0, 0));
+
+    String[] steps = input.split(",\\s");
+    for (String step : steps) {
+      int a = Integer.parseInt(step.substring(1));
+      if (step.startsWith("R")) {
+        direction--;
+      } else if (step.startsWith("L")) {
+        direction++;
+      }
+
+      if (direction < 0) {
+        direction = 3;
+      }
+      if (direction > 3) {
+        direction = 0;
+      }
+
+      while (a > 0) {
+        switch (direction) {
+          case 0:
+            x -= 1;
+            break;
+          case 1:
+            y -= 1;
+            break;
+          case 2:
+            x += 1;
+            break;
+          case 3:
+            y += 1;
+            break;
+        }
+        a--;
+        Point p = new Point(x, y);
+        if (!visited.add(p)) {
+          System.out.println("x=" + x + ", y=" + y + ", sum=" + (Math.abs(x) + Math.abs(y)));
+          return;
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testDay2() {
+    String[] pad = new String[] {
+        "     ", //
+        " 123 ", //
+        " 456 ", //
+        " 789 ", //
+        "     "
+    };
+    String testInput = "ULL\nRRDDD\nLURDL\nUUUUD";
+    assertEquals("1985", calcDay2b(testInput, pad));
+    String input = "URULLLLLRLDDUURRRULLLDURRDRDRDLURURURLDLLLLRUDDRRLUDDDDDDLRLRDDDUUDUDLDULUDLDURDULLRDDURLLLRRRLLRURLLUDRDLLRRLDDRUDULRRDDLUUUDRLDLURRRULURRDLLLDDDLUDURDDRLDDDLLRULDRUDDDLUDLURUDLLRURRUURUDLLLUUUUDDURDRDDDLDRRUDURDLLLULUDURURDUUULRULUDRUUUUDLRLUUUUUDDRRDDDURULLLRRLDURLDLDRDLLLUULLRRLLLLDRLRDRRDRRUDDLULUUDDDDRRUUDDLURLRDUUDRRLDUDLRRRLRRUUDURDRULULRDURDRRRDLDUUULRDDLRLRDLUUDDUDDRLRRULLLULULLDDDRRDUUUDDRURDDURDRLRDLDRDRULRLUURUDRLULRLURLRRULDRLRDUDLDURLLRLUDLUDDURDUURLUDRLUL\nLLLUUURUULDDDULRRDLRLLLLLLLLRURRDLURLUDRRDDULDRRRRRRLDURRULDDULLDDDRUUDLUDULLDLRRLUULULRULURDURLLDULURDUDLRRLRLLDULLRLDURRUULDLDULLRDULULLLULDRLDLDLDLDDLULRLDUDRULUDDRDDRLRLURURRDULLUULLDRRDRRDLDLLRDLDDUUURLUULDDRRRUULDULDDRDDLULUDRURUULLUDRURDRULDRUULLRRDURUDDLDUULLDDRLRRDUDRLRRRLDRLRULDRDRRUDRLLLDDUDLULLURRURRLUURDRLLDLLDUDLUUURRLRDDUDRLUDLLRULLDUUURDLUUUDUDULRLDLDRUUDULRDRRUDLULRLRDLDRRDDDUDLDLDLRUURLDLLUURDLDLRDLDRUDDUURLLLRDRDRRULLRLRDULUDDDLUDURLDUDLLRULRDURDRDLLULRRDLLLDUURRDUDDLDDRULRRRRLRDDRURLLRRLLL\nDRURLDDDDRLUDRDURUDDULLRRLLRLDDRLULURLDURRLDRRLRLUURDDRRDLRDLDLULDURUDRLRUDULRURURLRUDRLLDDUDDRDLDRLLDDLRRDRUUULDUUDRUULRLLDLLULLLRRDRURDLDDRRDDUDDULLDUUULDRUDLDLURLDRURUDLRDDDURRLRDDUDLLLRRUDRULRULRRLLUUULDRLRRRLLLDLLDUDDUUDRURLDLRRUUURLUDDDRRDDLDDDDLUURDDULDRLRURLULLURRDRLLURLLLURDURLDLUDUUDUULLRLDLLLLULRDDLDUDUDDDUULURRLULDLDRLRDRLULLUDDUUUUURDRURLDUULDRRDULUDUDLDDRDLUDDURUDURLDULRUDRRDLRLRDRRURLDLURLULULDDUUDLRLLLLURRURULDDRUUULLDULDRDULDDDLLLRLULDDUDLRUDUDUDURLURLDDLRULDLURD\nDRUDRDURUURDLRLUUUUURUDLRDUURLLDUULDUULDLURDDUULDRDDRDULUDDDRRRRLDDUURLRDLLRLRURDRRRDURDULRLDRDURUDLLDDULRDUDULRRLLUDLLUUURDULRDDLURULRURDDLRLLULUDURDRRUDLULLRLDUDLURUDRUULDUDLRDUDRRDULDDLDRLRRULURULUURDULRRLDLDULULRUUUUULUURLURLRDLLRRRRLURRUDLRLDDDLDRDRURLULRDUDLRLURRDRRLRLLDLDDLLRRULRLRLRUDRUUULLDUULLDDRLUDDRURLRLDLULDURLLRRLDLLRDDDUDDUULLUDRUDURLLRDRUDLUDLLUDRUUDLRUURRRLLUULLUUURLLLRURUULLDLLDURUUUULDDDLRLURDRLRRRRRRUDLLLRUUULDRRDLRDLLDRDLDDLDLRDUDLDDRDDDDRULRRLRDULLDULULULRULLRRLLUURUUUDLDLUDUDDDLUUDDDDUDDDUURUUDRDURRLUULRRDUUDDUDRRRDLRDRLDLRRURUUDRRRUUDLDRLRDURD\nDDDLRURUDRRRURUUDLRLRDULDRDUULRURRRUULUDULDDLRRLLRLDDLURLRUDRLRRLRDLRLLDDLULDLRRURDDRDLLDDRUDRRRURRDUDULUDDULRRDRLDUULDLLLDRLUDRDURDRRDLLLLRRLRLLULRURUUDDRULDLLRULDRDLUDLULDDDLLUULRRLDDUURDLULUULULRDDDLDUDDLLLRRLLLDULRDDLRRUDDRDDLLLLDLDLULRRRDUDURRLUUDLLLLDUUULDULRDRULLRDRUDULRUUDULULDRDLDUDRRLRRDRLDUDLULLUDDLURLUUUDRDUDRULULDRDLRDRRLDDRRLUURDRULDLRRLLRRLDLRRLDLDRULDDRLURDULRRUDURRUURDUUURULUUUDLRRLDRDLULDURUDUDLUDDDULULRULDRRRLRURLRLRLUDDLUUDRRRLUUUDURLDRLRRDRRDURLLL";
+    System.out.print("Solution 2a: ");
+    System.out.println(calcDay2b(input, pad));
+
+    pad = new String[] {
+        "       ", //
+        "   1   ", //
+        "  234  ", //
+        " 56789 ", //
+        "  ABC  ", //
+        "   D   ", //
+        "       "
+    };
+    assertEquals("5DB3", calcDay2b(testInput, pad));
+    System.out.print("Solution 2b: ");
+    System.out.println(calcDay2b(input, pad));
+
+  }
+
+  @Test
+  public void testDay3() throws IOException, URISyntaxException {
+    assertFalse(isValidTriangle("5 10 25"));
+
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day3.txt").toURI()));
+    System.out.print("Solution 3a: ");
+    System.out.println(lines.stream().filter(t -> isValidTriangle(t)).count());
+
+    // So, we create a new List<String> which in a transformation from the original one.
+    // We move in steps of three
+    List<String> transformed = new LinkedList<>();
+    int i = 0;
+    do {
+      String l1 = lines.get(i++);
+      String l2 = lines.get(i++);
+      String l3 = lines.get(i++);
+
+      String[] parts1 = l1.trim().split("\\s+");
+      String[] parts2 = l2.trim().split("\\s+");
+      String[] parts3 = l3.trim().split("\\s+");
+
+      transformed.add(parts1[0] + " " + parts2[0] + " " + parts3[0]);
+      transformed.add(parts1[1] + " " + parts2[1] + " " + parts3[1]);
+      transformed.add(parts1[2] + " " + parts2[2] + " " + parts3[2]);
+    } while (i < lines.size());
+    System.out.print("Solution 3b: ");
+    System.out.println(transformed.stream().filter(t -> isValidTriangle(t)).count());
+
+    // Now, our pairs of three are top-down..., so we should transform the input or alter the algorithm.
+  }
+
+  /**
+   * Each room consists of an encrypted name (lowercase letters separated by
+   * dashes) followed by a dash, a sector ID,* and a checksum in square
+   * brackets. A room is real (not a decoy) if the checksum is the five most
+   * common letters in the encrypted name, in order, with ties broken by
+   * alphabetization. For example:
+   * aaaaa-bbb-z-y-x-123[abxyz] is a real room because the most common letters
+   * are a (5), b (3), and then a tie between x, y, and z, which are listed
+   * alphabetically.
+   * a-b-c-d-e-f-g-h-987[abcde] is a real room because although the letters are
+   * all tied (1 of each), the first five are listed alphabetically.
+   * not-a-real-room-404[oarel] is a real room.
+   * totally-real-room-200[decoy] is not.
+   * Of the real rooms from the list above, the sum of their sector IDs is 1514.
+   * What is the sum of the sector IDs of the real rooms?
+   *
+   * @throws URISyntaxException not expected
+   * @throws IOException not expected
+   */
+  @Test
+  public void testDay4() throws IOException, URISyntaxException {
+    assertEquals(123, isRealRoom("aaaaa-bbb-z-y-x-123[abxyz]"));
+    assertEquals(987, isRealRoom("a-b-c-d-e-f-g-h-987[abcde]"));
+    assertEquals(404, isRealRoom("not-a-real-room-404[oarel]"));
+    assertEquals(0, isRealRoom("totally-real-room-200[decoy]"));
+
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day4.txt").toURI()));
+    long sum = lines.stream().map(l -> isRealRoom(l)).mapToInt(i -> i).sum();
+    System.out.print("Solution 4a: ");
+    System.out.println(sum);
+
+    assertEquals("very encrypted name", decryptRoom("qzmt-zixmtkozy-ivhz-343[lalal]"));
+    System.out.print("Solution 4b: ");
+    for (String line : lines) {
+      if (decryptRoom(line).startsWith("north")) {
+        System.out.println(isRealRoom(line));
+      }
+    }
+  }
+
+  /**
+   * A hash indicates the next character in the password if its hexadecimal
+   * representation starts with five zeroes. If it does, the sixth character in
+   * the hash is the next character of the password.
+   * For example, if the Door ID is abc:
+   * The first index which produces a hash that starts with five zeroes is
+   * 3231929, which we find by hashing abc3231929; the sixth character of the
+   * hash, and thus the first character of the password, is 1.
+   * 5017308 produces the next interesting hash, which starts with
+   * 000008f82..., so the second character of the password is 8.
+   * The third time a hash starts with five zeroes is for abc5278568,
+   * discovering the character f. In this example, after continuing this search
+   * a total of eight times, the password is 18f47a30.
+   * Given the actual Door ID, what is the password?
+   * Your puzzle input is uqwqemis.
+   */
+  @Test
+  public void testDay5() {
+    assertEquals("18f47a30", pwdFor("abc"));
+    System.out.print("Solution 5a: ");
+    System.out.println(pwdFor("uqwqemis"));
+
+    assertEquals("05ace8e3", altPwdFor("abc"));
+    System.out.print("Solution 5b: ");
+    System.out.println(altPwdFor("uqwqemis"));
+  }
+
+  @Test
+  public void testDay6() throws IOException, URISyntaxException {
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day6.txt").toURI()));
+
+    System.out.print("Solution 6a: ");
+    int mx = lines.get(0).length();
+    int i = 0;
+    while (i < mx) {
+      Map<Character, Integer> frequency = new HashMap<>();
+      for (String line : lines) {
+        char c = line.charAt(i);
+        Integer count = frequency.getOrDefault(c, 0);
+        frequency.put(c, ++count);
+      }
+      List<Character> res = frequency.entrySet().stream().sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())).map(e -> e.getKey()).limit(1)
+          .collect(Collectors.toList());
+      System.out.print(res.get(0));
+      i++;
+    }
+    System.out.println();
+
+    System.out.print("Solution 6a: ");
+    i = 0;
+    while (i < mx) {
+      Map<Character, Integer> frequency = new HashMap<>();
+      for (String line : lines) {
+        char c = line.charAt(i);
+        Integer count = frequency.getOrDefault(c, 0);
+        frequency.put(c, ++count);
+      }
+      List<Character> res = frequency.entrySet().stream().sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue())).map(e -> e.getKey()).limit(1)
+          .collect(Collectors.toList());
+      System.out.print(res.get(0));
+      i++;
+    }
+    System.out.println();
+  }
+
+  @Test
+  public void testDay7() throws IOException, URISyntaxException {
+    assertTrue(supportsTLS("abba[mnop]qrst"));
+    assertFalse(supportsTLS("abcd[bddb]xyyx"));
+    assertFalse(supportsTLS("aaaa[qwer]tyui"));
+    assertTrue(supportsTLS("ioxxoj[asdfgh]zxcvbn"));
+
+    assertTrue(supportsTLS("vjqhodfzrrqjshbhx[lezezbbswydnjnz]ejcflwytgzvyigz[hjdilpgdyzfkloa]mxtkrysovvotkuyekba"));
+
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day7.txt").toURI()));
+
+    System.out.print("Solution 7a: ");
+    int counter = 0;
+    for (String line : lines) {
+      if (supportsTLS(line)) {
+        counter++;
+        // System.out.println(line);
+      }
+    }
+    System.out.println(counter);
+
+    assertTrue(supportsSSL("aba[bab]xyz"));
+    assertFalse(supportsSSL("xyx[xyx]xyx"));
+    assertTrue(supportsSSL("aaa[kek]eke"));
+    assertTrue(supportsSSL("zazbz[bzb]cdb"));
+
+    System.out.print("Solution 7b: ");
+    counter = 0;
+    for (String line : lines) {
+      if (supportsSSL(line)) {
+        counter++;
+        // System.out.println(line);
+      }
+    }
+    System.out.println(counter);
+  }
+
+  @Test
+  public void testDay8() throws IOException, URISyntaxException {
+    StringBuilder[] grid = new StringBuilder[3];
+    for (int i = 0; i < grid.length; i++) {
+      grid[i] = new StringBuilder(".......");
+    }
+
+    transformGrid(grid, "rect 3x2");
+    assertEquals("[###...., ###...., .......]", Arrays.toString(grid));
+    transformGrid(grid, "rotate column x=1 by 1");
+    assertEquals("[#.#...., ###...., .#.....]", Arrays.toString(grid));
+    transformGrid(grid, "rotate row y=0 by 4");
+    assertEquals("[....#.#, ###...., .#.....]", Arrays.toString(grid));
+    transformGrid(grid, "rotate column x=1 by 1");
+    assertEquals("[.#..#.#, #.#...., .#.....]", Arrays.toString(grid));
+
+    System.out.print("Solution 8a: ");
+    grid = new StringBuilder[6];
+    for (int i = 0; i < grid.length; i++) {
+      grid[i] = new StringBuilder("..................................................");
+    }
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day8.txt").toURI()));
+    for (String operation : lines) {
+      transformGrid(grid, operation);
+    }
+    int counter = 0;
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[i].length(); j++) {
+        if (grid[i].charAt(j) == '#') {
+          counter++;
+        }
+      }
+    }
+    System.out.println(counter);
+
+    System.out.println("Solution 8b: ");
+    for (int i = 0; i < grid.length; i++) {
+      System.out.println(grid[i]);
+    } // ZFHFSFOGPO
+  }
+
+  @Test
+  public void testDay9() throws IOException, URISyntaxException {
+    assertEquals("ADVENT", decompress("ADVENT"));
+    assertEquals("ABBBBBC", decompress("A(1x5)BC"));
+    assertEquals("ABCBCDEFEFG", decompress("A(2x2)BCD(2x2)EFG"));
+    assertEquals("(1x3)A", decompress("(6x1)(1x3)A"));
+    assertEquals("X(3x3)ABC(3x3)ABCY", decompress("X(8x2)(3x3)ABCY"));
+
+    System.out.print("Solution 9a: ");
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2016/day9.txt").toURI()));
+    assertEquals(1, lines.size());
+    final String decompressed = decompress(lines.get(0));
+    long counter = 0L;
+    for (char c : decompressed.toCharArray()) {
+      if (c != ' ') {
+        counter++;
+      }
+    }
+    System.out.println(counter);
+
+    assertEquals(20, decompressB(decompress("X(8x2)(3x3)ABCY")));
+    assertEquals(241920, decompressB(decompress("(27x12)(20x12)(13x14)(7x10)(1x12)A")));
+    assertEquals(445, decompressB(decompress("(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN")));
+    System.out.print("Solution 9b: ");
+    counter = decompressB(decompressed);
+    System.out.println(counter);
   }
 
   private void transformGrid(StringBuilder[] inGrid, String inOperation) {

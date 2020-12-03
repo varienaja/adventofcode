@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * TODO.
  *
- * @author Arjan Verstoep
+ * @author Varienaja
  */
 public class Solutions {
 

@@ -8,12 +8,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -171,7 +175,6 @@ public class Solutions {
         int v = Integer.parseInt(m.group(1));
         return v >= minValue && v <= maxValue;
       }
-
     }
 
     class Validations {
@@ -218,6 +221,18 @@ public class Solutions {
       }
     }
     return validCount;
+  }
+
+  private int solveDay5a(String input) {
+    String r = input.substring(0, 7);
+    r = r.replace("F", "0").replace("B", "1");
+    int row = Integer.parseInt(r, 2);
+
+    String c = input.substring(7, 10);
+    c = c.replace("L", "0").replace("R", "1");
+    int column = Integer.parseInt(c, 2);
+
+    return row * 8 + column;
   }
 
   @Test
@@ -339,6 +354,23 @@ public class Solutions {
 
     System.out.print("Solution 4b: ");
     System.out.println(solveDay4b(lines));
+  }
+
+  @Test
+  public void testDay05() throws IOException, URISyntaxException {
+    assertEquals(567, solveDay5a("BFFFBBFRRR"));
+    assertEquals(119, solveDay5a("FFFBBBFRRR"));
+    assertEquals(820, solveDay5a("BBFFBBFRLL"));
+
+    System.out.print("Solution 5a: ");
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2020/day5.txt").toURI()));
+    IntSummaryStatistics s = lines.stream().map(this::solveDay5a).mapToInt(i -> i).summaryStatistics();
+    System.out.println(s.getMax());
+
+    Set<Integer> allSeats = IntStream.rangeClosed(s.getMin(), s.getMax()).boxed().collect(Collectors.toSet());
+    lines.stream().map(this::solveDay5a).forEach(allSeats::remove);
+    System.out.print("Solution 5b: ");
+    System.out.println(allSeats);
   }
 
 }

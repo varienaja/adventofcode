@@ -223,9 +223,21 @@ public class Solutions {
     return validCount;
   }
 
-  private int solveDay5a(String input) {
-    String r = input.replaceAll("F|L", "0").replaceAll("B|R", "1");
-    return Integer.parseInt(r, 2);
+  private IntSummaryStatistics solveDay5a(List<String> lines) {
+    return lines.stream().map(this::solveDay5Internal).mapToInt(i -> i).summaryStatistics();
+  }
+
+  private int solveDay5b(List<String> lines) {
+    IntSummaryStatistics s = solveDay5a(lines);
+    Set<Integer> allSeats = IntStream.rangeClosed(s.getMin(), s.getMax()).boxed().collect(Collectors.toSet());
+    lines.stream().map(this::solveDay5Internal).forEach(allSeats::remove);
+    assertEquals(1, allSeats.size());
+    return allSeats.iterator().next();
+  }
+
+  private int solveDay5Internal(String input) {
+    String id = input.replaceAll("F|L", "0").replaceAll("B|R", "1");
+    return Integer.parseInt(id, 2);
   }
 
   @Test
@@ -315,7 +327,7 @@ public class Solutions {
         "")));
     assertEquals(0, solveDay4b(Arrays.asList(//
         "iyr:2019", //
-        "hcl:#602927 eyr:1967 hgt:170cm", //
+        "hcl:#602927 eyr:1967 hgt:170cm", // calc
         "ecl:grn pid:012533040 byr:1946", //
         "")));
     assertEquals(0, solveDay4b(Arrays.asList(//
@@ -351,19 +363,16 @@ public class Solutions {
 
   @Test
   public void testDay05() throws IOException, URISyntaxException {
-    assertEquals(567, solveDay5a("BFFFBBFRRR"));
-    assertEquals(119, solveDay5a("FFFBBBFRRR"));
-    assertEquals(820, solveDay5a("BBFFBBFRLL"));
+    assertEquals(567, solveDay5Internal("BFFFBBFRRR"));
+    assertEquals(119, solveDay5Internal("FFFBBBFRRR"));
+    assertEquals(820, solveDay5Internal("BBFFBBFRLL"));
 
     System.out.print("Solution 5a: ");
     List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2020/day5.txt").toURI()));
-    IntSummaryStatistics s = lines.stream().map(this::solveDay5a).mapToInt(i -> i).summaryStatistics();
-    System.out.println(s.getMax());
+    System.out.println(solveDay5a(lines).getMax());
 
-    Set<Integer> allSeats = IntStream.rangeClosed(s.getMin(), s.getMax()).boxed().collect(Collectors.toSet());
-    lines.stream().map(this::solveDay5a).forEach(allSeats::remove);
     System.out.print("Solution 5b: ");
-    System.out.println(allSeats);
+    System.out.println(solveDay5b(lines));
   }
 
 }

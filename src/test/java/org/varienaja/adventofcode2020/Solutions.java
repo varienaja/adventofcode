@@ -75,7 +75,6 @@ public class Solutions {
           matches++;
         }
       }
-
     }
     return matches;
   }
@@ -95,7 +94,6 @@ public class Solutions {
           matches++;
         }
       }
-
     }
     return matches;
   }
@@ -228,11 +226,13 @@ public class Solutions {
   }
 
   private int solveDay5b(List<String> lines) {
+    Set<Integer> allSeatIDsExceptMine = lines.stream().map(this::solveDay5Internal).collect(Collectors.toSet());
+
     IntSummaryStatistics s = solveDay5a(lines);
-    Set<Integer> allSeats = IntStream.rangeClosed(s.getMin(), s.getMax()).boxed().collect(Collectors.toSet());
-    lines.stream().map(this::solveDay5Internal).forEach(allSeats::remove);
-    assertEquals(1, allSeats.size());
-    return allSeats.iterator().next();
+    return IntStream.rangeClosed(s.getMin(), s.getMax()) //
+        .filter(id -> !allSeatIDsExceptMine.contains(id)) //
+        .findFirst() //
+        .orElse(-1);
   }
 
   private int solveDay5Internal(String input) {
@@ -273,7 +273,8 @@ public class Solutions {
 
   @Test
   public void testDay03() throws IOException, URISyntaxException {
-    List<String> input = Arrays.asList("..##.......", //
+    List<String> input = Arrays.asList( //
+        "..##.......", //
         "#...#...#..", //
         ".#....#..#.", //
         "..#.#...#.#", //

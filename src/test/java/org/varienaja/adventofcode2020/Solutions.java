@@ -224,15 +224,8 @@ public class Solutions {
   }
 
   private int solveDay5a(String input) {
-    String r = input.substring(0, 7);
-    r = r.replace("F", "0").replace("B", "1");
-    int row = Integer.parseInt(r, 2);
-
-    String c = input.substring(7, 10);
-    c = c.replace("L", "0").replace("R", "1");
-    int column = Integer.parseInt(c, 2);
-
-    return row * 8 + column;
+    String r = input.replaceAll("F|L", "0").replaceAll("B|R", "1");
+    return Integer.parseInt(r, 2);
   }
 
   @Test

@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IntSummaryStatistics;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -240,6 +242,40 @@ public class Solutions {
     return Integer.parseInt(id, 2);
   }
 
+  private int solveDay6a(List<String> lines) {
+    int sum = 0;
+
+    Set<Character> s = new HashSet<>();
+    for (String line : lines) {
+      line.chars().mapToObj(c -> (char)c).forEach(s::add);
+      if (line.isEmpty()) { // verify
+        sum += s.size();
+        s.clear();
+      }
+    }
+    return sum;
+  }
+
+  private int solveDay6b(List<String> lines) {
+    int sum = 0;
+
+    Set<Set<Character>> ss = new HashSet<>();
+    for (String line : lines) {
+      if (line.isEmpty()) { // verify
+        Iterator<Set<Character>> it = ss.iterator();
+        Set<Character> result = it.next();
+        while (it.hasNext()) {
+          result.retainAll(it.next());
+        }
+        sum += result.size();
+        ss.clear();
+      } else {
+        ss.add(line.chars().mapToObj(c -> (char)c).collect(Collectors.toSet()));
+      }
+    }
+    return sum;
+  }
+
   @Test
   public void testDay01() throws IOException, URISyntaxException {
     int[] input = {
@@ -374,6 +410,58 @@ public class Solutions {
 
     System.out.print("Solution 5b: ");
     System.out.println(solveDay5b(lines));
+  }
+
+  @Test
+  public void testDay06() throws IOException, URISyntaxException {
+    assertEquals(6, solveDay6a(Arrays.asList( //
+        "abcx", //
+        "abcy", //
+        "abcz", //
+        "")));
+
+    assertEquals(11, solveDay6a(Arrays.asList( //
+        "abc", //
+        "", //
+        "a", //
+        "b", //
+        "c", //
+        "", //
+        "ab", //
+        "ac", //
+        "", //
+        "a", //
+        "a", //
+        "a", //
+        "a", //
+        "", //
+        "b", //
+        "")));
+
+    System.out.print("Solution 6a: ");
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2020/day6.txt").toURI()));
+    System.out.println(solveDay6a(lines));
+
+    assertEquals(6, solveDay6b(Arrays.asList( //
+        "abc", //
+        "", //
+        "a", //
+        "b", //
+        "c", //
+        "", //
+        "ab", //
+        "ac", //
+        "", //
+        "a", //
+        "a", //
+        "a", //
+        "a", //
+        "", //
+        "b", //
+        "")));
+
+    System.out.print("Solution 6b: ");
+    System.out.println(solveDay6b(lines));
   }
 
 }

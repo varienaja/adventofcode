@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -245,9 +244,9 @@ public class Solutions {
   private int solveDay6a(List<String> lines) {
     int sum = 0;
 
-    Set<Character> s = new HashSet<>();
+    Set<Integer> s = new HashSet<>();
     for (String line : lines) {
-      line.chars().mapToObj(c -> (char)c).forEach(s::add);
+      line.chars().boxed().forEach(s::add);
       if (line.isEmpty()) { // verify
         sum += s.size();
         s.clear();
@@ -259,18 +258,15 @@ public class Solutions {
   private int solveDay6b(List<String> lines) {
     int sum = 0;
 
-    Set<Set<Character>> ss = new HashSet<>();
+    Set<Set<Integer>> ss = new HashSet<>();
     for (String line : lines) {
       if (line.isEmpty()) { // verify
-        Iterator<Set<Character>> it = ss.iterator();
-        Set<Character> result = it.next();
-        while (it.hasNext()) {
-          result.retainAll(it.next());
-        }
+        Set<Integer> result = ss.iterator().next();
+        ss.stream().skip(1).forEach(result::retainAll);
         sum += result.size();
         ss.clear();
       } else {
-        ss.add(line.chars().mapToObj(c -> (char)c).collect(Collectors.toSet()));
+        ss.add(line.chars().boxed().collect(Collectors.toSet()));
       }
     }
     return sum;

@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -246,9 +249,8 @@ public class Solutions {
 
     Set<Integer> s = new HashSet<>();
     for (String line : lines) {
-      line.chars().boxed().forEach(s::add);
-      if (line.isEmpty()) { // verify
-        sum += s.size();
+      sum += line.chars().boxed().filter(s::add).count();
+      if (line.isEmpty()) {
         s.clear();
       }
     }
@@ -260,7 +262,7 @@ public class Solutions {
 
     Set<Set<Integer>> ss = new HashSet<>();
     for (String line : lines) {
-      if (line.isEmpty()) { // verify
+      if (line.isEmpty()) { // count
         Set<Integer> result = ss.iterator().next();
         ss.stream().skip(1).forEach(result::retainAll);
         sum += result.size();
@@ -270,6 +272,66 @@ public class Solutions {
       }
     }
     return sum;
+  }
+
+  private int solveDay7a(List<String> lines) {
+    Set<String> weSearch = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    weSearch.add("shiny gold");
+    boolean repeat;
+    do {
+      repeat = false;
+      for (Entry<String, Set<String>> entry : solveDay7aRulesExtract(lines).entrySet()) {
+        for (String s : weSearch) {
+          if (entry.getValue().contains(s)) {
+            repeat |= weSearch.add((entry.getKey()));
+          }
+        }
+      }
+    } while (repeat);
+
+    return weSearch.size() - 1;
+  }
+
+  private Map<String, Set<String>> solveDay7aRulesExtract(List<String> lines) {
+    Pattern bagRule = Pattern.compile("\\s*(\\d+)\\s+(.*?)\\s+(bag)");
+    return lines.stream() //
+        .map(line -> line.split(" bags contain ")) //
+        .collect(Collectors.toMap(parts -> parts[0], parts -> {
+          Set<String> cols = new HashSet<>();
+          Matcher m = bagRule.matcher(parts[1]);
+          while (m.find()) {
+            cols.add(m.group(2));
+          }
+          return cols;
+        }));
+  }
+
+  private long solveDay7b(List<String> lines) {
+    return solveDay7bRecursive(solveDay7bRulesExtract(lines), "shiny gold") - 1;
+  }
+
+  private long solveDay7bRecursive(Map<String, Set<SimpleEntry<Integer, String>>> rules, String key) {
+    Set<SimpleEntry<Integer, String>> bags = rules.get(key);
+
+    long result = 1;
+    for (SimpleEntry<Integer, String> b : bags) {
+      result += b.getKey() * solveDay7bRecursive(rules, b.getValue());
+    }
+    return result;
+  }
+
+  private Map<String, Set<SimpleEntry<Integer, String>>> solveDay7bRulesExtract(List<String> lines) {
+    Pattern bagRule = Pattern.compile("\\s*(\\d+)\\s+(.*?)\\s+(bag)");
+    return lines.stream() //
+        .map(line -> line.split(" bags contain ")) //
+        .collect(Collectors.toMap(parts -> parts[0], parts -> {
+          Set<SimpleEntry<Integer, String>> cols = new HashSet<>();
+          Matcher m = bagRule.matcher(parts[1]);
+          while (m.find()) {
+            cols.add(new SimpleEntry<>(Integer.parseInt(m.group(1)), m.group(2)));
+          }
+          return cols;
+        }));
   }
 
   @Test
@@ -458,6 +520,38 @@ public class Solutions {
 
     System.out.print("Solution 6b: ");
     System.out.println(solveDay6b(lines));
+  }
+
+  @Test
+  public void testDay07() throws IOException, URISyntaxException {
+    List<String> input = Arrays.asList( //
+        "light red bags contain 1 bright white bag, 2 muted yellow bags.", //
+        "dark orange bags contain 3 bright white bags, 4 muted yellow bags.", //
+        "bright white bags contain 1 shiny gold bag.", //
+        "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.", //
+        "shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.", //
+        "dark olive bags contain 3 faded blue bags, 4 dotted black bags.", //
+        "vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.", //
+        "faded blue bags contain no other bags.", //
+        "dotted black bags contain no other bags.");
+    assertEquals(4, solveDay7a(input));
+
+    System.out.print("Solution 7a: ");
+    List<String> lines = Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource("2020/day7.txt").toURI()));
+    System.out.println(solveDay7a(lines));
+
+    assertEquals(32, solveDay7b(input));
+    input = Arrays.asList( //
+        "shiny gold bags contain 2 dark red bags.", //
+        "dark red bags contain 2 dark orange bags.", //
+        "dark orange bags contain 2 dark yellow bags.", //
+        "dark yellow bags contain 2 dark green bags.", //
+        "dark green bags contain 2 dark blue bags.", //
+        "dark blue bags contain 2 dark violet bags.", //
+        "dark violet bags contain no other bags.");
+    assertEquals(126, solveDay7b(input));
+    System.out.print("Solution 7b: ");
+    System.out.println(solveDay7b(lines));
   }
 
 }

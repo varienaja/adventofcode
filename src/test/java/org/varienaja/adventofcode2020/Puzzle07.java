@@ -2,8 +2,6 @@ package org.varienaja.adventofcode2020;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +86,7 @@ public class Puzzle07 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay07() throws IOException, URISyntaxException {
+  public void testDay07() {
     List<String> testInput = Arrays.asList( //
         "light red bags contain 1 bright white bag, 2 muted yellow bags.", //
         "dark orange bags contain 3 bright white bags, 4 muted yellow bags.", //

@@ -2,8 +2,6 @@ package org.varienaja.adventofcode2020;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +49,7 @@ public class Puzzle06 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay06() throws IOException, URISyntaxException {
+  public void testDay06() {
     assertEquals(6, solveA(Arrays.asList( //
         "abcx", //
         "abcy", //

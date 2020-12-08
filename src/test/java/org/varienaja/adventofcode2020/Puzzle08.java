@@ -2,8 +2,6 @@ package org.varienaja.adventofcode2020;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +21,12 @@ public class Puzzle08 extends PuzzleAbs {
 
   private int alterLine(List<String> modLines, int lineToChange) {
     for (int i = lineToChange; i < modLines.size(); i++) {
-      if (modLines.get(i).startsWith("jmp")) {
-        modLines.set(i, modLines.get(i).replace("jmp", "nop"));
+      String l = modLines.get(i);
+      if (l.startsWith("jmp")) {
+        modLines.set(i, l.replace("jmp", "nop"));
         return i + 1;
-      } else if (modLines.get(i).startsWith("nop")) {
-        modLines.set(i, modLines.get(i).replace("nop", "jmp"));
+      } else if (l.startsWith("nop")) {
+        modLines.set(i, l.replace("nop", "jmp"));
         return i + 1;
       }
     }
@@ -75,7 +74,7 @@ public class Puzzle08 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay08() throws IOException, URISyntaxException {
+  public void testDay08() {
     List<String> testInput = Arrays.asList( //
         "nop +0", //
         "acc +1", //

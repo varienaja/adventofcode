@@ -47,7 +47,7 @@ public class Puzzle03 extends PuzzleAbs {
 
   @Test
   public void testDay03() throws IOException, URISyntaxException {
-    List<String> input = Arrays.asList( //
+    List<String> testInput = Arrays.asList( //
         "..##.......", //
         "#...#...#..", //
         ".#....#..#.", //
@@ -59,15 +59,19 @@ public class Puzzle03 extends PuzzleAbs {
         "#.##...#...", //
         "#...##....#", //
         ".#..#...#.#");
-    assertEquals(7, solveA(input, 3, 1));
+    assertEquals(7, solveA(testInput, 3, 1));
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines, 3, 1));
+    long result = solveA(lines, 3, 1);
+    assertEquals(294L, result);
+    System.out.println(result);
 
-    assertEquals(336, solveB(input));
+    assertEquals(336, solveB(testInput));
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(5774564250L, result);
+    System.out.println(result);
   }
 
 }

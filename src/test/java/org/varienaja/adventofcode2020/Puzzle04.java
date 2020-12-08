@@ -141,7 +141,9 @@ public class Puzzle04 extends PuzzleAbs {
         "")));
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    long result = solveA(lines);
+    assertEquals(213L, result);
+    System.out.println(result);
 
     assertEquals(0, solveB(Arrays.asList(//
         "eyr:1972 cid:100", //
@@ -180,7 +182,9 @@ public class Puzzle04 extends PuzzleAbs {
         "")));
 
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(147L, result);
+    System.out.println(result);
   }
 
 }

@@ -35,10 +35,14 @@ public class Puzzle09 extends PuzzleAbs {
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    long result = solveA(lines);
+    assertEquals(0L, result);
+    System.out.println(result);
 
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(0L, result);
+    System.out.println(result);
   }
 
 }

@@ -55,7 +55,7 @@ public class Puzzle07 extends PuzzleAbs {
         }));
   }
 
-  private int solveA(List<String> lines) {
+  private long solveA(List<String> lines) {
     Set<String> weSearch = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     weSearch.add("shiny gold");
     boolean repeat;
@@ -89,7 +89,7 @@ public class Puzzle07 extends PuzzleAbs {
 
   @Test
   public void testDay07() throws IOException, URISyntaxException {
-    List<String> input = Arrays.asList( //
+    List<String> testInput = Arrays.asList( //
         "light red bags contain 1 bright white bag, 2 muted yellow bags.", //
         "dark orange bags contain 3 bright white bags, 4 muted yellow bags.", //
         "bright white bags contain 1 shiny gold bag.", //
@@ -99,14 +99,16 @@ public class Puzzle07 extends PuzzleAbs {
         "vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.", //
         "faded blue bags contain no other bags.", //
         "dotted black bags contain no other bags.");
-    assertEquals(4, solveA(input));
+    assertEquals(4, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    long result = solveA(lines);
+    assertEquals(172L, result);
+    System.out.println(result);
 
-    assertEquals(32, solveB(input));
-    input = Arrays.asList( //
+    assertEquals(32, solveB(testInput));
+    testInput = Arrays.asList( //
         "shiny gold bags contain 2 dark red bags.", //
         "dark red bags contain 2 dark orange bags.", //
         "dark orange bags contain 2 dark yellow bags.", //
@@ -114,9 +116,11 @@ public class Puzzle07 extends PuzzleAbs {
         "dark green bags contain 2 dark blue bags.", //
         "dark blue bags contain 2 dark violet bags.", //
         "dark violet bags contain no other bags.");
-    assertEquals(126, solveB(input));
+    assertEquals(126, solveB(testInput));
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(39645L, result);
+    System.out.println(result);
   }
 
 }

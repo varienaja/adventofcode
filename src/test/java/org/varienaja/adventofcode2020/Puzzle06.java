@@ -78,7 +78,9 @@ public class Puzzle06 extends PuzzleAbs {
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    int result = solveA(lines);
+    assertEquals(7283, result);
+    System.out.println(result);
 
     assertEquals(6, solveB(Arrays.asList( //
         "abc", //
@@ -99,7 +101,9 @@ public class Puzzle06 extends PuzzleAbs {
         "")));
 
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(3520, result);
+    System.out.println(result);
   }
 
 }

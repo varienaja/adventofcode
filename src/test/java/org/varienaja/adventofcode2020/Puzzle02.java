@@ -65,16 +65,20 @@ public class Puzzle02 extends PuzzleAbs {
 
   @Test
   public void testDay02() throws IOException, URISyntaxException {
-    List<String> input = Arrays.asList("1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc");
-    assertEquals(2, solveA(input));
+    List<String> testInput = Arrays.asList("1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc");
+    assertEquals(2, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    int result = solveA(lines);
+    assertEquals(620, result);
+    System.out.println(result);
 
-    assertEquals(1, solveB(input));
+    assertEquals(1, solveB(testInput));
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(727, result);
+    System.out.println(result);
   }
 
 }

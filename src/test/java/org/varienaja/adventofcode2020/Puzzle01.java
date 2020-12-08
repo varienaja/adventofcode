@@ -42,19 +42,23 @@ public class Puzzle01 extends PuzzleAbs {
 
   @Test
   public void testDay01() throws IOException, URISyntaxException {
-    int[] input = {
+    int[] testInput = {
         1721, 979, 366, 299, 675, 1456
     };
-    assertEquals(514579, solveA(input));
+    assertEquals(514579, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
     int[] numbers = lines.stream().map(Integer::parseInt).mapToInt(i -> i).toArray();
-    System.out.println(solveA(numbers));
+    int result = solveA(numbers);
+    assertEquals(987339, result);
+    System.out.println(result);
 
-    assertEquals(241861950, solveB(input));
+    assertEquals(241861950, solveB(testInput));
     announceResultB();
-    System.out.println(solveB(numbers));
+    result = solveB(numbers);
+    assertEquals(259521570, result);
+    System.out.println(result);
   }
 
 }

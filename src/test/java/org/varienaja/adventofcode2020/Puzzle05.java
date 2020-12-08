@@ -47,10 +47,14 @@ public class Puzzle05 extends PuzzleAbs {
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines).getMax());
+    int result = solveA(lines).getMax();
+    assertEquals(922, result);
+    System.out.println(result);
 
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(747, result);
+    System.out.println(result);
   }
 
 }

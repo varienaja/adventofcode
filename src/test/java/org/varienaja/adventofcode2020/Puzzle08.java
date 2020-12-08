@@ -21,32 +21,17 @@ import org.junit.Test;
  */
 public class Puzzle08 extends PuzzleAbs {
 
-  private long solveA(List<String> lines) {
-    return runProgram(lines).getKey();
-  }
-
-  private long solveB(List<String> lines) {
-    int lineToChange = 0;
-    SimpleEntry<Long, Boolean> result;
-
-    do {
-      List<String> modLines = new ArrayList<>(lines);
-      for (int i = lineToChange; i < modLines.size(); i++) {
-        if (modLines.get(i).startsWith("jmp")) {
-          modLines.set(i, modLines.get(i).replace("jmp", "nop"));
-          lineToChange = i + 1;
-          break;
-        }
-        if (modLines.get(i).startsWith("nop")) {
-          modLines.set(i, modLines.get(i).replace("nop", "jmp"));
-          lineToChange = i + 1;
-          break;
-        }
+  private int alterLine(List<String> modLines, int lineToChange) {
+    for (int i = lineToChange; i < modLines.size(); i++) {
+      if (modLines.get(i).startsWith("jmp")) {
+        modLines.set(i, modLines.get(i).replace("jmp", "nop"));
+        return i + 1;
+      } else if (modLines.get(i).startsWith("nop")) {
+        modLines.set(i, modLines.get(i).replace("nop", "jmp"));
+        return i + 1;
       }
-      result = runProgram(modLines);
-    } while (result.getValue());
-
-    return result.getKey();
+    }
+    throw new IndexOutOfBoundsException(lineToChange);
   }
 
   private SimpleEntry<Long, Boolean> runProgram(List<String> lines) {
@@ -72,9 +57,26 @@ public class Puzzle08 extends PuzzleAbs {
     return new SimpleEntry<>(acc, ip < lines.size()); // Aargh @ no Tuples in Java
   }
 
+  private long solveA(List<String> lines) {
+    return runProgram(lines).getKey();
+  }
+
+  private long solveB(List<String> lines) {
+    int lineToChange = 0;
+    SimpleEntry<Long, Boolean> result;
+
+    do {
+      List<String> modLines = new ArrayList<>(lines);
+      lineToChange = alterLine(modLines, lineToChange);
+      result = runProgram(modLines);
+    } while (result.getValue());
+
+    return result.getKey();
+  }
+
   @Test
   public void testDay08() throws IOException, URISyntaxException {
-    List<String> input = Arrays.asList( //
+    List<String> testInput = Arrays.asList( //
         "nop +0", //
         "acc +1", //
         "jmp +4", //
@@ -84,14 +86,19 @@ public class Puzzle08 extends PuzzleAbs {
         "acc +1", //
         "jmp -4", //
         "acc +6");
-    assertEquals(5, solveA(input));
+    assertEquals(5, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
-    System.out.println(solveA(lines));
+    long result = solveA(lines);
+    assertEquals(1782L, result);
+    System.out.println(result);
 
+    assertEquals(8, solveB(testInput));
     announceResultB();
-    System.out.println(solveB(lines));
+    result = solveB(lines);
+    assertEquals(797L, result);
+    System.out.println(result);
   }
 
 }

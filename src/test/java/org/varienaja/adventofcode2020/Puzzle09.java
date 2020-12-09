@@ -37,19 +37,19 @@ public class Puzzle09 extends PuzzleAbs {
   private long solveB(long[] lines, long toFind) {
     int end = 0;
     int sum = 0;
-    for (int start = 0; start < lines.length; start++) {
-      while (sum < toFind) {
+    int start = 0;
+    while (sum != toFind) {
+      if (sum < toFind) {
         sum += lines[end++];
+      } else if (sum > toFind) {
+        sum -= lines[start++];
       }
-      if (sum == toFind) {
-        long[] matchingRun = new long[end - start];
-        System.arraycopy(lines, start, matchingRun, 0, end - start);
-        LongSummaryStatistics lss = LongStream.of(matchingRun).summaryStatistics();
-        return lss.getMin() + lss.getMax();
-      }
-      sum -= lines[start];
     }
-    return -1;
+
+    long[] matchingRun = new long[end - start];
+    System.arraycopy(lines, start, matchingRun, 0, end - start);
+    LongSummaryStatistics lss = LongStream.of(matchingRun).summaryStatistics();
+    return lss.getMin() + lss.getMax();
   }
 
   @Test

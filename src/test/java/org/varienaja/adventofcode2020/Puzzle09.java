@@ -31,30 +31,23 @@ public class Puzzle09 extends PuzzleAbs {
         return lines[i];
       }
     }
-
     return -1;
   }
 
   private long solveB(long[] lines, long toFind) {
-    int start = 0;
     int end = 0;
     int sum = 0;
-    while (end < lines.length) {
+    for (int start = 0; start < lines.length; start++) {
       while (sum < toFind) {
-        sum += lines[end];
-        end++;
+        sum += lines[end++];
       }
       if (sum == toFind) {
-        long[] matching = new long[end - start];
-        System.arraycopy(lines, start, matching, 0, end - start);
-        LongSummaryStatistics lss = LongStream.of(matching).summaryStatistics();
+        long[] matchingRun = new long[end - start];
+        System.arraycopy(lines, start, matchingRun, 0, end - start);
+        LongSummaryStatistics lss = LongStream.of(matchingRun).summaryStatistics();
         return lss.getMin() + lss.getMax();
       }
-      if (sum > toFind) {
-        start++;
-        end = start;
-        sum = 0;
-      }
+      sum -= lines[start];
     }
     return -1;
   }

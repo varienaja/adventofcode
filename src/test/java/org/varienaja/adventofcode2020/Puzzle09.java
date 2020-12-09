@@ -39,8 +39,7 @@ public class Puzzle09 extends PuzzleAbs {
     int start = 0;
     int end = 0;
     int sum = 0;
-    boolean found = false;
-    while (!found) {
+    while (end < lines.length) {
       while (sum < toFind) {
         sum += lines[end];
         end++;
@@ -57,7 +56,6 @@ public class Puzzle09 extends PuzzleAbs {
         sum = 0;
       }
     }
-
     return -1;
   }
 

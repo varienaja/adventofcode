@@ -87,7 +87,7 @@ public class Puzzle11 extends PuzzleAbs {
   }
 
   private long solveB(List<String> lines) {
-    return (solve(lines, 5, true));
+    return solve(lines, 5, true);
   }
 
   @Test

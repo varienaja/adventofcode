@@ -30,13 +30,17 @@ public class Puzzle11 extends PuzzleAbs {
           continue;
         }
 
-        int xX = x + dX;
-        int yY = y + dY;
-        while (seeFar && 0 <= xX && xX < maxX && 0 <= yY && yY < maxY && lines.get(yY).charAt(xX) == '.') {
+        int xX = x;
+        int yY = y;
+        boolean inBounds;
+
+        do {
           xX += dX;
           yY += dY;
-        }
-        if (0 <= xX && xX < maxX && 0 <= yY && yY < maxY && lines.get(yY).charAt(xX) == '#') {
+          inBounds = 0 <= xX && xX < maxX && 0 <= yY && yY < maxY;
+        } while (seeFar && inBounds && lines.get(yY).charAt(xX) == '.');
+
+        if (inBounds && lines.get(yY).charAt(xX) == '#') {
           adjacentOccupied++;
         }
       }
@@ -107,8 +111,8 @@ public class Puzzle11 extends PuzzleAbs {
     assertEquals(2418L, result);
     System.out.println(result);
 
-    announceResultB();
     assertEquals(26L, solveB(input));
+    announceResultB();
     result = solveB(lines);
     assertEquals(2144L, result);
     System.out.println(result);

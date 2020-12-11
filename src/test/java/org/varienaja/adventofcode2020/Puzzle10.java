@@ -39,7 +39,6 @@ public class Puzzle10 extends PuzzleAbs {
     Collections.sort(sortedJoltages);
     sortedJoltages.add(0, 0);
 
-    Collections.sort(sortedJoltages);
     return solveBRecursive(0, sortedJoltages, new HashMap<Integer, Long>());
   }
 

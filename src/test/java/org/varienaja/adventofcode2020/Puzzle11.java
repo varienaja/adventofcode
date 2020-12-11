@@ -3,7 +3,6 @@ package org.varienaja.adventofcode2020;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -20,8 +19,9 @@ public class Puzzle11 extends PuzzleAbs {
   private int[] directions = {
       -1, 0, 1
   };
+  private char[][] matrix;
 
-  private int countAdjacentOccupied(List<String> lines, int x, int y, boolean seeFar) {
+  private int countAdjacentOccupied(int x, int y, boolean seeFar) {
     int adjacentOccupied = 0;
 
     for (int dY : directions) {
@@ -38,9 +38,9 @@ public class Puzzle11 extends PuzzleAbs {
           xX += dX;
           yY += dY;
           inBounds = 0 <= xX && xX < maxX && 0 <= yY && yY < maxY;
-        } while (seeFar && inBounds && lines.get(yY).charAt(xX) == '.');
+        } while (seeFar && inBounds && matrix[yY][xX] == '.');
 
-        if (inBounds && lines.get(yY).charAt(xX) == '#') {
+        if (inBounds && matrix[yY][xX] == '#') {
           adjacentOccupied++;
         }
       }
@@ -51,34 +51,33 @@ public class Puzzle11 extends PuzzleAbs {
   private long solve(List<String> lines, int maxOccupied, boolean seeFar) {
     maxX = lines.get(0).length();
     maxY = lines.size();
+    matrix = lines.stream().map(String::toCharArray).toArray(char[][]::new);
 
     int occupied = 0;
     boolean changed;
-    List<String> newArrangement;
+    char[][] newArrangement;
     do {
       changed = false;
-      newArrangement = new LinkedList<>(lines);
+      newArrangement = Arrays.stream(matrix).map(char[]::clone).toArray(char[][]::new);
       for (int y = 0; y < maxY; y++) {
-        char[] line = newArrangement.get(y).toCharArray();
         for (int x = 0; x < maxX; x++) {
-
-          int adjacentOccupied = countAdjacentOccupied(lines, x, y, seeFar);
-          if (line[x] == 'L' && adjacentOccupied == 0) {
-            line[x] = '#';
-            occupied++;
-            changed = true;
-          } else if (line[x] == '#' && adjacentOccupied >= maxOccupied) {
-            line[x] = 'L';
-            occupied--;
-            changed = true;
+          if (newArrangement[y][x] != '.') {
+            int adjacentOccupied = countAdjacentOccupied(x, y, seeFar);
+            if (newArrangement[y][x] == 'L' && adjacentOccupied == 0) {
+              newArrangement[y][x] = '#';
+              occupied++;
+              changed = true;
+            } else if (newArrangement[y][x] == '#' && adjacentOccupied >= maxOccupied) {
+              newArrangement[y][x] = 'L';
+              occupied--;
+              changed = true;
+            }
           }
-          newArrangement.set(y, new String(line));
         }
       }
 
-      lines = new LinkedList<>(newArrangement);
+      matrix = newArrangement;
     } while (changed);
-
     return occupied;
   }
 

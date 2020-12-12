@@ -65,14 +65,14 @@ public class Puzzle12 extends PuzzleAbs {
       char d = line.charAt(0);
       int dist = Integer.parseInt(line.substring(1));
 
-      if ("NWSE".indexOf(d) >= 0) {
-        steps.get(d).getAndAdd(dist);
-      } else if (d == 'F') {
+      if (d == 'F') {
         forward(dist);
       } else if (d == 'L') {
         rotateL(dist);
       } else if (d == 'R') {
         rotateR(dist);
+      } else {
+        steps.get(d).getAndAdd(dist);
       }
     }
 

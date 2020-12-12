@@ -118,7 +118,7 @@ public class Puzzle12 extends PuzzleAbs {
 
     announceResultA();
     List<String> lines = getInput();
-    long result = solveA(lines);
+    int result = solveA(lines);
     assertEquals(1294L, result);
     System.out.println(result);
 

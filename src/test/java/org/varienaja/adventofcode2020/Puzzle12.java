@@ -39,11 +39,12 @@ public class Puzzle12 extends PuzzleAbs {
   private void rotateL(int degrees) {
     for (int deg = 0; deg < degrees; deg += 90) {
       if (mode) {
-        AtomicInteger t = steps.get('N');
-        steps.put('N', steps.get('E'));
-        steps.put('E', steps.get('S'));
-        steps.put('S', steps.get('W'));
-        steps.put('W', t);
+        int i = 0;
+        AtomicInteger t = steps.get(directions[i]);
+        for (i = 0; i < directions.length - 1;) {
+          steps.put(directions[i], steps.get(directions[++i]));
+        }
+        steps.put(directions[i], t);
       } else {
         currentDirectionIx--;
         if (currentDirectionIx < 0) {

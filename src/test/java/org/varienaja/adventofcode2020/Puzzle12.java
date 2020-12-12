@@ -3,7 +3,10 @@ package org.varienaja.adventofcode2020;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
@@ -14,110 +17,92 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2020">adventofcode.com</a>
  */
 public class Puzzle12 extends PuzzleAbs {
+  private char[] directions = {
+      'N', 'E', 'S', 'W'
+  };
+  private Map<Character, AtomicInteger> steps;
+  private int currentDirectionIx;
+  // boat position, when mode=true
+  private int x;
+  private int y;
+  private boolean mode; // false: puzzleA; true: puzzleB
 
-  private int[] rotateL(int x, int y, int degrees) {
+  private void forward(int dist) {
+    if (mode) {
+      x += (steps.get('E').get() - steps.get('W').get()) * dist;
+      y += (steps.get('N').get() - steps.get('S').get()) * dist;
+    } else {
+      steps.get(directions[currentDirectionIx]).getAndAdd(dist);
+    }
+  }
+
+  private void rotateL(int degrees) {
     for (int deg = 0; deg < degrees; deg += 90) {
-      int t = -x;
-      x = y;
-      y = t;
+      if (mode) {
+        AtomicInteger t = steps.get('N');
+        steps.put('N', steps.get('E'));
+        steps.put('E', steps.get('S'));
+        steps.put('S', steps.get('W'));
+        steps.put('W', t);
+      } else {
+        currentDirectionIx--;
+        if (currentDirectionIx < 0) {
+          currentDirectionIx += directions.length;
+        }
+      }
     }
-    return new int[] {
-        x, y
-    };
   }
 
-  private int[] rotateR(int x, int y, int degrees) {
-    return rotateL(x, y, 360 - degrees);
+  private void rotateR(int degrees) {
+    rotateL(360 - degrees);
   }
 
-  private long solveA(List<String> lines) {
-    // boat direction
-    int dx = 1;
-    int dy = 0;
-    // boat position
-    int x = 0;
-    int y = 0;
+  private int solve(List<String> lines) {
+    x = 0;
+    y = 0;
 
     for (String line : lines) {
-      char D = line.charAt(0);
+      char d = line.charAt(0);
       int dist = Integer.parseInt(line.substring(1));
 
-      switch (D) {
-        case 'N':
-          y -= dist;
-          break;
-        case 'S':
-          y += dist;
-          break;
-        case 'E':
-          x += dist;
-          break;
-        case 'W':
-          x -= dist;
-          break;
-        case 'L':
-          int[] rotatedL = rotateL(dx, dy, dist);
-          dx = rotatedL[0];
-          dy = rotatedL[1];
-          break;
-        case 'R':
-          int[] rotatedR = rotateR(dx, dy, dist);
-          dx = rotatedR[0];
-          dy = rotatedR[1];
-          break;
-        case 'F':
-          x += dx * dist;
-          y += dy * dist;
-          break;
+      if ("NWSE".indexOf(d) >= 0) {
+        steps.get(d).getAndAdd(dist);
+      } else if (d == 'F') {
+        forward(dist);
+      } else if (d == 'L') {
+        rotateL(dist);
+      } else if (d == 'R') {
+        rotateR(dist);
       }
     }
 
+    if (!mode) {
+      x = steps.get('E').get() - steps.get('W').get();
+      y = steps.get('N').get() - steps.get('S').get();
+    }
     return Math.abs(x) + Math.abs(y);
   }
 
-  private long solveB(List<String> lines) {
-    // waypoint position (relative to boat)
-    int wx = 10;
-    int wy = -1;
-    // boat position
-    int x = 0;
-    int y = 0;
-
-    for (String line : lines) {
-      char D = line.charAt(0);
-      int dist = Integer.parseInt(line.substring(1));
-
-      switch (D) {
-        case 'N':
-          wy -= dist;
-          break;
-        case 'S':
-          wy += dist;
-          break;
-        case 'E':
-          wx += dist;
-          break;
-        case 'W':
-          wx -= dist;
-          break;
-        case 'L':
-          int[] rotatedL = rotateL(wx, wy, dist);
-          wx = rotatedL[0];
-          wy = rotatedL[1];
-          break;
-        case 'R':
-          int[] rotatedR = rotateR(wx, wy, dist);
-          wx = rotatedR[0];
-          wy = rotatedR[1];
-          break;
-        case 'F':
-          x += wx * dist;
-          y += wy * dist;
-          break;
-      }
+  private int solveA(List<String> lines) {
+    mode = false;
+    currentDirectionIx = 1;
+    steps = new HashMap<>();
+    for (char c : directions) {
+      steps.put(c, new AtomicInteger());
     }
 
-    return Math.abs(x) + Math.abs(y);
+    return solve(lines);
+  }
+
+  private int solveB(List<String> lines) {
+    mode = true;
+    steps = new HashMap<>();
+    steps.put('N', new AtomicInteger(1));
+    steps.put('E', new AtomicInteger(10));
+    steps.put('S', new AtomicInteger());
+    steps.put('W', new AtomicInteger());
+
+    return solve(lines);
   }
 
   @Test

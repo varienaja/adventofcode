@@ -2,11 +2,6 @@ package org.varienaja.adventofcode2020;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.junit.Test;
 
 /**
@@ -35,32 +30,23 @@ public class Puzzle13 extends PuzzleAbs {
     }
   }
 
-  private long solveB(String input) {
+  private long solveB(String input, long start) {
     String[] busLines = input.split(",");
-    int i = 0;
-    SortedMap<Integer, Integer> bls = new TreeMap<>();
-    for (String bl : busLines) {
-      if (!"x".equals(bl)) {
-        bls.put(i, Integer.parseInt(bl));
+
+    long result = start;
+    long step = 1;
+
+    for (int timeDiff = 0; timeDiff < busLines.length; timeDiff++) {
+      if (!"x".equals(busLines[timeDiff])) {
+        int bl = Integer.parseInt(busLines[timeDiff]);
+
+        while ((result + timeDiff) % bl != 0) {
+          result += step;
+        }
+        step *= bl;
       }
-      i++;
     }
-    return solveBRecursive(bls.entrySet().iterator(), 1, 1);
-  }
 
-  private long solveBRecursive(Iterator<Entry<Integer, Integer>> it, long lastResult, long step) {
-    long result = lastResult;
-    if (it.hasNext()) {
-      Entry<Integer, Integer> e = it.next();
-      int timeDiff = e.getKey();
-      int line = e.getValue();
-
-      while ((result + timeDiff) % line != 0) {
-        result += step;
-      }
-
-      return solveBRecursive(it, result, line * step);
-    }
     return result;
   }
 
@@ -75,13 +61,13 @@ public class Puzzle13 extends PuzzleAbs {
     System.out.println(result);
     assertEquals(370L, result);
 
-    assertEquals(1068781L, solveB(input));
-    assertEquals(754018L, solveB("67,7,59,61"));
-    assertEquals(779210L, solveB("67,x,7,59,61"));
-    assertEquals(1261476L, solveB("67,7,x,59,61"));
-    assertEquals(1202161486L, solveB("1789,37,47,1889"));
+    assertEquals(1068781L, solveB(input, 1L));
+    assertEquals(754018L, solveB("67,7,59,61", 1L));
+    assertEquals(779210L, solveB("67,x,7,59,61", 1L));
+    assertEquals(1261476L, solveB("67,7,x,59,61", 1L));
+    assertEquals(1202161486L, solveB("1789,37,47,1889", 1L));
     announceResultB();
-    result = solveB(lines);
+    result = solveB(lines, 100_000_000_000_000L);
     System.out.println(result);
     assertEquals(894954360381385L, result);
   }

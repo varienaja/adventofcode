@@ -45,10 +45,10 @@ public class Puzzle13 extends PuzzleAbs {
       }
       i++;
     }
-    return solveBRecursive(bls, bls.entrySet().iterator(), 1, 1);
+    return solveBRecursive(bls.entrySet().iterator(), 1, 1);
   }
 
-  private long solveBRecursive(SortedMap<Integer, Integer> busLines, Iterator<Entry<Integer, Integer>> it, long lastResult, long step) {
+  private long solveBRecursive(Iterator<Entry<Integer, Integer>> it, long lastResult, long step) {
     long result = lastResult;
     if (it.hasNext()) {
       Entry<Integer, Integer> e = it.next();
@@ -59,7 +59,7 @@ public class Puzzle13 extends PuzzleAbs {
         result += step;
       }
 
-      return solveBRecursive(busLines, it, result, line * step);
+      return solveBRecursive(it, result, line * step);
     }
     return result;
   }

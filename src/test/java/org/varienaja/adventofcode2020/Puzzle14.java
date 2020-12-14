@@ -72,7 +72,7 @@ public class Puzzle14 extends PuzzleAbs {
         if (exceptionChar == 'X') {
           mask(value, mask, exceptionChar).forEach(masked -> mem.put(ix, masked));
         } else {
-          mask(ix, mask, '0').forEach(masked -> mem.put(masked, value));
+          mask(ix, mask, exceptionChar).forEach(masked -> mem.put(masked, value));
         }
       }
     }

@@ -21,21 +21,21 @@ import org.junit.Test;
 public class Puzzle15 extends PuzzleAbs {
 
   private long solve(List<Long> lines, int round) {
-    Map<Long, Queue<Integer>> state = IntStream.range(0, lines.size()) //
+    Map<Long, Queue<Integer>> spoken2Rounds = IntStream.range(0, lines.size()) //
         .boxed() //
         .collect(Collectors.toMap(lines::get, i -> new LinkedList<>(Arrays.asList(i))));
     int r = lines.size();
     long lastSpoken = lines.get(r - 1);
 
     while (r < round) {
-      Queue<Integer> turns = state.computeIfAbsent(lastSpoken, k -> new LinkedList<>());
+      Queue<Integer> rounds = spoken2Rounds.computeIfAbsent(lastSpoken, k -> new LinkedList<>());
       lastSpoken = 0;
-      if (turns.size() > 1) {
-        int secondLastTurn = turns.poll();
-        int lastTurn = turns.peek();
-        lastSpoken = lastTurn - secondLastTurn;
+      if (rounds.size() > 1) {
+        int secondLastRound = rounds.poll();
+        int lastRound = rounds.peek();
+        lastSpoken = lastRound - secondLastRound;
       }
-      state.computeIfAbsent(lastSpoken, k -> new LinkedList<>()).offer(r++);
+      spoken2Rounds.computeIfAbsent(lastSpoken, k -> new LinkedList<>()).offer(r++);
     }
     return lastSpoken;
   }

@@ -2,12 +2,14 @@ package org.varienaja.adventofcode2020;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
@@ -21,18 +23,30 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2020">adventofcode.com</a>
  */
 public class Puzzle16 extends PuzzleAbs {
-  Map<String, BitSet> allowed;
-  List<int[]> tickets;
-  int[] mytIcket;
+  private Map<String, BitSet> allowed;
+  private List<int[]> tickets;
+  private int[] myTicket;
 
   private void parse(List<String> lines) {
     allowed = new HashMap<>();
     tickets = new LinkedList<>();
-    boolean myTicket = false;
-    boolean otherTicket = false;
+    boolean parsingMyTicket = false;
+    boolean parsingOtherTicket = false;
+
     for (String line : lines) {
-      int ix = line.indexOf(": ");
-      if (ix >= 0) {
+      if (line.isEmpty()) {
+        continue;
+      } else if (line.startsWith("your ticket:")) {
+        parsingMyTicket = true;
+        parsingOtherTicket = false;
+        continue;
+      } else if (line.startsWith("nearby tickets:")) {
+        parsingMyTicket = false;
+        parsingOtherTicket = true;
+        continue;
+      }
+
+      if (!parsingMyTicket && !parsingOtherTicket) {
         String[] parts = line.split(": ");
 
         BitSet bs = new BitSet(1024);
@@ -42,47 +56,31 @@ public class Puzzle16 extends PuzzleAbs {
           for (int i = Integer.parseInt(minmax[0]); i <= Integer.parseInt(minmax[1]); i++) {
             bs.set(i);
           }
-        }
 
-        allowed.put(parts[0], bs);
-      }
-
-      if (line.startsWith("your ticket:")) {
-        myTicket = true;
-        otherTicket = false;
-        continue;
-      } else if (line.startsWith("nearby tickets:")) {
-        myTicket = false;
-        otherTicket = true;
-        continue;
-      }
-      if (myTicket || otherTicket) {
-        if (!line.isEmpty()) {
-          String[] parts = line.split(",");
-          int[] ticket = Stream.of(parts).map(Integer::parseInt).mapToInt(i -> i).toArray();
-          if (myTicket) {
-            mytIcket = ticket;
-          } else {
-            tickets.add(ticket);
-          }
+          allowed.put(parts[0], bs);
         }
       }
 
+      if (parsingMyTicket || parsingOtherTicket) {
+        String[] parts = line.split(",");
+        int[] ticket = Stream.of(parts).map(Integer::parseInt).mapToInt(i -> i).toArray();
+        if (parsingMyTicket) {
+          myTicket = ticket;
+        } else {
+          tickets.add(ticket);
+        }
+      }
     }
   }
 
   private long solveA(List<String> lines) {
     parse(lines);
     long result = 0;
-    for (int[] ticket : tickets) {
-      for (int i : ticket) {
-        boolean valid = false;
-        for (BitSet bs : allowed.values()) {
-          if (bs.get(i)) {
-            valid = true;
-          }
-        }
-        if (!valid) {
+
+    Iterator<int[]> it = tickets.iterator();
+    while (it.hasNext()) {
+      for (int i : it.next()) {
+        if (!allowed.values().stream().anyMatch(bs -> bs.get(i))) {
           result += i;
         }
       }
@@ -93,140 +91,49 @@ public class Puzzle16 extends PuzzleAbs {
 
   private long solveB(List<String> lines) {
     parse(lines);
+
     Iterator<int[]> it = tickets.iterator();
     while (it.hasNext()) {
-      int[] ticket = it.next();
-      for (int i : ticket) {
-        boolean valid = false;
-        for (BitSet bs : allowed.values()) {
-          if (bs.get(i)) {
-            valid = true;
-          }
-        }
-        if (!valid) {
+      for (int i : it.next()) {
+        if (!allowed.values().stream().anyMatch(bs -> bs.get(i))) {
           it.remove();
         }
       }
     }
     // all tickets valid now
 
-    long result = 1L;
-    LinkedList<String>[] validCount = new LinkedList[allowed.size()];
-    for (int i = 0; i < validCount.length; i++) {
-      validCount[i] = new LinkedList<>();
-    }
-
-    for (Entry<String, BitSet> entry : allowed.entrySet()) {
-      for (int f = 0; f < allowed.size(); f++) {
-        boolean valid = true;
-        for (int[] ticket : tickets) {
-          if (!entry.getValue().get(ticket[f])) {
-            valid = false;
-          }
+    List<List<String>> ix2MatchingKeys = new ArrayList<>();
+    for (int f = 0; f < allowed.size(); f++) {
+      List<String> matchingKeys = new LinkedList<>();
+      ix2MatchingKeys.add(matchingKeys);
+      for (Entry<String, BitSet> entry : allowed.entrySet()) {
+        int F = f;
+        if (tickets.stream().allMatch(ticket -> entry.getValue().get(ticket[F]))) {
+          matchingKeys.add(entry.getKey());
         }
-        if (valid) {
-          validCount[f].add(entry.getKey());
-        }
-
       }
     }
+    // We now know which indices are candidate for which keys
 
     Map<String, Integer> mapping = new HashMap<>();
     while (mapping.size() < allowed.size()) {
-      for (int i = 0; i < validCount.length; i++) {
-        List<String> matches = validCount[i];
-        if (matches.size() == 1) { // property i MUST be the contents of the list
+      ListIterator<List<String>> it2 = ix2MatchingKeys.listIterator();
+      while (it2.hasNext()) {
+        List<String> matches = it2.next();
+        if (matches.size() == 1) { // property key MUST at position i
           String key = matches.get(0);
-          mapping.put(key, i);
-
-          for (int j = 0; j < validCount.length; j++) {
-            validCount[j].remove(key);
-          }
+          mapping.put(key, it2.previousIndex());
+          ix2MatchingKeys.stream().forEach(l -> l.remove(key));
         }
       }
     }
+    // We now know which key maps to which index
 
-    // multiply mytIcket[x]*mytIcket[y]...
-    for (Entry<String, Integer> e : mapping.entrySet()) {
-
-      if (e.getKey().startsWith("departure")) {
-        result *= mytIcket[e.getValue()];
-      }
-    }
-    return result;
-  }
-
-  private long solveBRes(List<String> lines) {
-    parse(lines);
-    Iterator<int[]> it = tickets.iterator();
-    while (it.hasNext()) {
-      int[] ticket = it.next();
-      for (int i : ticket) {
-        boolean valid = false;
-        for (BitSet bs : allowed.values()) {
-          if (bs.get(i)) {
-            valid = true;
-          }
-        }
-        if (!valid) {
-          it.remove();
-        }
-      }
-    }
-    // all tickets valid now
-
-    long result = 0;
-    Map<String, Integer> fields = new HashMap<>();
-    while (fields.size() < allowed.size()) {
-      int[] validCount = new int[allowed.size()];
-      for (int f = 0; f < allowed.size(); f++) {
-        if (fields.values().contains(f)) {
-          continue;
-        }
-        for (Entry<String, BitSet> entry : allowed.entrySet()) {
-          // if (fields.containsKey(entry.getKey())) {
-          // continue f;
-          // }
-          boolean valid = true;
-          for (int[] ticket : tickets) {
-            if (!entry.getValue().get(ticket[f])) {
-              valid = false;
-            }
-          }
-          if (valid) {
-            validCount[f]++;
-          }
-        }
-      }
-
-      int min = Arrays.stream(validCount).filter(i -> i > 0).summaryStatistics().getMin();
-      for (int x = 0; x < validCount.length; x++) {
-        if (validCount[x] == min) {
-          // xth entry is out
-          int c = 0;
-          Iterator<Entry<String, BitSet>> it2 = allowed.entrySet().iterator();
-          while (it2.hasNext()) {
-            Entry<String, BitSet> e = it2.next();
-            if (c == x) {
-              // it2.remove();
-              fields.put(e.getKey(), c);
-            }
-            c++;
-          }
-
-        }
-      }
-    }
-
-    // multiply mytIcket[x]*mytIcket[y]...
-    result = 1L;
-    for (Entry<String, Integer> e : fields.entrySet()) {
-
-      if (e.getKey().startsWith("departure")) {
-        result *= mytIcket[e.getValue()];
-      }
-    }
-    return result;
+    return mapping.entrySet().stream() //
+        .filter(e -> e.getKey().startsWith("departure")) //
+        .mapToLong(e -> myTicket[e.getValue()]) //
+        .reduce((a, b) -> a * b) //
+        .orElseGet(() -> 1L);
   }
 
   @Test
@@ -250,7 +157,7 @@ public class Puzzle16 extends PuzzleAbs {
     announceResultA();
     List<String> lines = getInput();
     long result = solveA(lines);
-    // assertEquals(0L, result);
+    assertEquals(19093L, result);
     System.out.println(result);
 
     input = Arrays.asList(//
@@ -266,10 +173,10 @@ public class Puzzle16 extends PuzzleAbs {
         "15,1,5", //
         "5,14,9" //
     );
-    // assertEquals(1L, solveB(input));
+    assertEquals(1L, solveB(input));
     announceResultB();
     result = solveB(lines);
-    // assertEquals(0L, result);
+    assertEquals(5311123569883L, result);
     System.out.println(result);
   }
 

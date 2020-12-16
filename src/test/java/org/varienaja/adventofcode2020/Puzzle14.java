@@ -78,7 +78,7 @@ public class Puzzle14 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay12() {
+  public void testDay14() {
     List<String> input = Arrays.asList( //
         "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X", //
         "mem[8] = 11", //

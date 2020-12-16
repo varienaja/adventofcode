@@ -51,7 +51,7 @@ public class Puzzle13 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay12() {
+  public void testDay13() {
     String input = "7,13,x,x,59,x,31,19";
     assertEquals(295, solveA(input, 939));
 

@@ -14,197 +14,109 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2020">adventofcode.com</a>
  */
 public class Puzzle17 extends PuzzleAbs {
+  private char[][][][] world;
   private int[] directions = {
       -1, 0, 1
   };
+  private int[] directionsA = {
+      0
+  };
 
-  private long solveA(List<String> lines, int cycles) {
-    final int MAX = 200;
-    final int H = MAX / 2;
-    char[][][] world = new char[MAX][MAX][MAX];
+  private int countNeighbors(int x, int y, int z, int w, boolean partA) {
+    int nbCount = 0;
+    for (int dX : directions) {
+      for (int dY : directions) {
+        for (int dZ : directions) {
+          for (int dW : partA ? directionsA : directions) {
+            if (dX == 0 && dY == 0 && dZ == 0 && dW == 0) {
+              continue;
+            }
 
-    int z = 0;
-    int x = 0;
-    int y = 0;
-    for (z = 0; z < MAX; z++) {
-      for (x = 0; x < MAX; x++) {
-        for (y = 0; y < MAX; y++) {
-          world[x][y][z] = '.';
+            if (inBounds(x + dX, y + dY, z + dZ, w + dW) //
+                && world[x + dX][y + dY][z + dZ][w + dW] == '#') {
+              nbCount++;
+            }
+          }
         }
       }
     }
-    long result = 0;
+    return nbCount;
+  }
 
-    z = H;
-    x = 0;
-    y = 0;
-    for (y = 0; y < lines.size(); y++) {
-      for (x = 0; x < lines.get(0).length(); x++) {
-        world[x + H][y + H][z] = lines.get(y).charAt(x);
-        if (lines.get(y).charAt(x) == '#') {
+  private boolean inBounds(int x, int y, int z, int w) {
+    return 0 <= x && x < world.length //
+        && 0 <= y && y < world[0].length //
+        && 0 <= z && z < world[0][0].length //
+        && 0 <= w && w < world[0][0][0].length;
+  }
+
+  private long solve(List<String> lines, int cycles, boolean partA) {
+    int maxX = lines.get(0).length();
+    int maxY = lines.size();
+    int maxZ = 1;
+    int maxW = 1;
+    int dWW = partA ? 0 : 1;
+    long result = 0L;
+
+    world = new char[maxX][maxY][maxZ][maxW];
+    for (int y = 0; y < lines.size(); y++) {
+      for (int x = 0; x < lines.get(0).length(); x++) {
+        char ch = lines.get(y).charAt(x);
+        world[x][y][0][0] = ch;
+        if (ch == '#') {
           result++;
         }
       }
     }
 
-    for (int c = 0; c < cycles; c++) {
-      char[][][] world2 = new char[MAX][MAX][MAX];
-      for (z = 0; z < MAX; z++) {
-        // System.out.println(z);
-        for (y = 0; y < MAX; y++) {
-          for (x = 0; x < MAX; x++) {
-            // System.out.print(world[x][y][z]);
-            world2[x][y][z] = world[x][y][z];
+    for (int cy = 0; cy < cycles; cy++) {
+      maxX += 2;
+      maxY += 2;
+      maxZ += 2;
+      maxW += partA ? 0 : 2; // +2 for B
+      int wStart = partA ? 0 : -1; // -1 for B
+      int wEnd = partA ? 0 : world[0][0][0].length; // world[0][0][0].length for B
+      char[][][][] newWorld = new char[maxX][maxY][maxZ][maxW];
 
-          }
-          // System.out.println();
-        }
-        // System.out.println();
-      }
+      for (int x = -1; x <= world.length; x++) {
+        for (int y = -1; y <= world[0].length; y++) {
+          for (int z = -1; z <= world[0][0].length; z++) {
+            for (int w = wStart; w <= wEnd; w++) {
 
-      // System.out.println(c + " " + result);
+              int nbCount = countNeighbors(x, y, z, w, partA);
 
-      for (z = 0; z < MAX; z++) {
-        for (x = 0; x < MAX; x++) {
-          for (y = 0; y < MAX; y++) {
-            int nbCount = 0;
-            for (int a : directions) {
-              for (int b : directions) {
-                for (int d : directions) {
-                  if (a == 0 && b == 0 && d == 0) {
-                    continue;
-                  }
-                  boolean inBounds = 0 <= x + a && x + a < MAX - 1 && 0 <= y + b && y + b < MAX - 1 && 0 < z + d && z + d < MAX - 1;
-                  if (inBounds) {
-                    if (world[x + a][y + b][z + d] == '#') {
-                      nbCount++;
-                    }
-                  }
+              if (inBounds(x, y, z, w) && world[x][y][z][w] == '#') {
+                if (nbCount < 2 || nbCount > 3) {
+                  newWorld[x + 1][y + 1][z + 1][w + dWW] = '.';
+                  result--;
+                } else {
+                  newWorld[x + 1][y + 1][z + 1][w + dWW] = '#';
+                }
+              } else {
+                if (nbCount == 3) {
+                  newWorld[x + 1][y + 1][z + 1][w + dWW] = '#';
+                  result++;
+                } else {
+                  newWorld[x + 1][y + 1][z + 1][w + dWW] = '.';
                 }
               }
             }
-
-            if (world[x][y][z] == '#') {
-              if (nbCount < 2 || nbCount > 3) {
-                world2[x][y][z] = '.';
-                result--;
-              }
-            } else if (world[x][y][z] == '.') {
-              if (nbCount == 3) {
-                world2[x][y][z] = '#';
-                result++;
-              }
-            }
-
           }
         }
       }
 
-      world = world2;
-
+      world = newWorld;
     }
 
     return result;
   }
 
+  private long solveA(List<String> lines, int cycles) {
+    return solve(lines, cycles, true);
+  }
+
   private long solveB(List<String> lines, int cycles) {
-    final int MAX = 100;
-    final int H = MAX / 2;
-    char[][][][] world = new char[MAX][MAX][MAX][MAX];
-
-    int z = 0;
-    int x = 0;
-    int y = 0;
-    int w = 0;
-    for (z = 0; z < MAX; z++) {
-      for (x = 0; x < MAX; x++) {
-        for (y = 0; y < MAX; y++) {
-          for (w = 0; w < MAX; w++) {
-            world[x][y][z][w] = '.';
-          }
-        }
-      }
-    }
-    long result = 0;
-
-    z = H;
-    x = 0;
-    y = 0;
-    w = H;
-    for (y = 0; y < lines.size(); y++) {
-      for (x = 0; x < lines.get(0).length(); x++) {
-        world[x + H][y + H][z][w] = lines.get(y).charAt(x);
-        if (lines.get(y).charAt(x) == '#') {
-          result++;
-        }
-      }
-    }
-
-    for (int c = 0; c < cycles; c++) {
-      char[][][][] world2 = new char[MAX][MAX][MAX][MAX];
-      for (w = 0; w < MAX; w++) {
-        for (z = 0; z < MAX; z++) {
-          // System.out.println(z);
-          for (y = 0; y < MAX; y++) {
-            for (x = 0; x < MAX; x++) {
-              // System.out.print(world[x][y][z]);
-              world2[x][y][z][w] = world[x][y][z][w];
-
-            }
-            // System.out.println();
-          }
-          // System.out.println();
-        }
-      }
-
-      // System.out.println(c + " " + result);
-
-      for (w = 0; w < MAX; w++) {
-        for (z = 0; z < MAX; z++) {
-          for (x = 0; x < MAX; x++) {
-            for (y = 0; y < MAX; y++) {
-              int nbCount = 0;
-              for (int a : directions) {
-                for (int b : directions) {
-                  for (int d : directions) {
-                    for (int e : directions) {
-
-                      if (a == 0 && b == 0 && d == 0 && e == 0) {
-                        continue;
-                      }
-                      boolean inBounds = 0 <= x + a && x + a < MAX - 1 && 0 <= y + b && y + b < MAX - 1 && 0 < z + d && z + d < MAX - 1 && 0 < w + e
-                          && w + e < MAX - 1;
-                      if (inBounds) {
-                        if (world[x + a][y + b][z + d][w + e] == '#') {
-                          nbCount++;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-
-              if (world[x][y][z][w] == '#') {
-                if (nbCount < 2 || nbCount > 3) {
-                  world2[x][y][z][w] = '.';
-                  result--;
-                }
-              } else if (world[x][y][z][w] == '.') {
-                if (nbCount == 3) {
-                  world2[x][y][z][w] = '#';
-                  result++;
-                }
-              }
-
-            }
-          }
-        }
-      }
-      world = world2;
-
-    }
-
-    return result;
+    return solve(lines, cycles, false);
   }
 
   @Test

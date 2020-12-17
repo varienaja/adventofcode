@@ -71,7 +71,7 @@ public class Puzzle17 extends PuzzleAbs {
     int dWW = partA ? 0 : 1;
 
     for (int cy = 0; cy < cycles; cy++) {
-      // Create new world that is one larger on each side, w-direction only grows when partA
+      // Create new world that is one larger on each side, w-direction only grows when !partA
       int wStart = partA ? 0 : -1;
       int wEnd = partA ? 0 : world[0][0][0].length;
       char[][][][] newWorld = new char[world.length + 2][world[0].length + 2][world[0][0].length + 2][partA ? 1 : world[0][0][0].length + 2];

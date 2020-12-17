@@ -51,7 +51,7 @@ public class Puzzle17 extends PuzzleAbs {
   }
 
   private long initWorld(List<String> lines) {
-    long result = 0L;
+    long activeCount = 0L;
 
     world = new char[lines.get(0).length()][lines.size()][1][1];
     for (int y = 0; y < lines.size(); y++) {
@@ -59,19 +59,19 @@ public class Puzzle17 extends PuzzleAbs {
         char ch = lines.get(y).charAt(x);
         world[x][y][0][0] = ch;
         if (ch == '#') {
-          result++;
+          activeCount++;
         }
       }
     }
-    return result;
+    return activeCount;
   }
 
   private long solve(List<String> lines, int cycles, boolean partA) {
-    long result = initWorld(lines);
+    long activeCount = initWorld(lines);
     int dWW = partA ? 0 : 1;
 
     for (int cy = 0; cy < cycles; cy++) {
-      // Create new world that is one larger on each side, w-direction only grows when !partA
+      // Create new world that is one larger on each side, w-direction only grows when partA
       int wStart = partA ? 0 : -1;
       int wEnd = partA ? 0 : world[0][0][0].length;
       char[][][][] newWorld = new char[world.length + 2][world[0].length + 2][world[0][0].length + 2][partA ? 1 : world[0][0][0].length + 2];
@@ -86,14 +86,14 @@ public class Puzzle17 extends PuzzleAbs {
               if (inBounds(x, y, z, w) && world[x][y][z][w] == '#') {
                 if (nbCount < 2 || nbCount > 3) {
                   newWorld[x + 1][y + 1][z + 1][w + dWW] = '.';
-                  result--;
+                  activeCount--;
                 } else {
                   newWorld[x + 1][y + 1][z + 1][w + dWW] = '#';
                 }
               } else {
                 if (nbCount == 3) {
                   newWorld[x + 1][y + 1][z + 1][w + dWW] = '#';
-                  result++;
+                  activeCount++;
                 } else {
                   newWorld[x + 1][y + 1][z + 1][w + dWW] = '.';
                 }
@@ -106,7 +106,7 @@ public class Puzzle17 extends PuzzleAbs {
       world = newWorld;
     }
 
-    return result;
+    return activeCount;
   }
 
   private long solveA(List<String> lines, int cycles) {

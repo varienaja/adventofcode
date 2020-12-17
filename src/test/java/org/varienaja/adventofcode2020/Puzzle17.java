@@ -73,9 +73,9 @@ public class Puzzle17 extends PuzzleAbs {
       maxX += 2;
       maxY += 2;
       maxZ += 2;
-      maxW += partA ? 0 : 2; // +2 for B
-      int wStart = partA ? 0 : -1; // -1 for B
-      int wEnd = partA ? 0 : world[0][0][0].length; // world[0][0][0].length for B
+      maxW += partA ? 0 : 2;
+      int wStart = partA ? 0 : -1;
+      int wEnd = partA ? 0 : world[0][0][0].length;
       char[][][][] newWorld = new char[maxX][maxY][maxZ][maxW];
 
       for (int x = -1; x <= world.length; x++) {

@@ -50,15 +50,10 @@ public class Puzzle17 extends PuzzleAbs {
         && 0 <= w && w < world[0][0][0].length;
   }
 
-  private long solve(List<String> lines, int cycles, boolean partA) {
-    int maxX = lines.get(0).length();
-    int maxY = lines.size();
-    int maxZ = 1;
-    int maxW = 1;
-    int dWW = partA ? 0 : 1;
+  private long initWorld(List<String> lines) {
     long result = 0L;
 
-    world = new char[maxX][maxY][maxZ][maxW];
+    world = new char[lines.get(0).length()][lines.size()][1][1];
     for (int y = 0; y < lines.size(); y++) {
       for (int x = 0; x < lines.get(0).length(); x++) {
         char ch = lines.get(y).charAt(x);
@@ -68,15 +63,18 @@ public class Puzzle17 extends PuzzleAbs {
         }
       }
     }
+    return result;
+  }
+
+  private long solve(List<String> lines, int cycles, boolean partA) {
+    long result = initWorld(lines);
+    int dWW = partA ? 0 : 1;
 
     for (int cy = 0; cy < cycles; cy++) {
-      maxX += 2;
-      maxY += 2;
-      maxZ += 2;
-      maxW += partA ? 0 : 2;
+      // Create new world that is one larger on each side, w-direction only grows when !partA
       int wStart = partA ? 0 : -1;
       int wEnd = partA ? 0 : world[0][0][0].length;
-      char[][][][] newWorld = new char[maxX][maxY][maxZ][maxW];
+      char[][][][] newWorld = new char[world.length + 2][world[0].length + 2][world[0][0].length + 2][partA ? 1 : world[0][0][0].length + 2];
 
       for (int x = -1; x <= world.length; x++) {
         for (int y = -1; y <= world[0].length; y++) {

@@ -13,6 +13,7 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2020">adventofcode.com</a>
  */
 public class Puzzle18 extends PuzzleAbs {
+  final char NOOP = 'N';
   private int pos;
   private boolean partA;
 
@@ -40,7 +41,7 @@ public class Puzzle18 extends PuzzleAbs {
       if (partA) {
         op = '*';
       } else {
-        return t * parseExpr(line, 0L, 'N');
+        return t * parseExpr(line, 0L, NOOP);
       }
     }
 
@@ -52,7 +53,7 @@ public class Puzzle18 extends PuzzleAbs {
     if (Character.isDigit(c)) {
       return c - '0'; // char '0'-'9' to int 0-9
     } else if (c == '(') {
-      return parseExpr(line, 0L, 'N');
+      return parseExpr(line, 0L, NOOP);
     }
     return 0L;
   }
@@ -63,7 +64,7 @@ public class Puzzle18 extends PuzzleAbs {
 
   private long solve(String line) {
     pos = 0;
-    return parseExpr(line.replaceAll(" ", ""), 0L, 'N');
+    return parseExpr(line.replaceAll(" ", ""), 0L, NOOP);
   }
 
   @Test

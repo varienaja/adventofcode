@@ -52,10 +52,8 @@ public class Puzzle18 extends PuzzleAbs {
     char c = line.charAt(pos++);
     if (Character.isDigit(c)) {
       return c - '0'; // char '0'-'9' to int 0-9
-    } else if (c == '(') {
-      return parseExpr(line, 0L, NOOP);
     }
-    return 0L;
+    return parseExpr(line, 0L, NOOP);
   }
 
   private long solve(List<String> lines) {

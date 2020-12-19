@@ -65,6 +65,33 @@ public class Puzzle19 extends PuzzleAbs {
         .collect(Collectors.joining());
   }
 
+  private boolean matches(String message, int pos, int[] rulesToMatch) {
+    if (message.length() == pos) {
+      return rulesToMatch.length == 0;
+    }
+    if (rulesToMatch.length == 0) {
+      return false;
+    }
+
+    String rule = rule2rules.get(rulesToMatch[0]);
+    if (rule.indexOf('"') >= 0) { // a or b
+      if (rule.indexOf(message.charAt(pos)) >= 0) {
+        int[] newRules = Arrays.stream(rulesToMatch).skip(1).toArray();
+        return matches(message, pos + 1, newRules);
+      } else {
+        return false;
+      }
+    } else {
+      String[] lr = rule.split("\\s*\\|\\s*");
+
+      return Stream.of(lr).anyMatch(rr -> {
+        String[] parts = rr.split("\\s");
+        int[] newRules = Stream.concat(Stream.of(parts).map(Integer::parseInt), Arrays.stream(rulesToMatch).skip(1).boxed()).mapToInt(i -> i).toArray();
+        return matches(message, pos, newRules);
+      });
+    }
+  }
+
   private void parseInputA(List<String> lines) {
     rule2rules = new HashMap<>();
     messages = new LinkedList<>();
@@ -96,6 +123,13 @@ public class Puzzle19 extends PuzzleAbs {
     return messages.stream().map(msg -> pat.matcher(msg)).filter(m -> m.matches()).count();
   }
 
+  private long solveAlt() {
+    int[] start = {
+        0
+    };
+    return messages.stream().filter(msg -> matches(msg, 0, start)).count();
+  }
+
   @Test
   public void testDay19() {
     List<String> input = Arrays.asList( //
@@ -114,12 +148,14 @@ public class Puzzle19 extends PuzzleAbs {
     );
     parseInputA(input);
     assertEquals(2, solve());
+    assertEquals(2, solveAlt());
 
     announceResultA();
     List<String> lines = getInput();
     parseInputA(lines);
     long result = solve();
     System.out.println(result);
+    assertEquals(250, result);
 
     input = Arrays.asList( //
         "42: 9 14 | 10 1", //

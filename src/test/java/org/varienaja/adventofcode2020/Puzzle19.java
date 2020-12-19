@@ -43,25 +43,22 @@ public class Puzzle19 extends PuzzleAbs {
       }
     }
 
-    if (rp.contains("\"")) { // a or b
+    if (rp.contains("\"")) {
       return rp.replace("\"", "");
-    } else if (rp.contains("|")) { //
+    } else if (rp.contains("|")) {
       String[] lr = rp.split("\\s*\\|\\s*");
       assert lr.length == 2;
 
-      String[] lRules = lr[0].split("\\s");
-      String left = createRegexFromKeys(lRules, cnt8, cnt11);
-
-      String[] rRules = lr[1].split("\\s");
-      String right = createRegexFromKeys(rRules, cnt8, cnt11);
+      String left = createRegexFromKeys(lr[0], cnt8, cnt11);
+      String right = createRegexFromKeys(lr[1], cnt8, cnt11);
       return "(" + left + "|" + right + ")";
     } else {
-      String[] rules = rp.split("\\s");
-      return createRegexFromKeys(rules, cnt8, cnt11);
+      return createRegexFromKeys(rp, cnt8, cnt11);
     }
   }
 
-  private String createRegexFromKeys(String[] keys, int cnt8, int cnt11) {
+  private String createRegexFromKeys(String keysString, int cnt8, int cnt11) {
+    String[] keys = keysString.split("\\s");
     return Stream.of(keys) //
         .map(Integer::parseInt) //
         .map(k -> createRegex(k, cnt8, cnt11)) //

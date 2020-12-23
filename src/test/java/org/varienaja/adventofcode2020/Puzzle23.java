@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class Puzzle23 extends PuzzleAbs {
     Node next;
   }
 
-  private long solve(LinkedList<Integer> lines, int moves, boolean partA) {
+  private long solve(List<Integer> lines, int moves, boolean partA) {
     if (!partA) {
       IntStream.rangeClosed(10, 1000000).forEach(lines::add);
     }
@@ -87,32 +88,27 @@ public class Puzzle23 extends PuzzleAbs {
 
   }
 
-  private long solveA(LinkedList<Integer> lines, int moves) {
-    return solve(lines, moves, true);
+  private long solveA(List<Integer> lines, int moves) {
+    return solve(new LinkedList<>(lines), moves, true);
   }
 
-  private long solveB(LinkedList<Integer> lines, int moves) {
-    return solve(lines, moves, false);
+  private long solveB(List<Integer> lines, int moves) {
+    return solve(new LinkedList<>(lines), moves, false);
   }
 
   @Test
   public void testDay23() {
-    LinkedList<Integer> input = new LinkedList<>(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7));
-    assertEquals(92658374L, solveA(input, 10));
-    input = new LinkedList<>(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7));
-    assertEquals(67384529L, solveA(input, 100));
+    assertEquals(92658374L, solveA(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7), 10));
+    assertEquals(67384529L, solveA(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7), 100));
 
     announceResultA();
-    LinkedList<Integer> lines = new LinkedList<>(Arrays.asList(9, 7, 4, 6, 1, 8, 3, 5, 2));
-    long result = solveA(lines, 100);
+    long result = solveA(Arrays.asList(9, 7, 4, 6, 1, 8, 3, 5, 2), 100);
     assertEquals(75893264L, result);
     System.out.println(result);
 
-    input = new LinkedList<>(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7));
-    assertEquals(149245887792L, solveB(input, 10000000));
+    assertEquals(149245887792L, solveB(Arrays.asList(3, 8, 9, 1, 2, 5, 4, 6, 7), 10000000));
     announceResultB();
-    lines = new LinkedList<>(Arrays.asList(9, 7, 4, 6, 1, 8, 3, 5, 2));
-    result = solveB(lines, 10000000);
+    result = solveB(Arrays.asList(9, 7, 4, 6, 1, 8, 3, 5, 2), 10000000);
     assertEquals(38162588308L, result);
     System.out.println(result);
   }

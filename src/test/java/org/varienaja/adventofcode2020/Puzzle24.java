@@ -67,10 +67,10 @@ public class Puzzle24 extends PuzzleAbs {
     direction2Point.put("w", w);
   }
 
-  private Set<Point3D> coord2B;
+  private Set<Point3D> bCoords;
 
   private long solveA(List<String> lines) {
-    coord2B = new HashSet<>();
+    bCoords = new HashSet<>();
 
     for (String line : lines) {
       Point3D p = new Point3D(0, 0, 0);
@@ -85,14 +85,14 @@ public class Puzzle24 extends PuzzleAbs {
           }
         }
       }
-      if (coord2B.contains(p)) {
-        coord2B.remove(p);
+      if (bCoords.contains(p)) {
+        bCoords.remove(p);
       } else {
-        coord2B.add(p);
+        bCoords.add(p);
       }
     }
 
-    return coord2B.size();
+    return bCoords.size();
   }
 
   private long solveB(List<String> lines) {
@@ -100,7 +100,7 @@ public class Puzzle24 extends PuzzleAbs {
 
     for (int r = 1; r <= 100; r++) {
       Set<Point3D> toVerify = new HashSet<>();
-      for (Point3D p : coord2B) {
+      for (Point3D p : bCoords) {
         for (Point3D a : adjacent) {
           toVerify.add(p.add(a));
         }
@@ -110,12 +110,12 @@ public class Puzzle24 extends PuzzleAbs {
       for (Point3D p : toVerify) {
         int bc = 0;
         for (Point3D a : adjacent) {
-          if (coord2B.contains(p.add(a))) {
+          if (bCoords.contains(p.add(a))) {
             bc++;
           }
         }
 
-        if (coord2B.contains(p)) {
+        if (bCoords.contains(p)) {
           if ((bc == 1 || bc == 2)) {
             today.add(p);
           }
@@ -126,10 +126,10 @@ public class Puzzle24 extends PuzzleAbs {
         }
       }
 
-      coord2B = today;
+      bCoords = today;
     }
 
-    return coord2B.size();
+    return bCoords.size();
   }
 
   @Test

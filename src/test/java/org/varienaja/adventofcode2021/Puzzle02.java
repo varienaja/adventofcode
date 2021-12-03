@@ -57,7 +57,7 @@ public class Puzzle02 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay02() {
     List<String> testInput = Arrays.asList("forward 5", "down 5", "forward 8", "up 3", "down 8", "forward 2");
     assertEquals(150, solveA(testInput));
 

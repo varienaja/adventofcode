@@ -3,6 +3,7 @@ package org.varienaja.adventofcode2021;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,25 +19,18 @@ import org.junit.Test;
  */
 public class Puzzle03 extends PuzzleAbs {
 
-  private long getMostCommonPattern(List<String> lines, boolean inverse) {
-    Set<String> linesSet = new HashSet<>(lines);
-    int ix = 0;
-    while (linesSet.size() > 1) {
-      Set<String> ones = new HashSet<>();
-      Set<String> zeroes = new HashSet<>();
-
-      for (String line : linesSet) {
-        (line.charAt(ix) == '1' ? ones : zeroes).add(line);
-      }
-      ix++;
-
-      if (inverse) {
-        linesSet = ones.size() >= zeroes.size() ? zeroes : ones;
-      } else {
-        linesSet = ones.size() >= zeroes.size() ? ones : zeroes;
-      }
+  private long getMostCommonPattern(Collection<String> lines, int ix, boolean inverse) {
+    if (lines.size() == 1) {
+      return Integer.parseInt(lines.iterator().next(), 2);
     }
-    return Integer.parseInt(linesSet.iterator().next(), 2);
+
+    Set<String> ones = new HashSet<>();
+    Set<String> zeroes = new HashSet<>();
+    lines.forEach(line -> (line.charAt(ix) == '1' ? ones : zeroes).add(line));
+
+    Set<String> biggest = ones.size() >= zeroes.size() ? ones : zeroes;
+    Set<String> smallest = ones.size() < zeroes.size() ? ones : zeroes;
+    return getMostCommonPattern(inverse ? smallest : biggest, ix + 1, inverse);
   }
 
   private long solveA(List<String> lines) {
@@ -55,13 +49,13 @@ public class Puzzle03 extends PuzzleAbs {
   }
 
   private long solveB(List<String> lines) {
-    long oxy = getMostCommonPattern(lines, false);
-    long co2Scrub = getMostCommonPattern(lines, true);
+    long oxy = getMostCommonPattern(lines, 0, false);
+    long co2Scrub = getMostCommonPattern(lines, 0, true);
     return oxy * co2Scrub;
   }
 
   @Test
-  public void testDay01() {
+  public void testDay03() {
     List<String> testInput = Arrays.asList("00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010");
     assertEquals(198, solveA(testInput));
 

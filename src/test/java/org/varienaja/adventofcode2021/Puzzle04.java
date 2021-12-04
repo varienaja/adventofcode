@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,9 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Stream;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -48,34 +49,19 @@ public class Puzzle04 extends PuzzleAbs {
       int ix = 0;
       do {
         String line = lines.get(i++).trim();
-        card[ix++] = Stream.of(line.split("\\s+")).map(s -> Integer.parseInt(s)).mapToInt(j -> j).toArray();
+        card[ix++] = Pattern.compile("\\s+").splitAsStream(line).map(s -> Integer.parseInt(s)).mapToInt(j -> j).toArray();
       } while (i < lines.size() && !lines.get(i).isEmpty());
       cards.add(card);
     }
 
     turns2Card = new TreeMap<>();
-    for (int[][] card : cards) { // For each Bingo card, check in how many turns it'd generate a Bingo
-      int minTurns = nr2turn.size(); // turns needed to generate a Bingo in the whole card
-      for (int a = 0; a < CARDSIZE; a++) {
-        int minTurnsA = 0; // turns needed to generate a Bingo in row a
-        int minTurnsB = 0; // turns needed to generate a Bingo in column a
-        for (int b = 0; b < CARDSIZE; b++) {
-          int turn = nr2turn.get(card[a][b]);
-          if (turn > minTurnsA) {
-            minTurnsA = turn;
-          }
+    for (int[][] card : cards) {
 
-          turn = nr2turn.get(card[b][a]);
-          if (turn > minTurnsB) {
-            minTurnsB = turn;
-          }
-        }
-
-        int score = Math.min(minTurnsA, minTurnsB);
-        if (score < minTurns) {
-          minTurns = score;
-        }
-      }
+      int minTurns = IntStream.range(0, CARDSIZE).map(a -> {
+        int minTurnsHorizontal = IntStream.range(0, CARDSIZE).map(b -> nr2turn.get(card[a][b])).max().getAsInt();
+        int minTurnsVertical = IntStream.range(0, CARDSIZE).map(b -> nr2turn.get(card[b][a])).max().getAsInt();
+        return Math.min(minTurnsHorizontal, minTurnsVertical);
+      }).min().getAsInt();
 
       turns2Card.put(minTurns, card);
     }
@@ -91,12 +77,8 @@ public class Puzzle04 extends PuzzleAbs {
 
   private long solveInternal(boolean findMinimum) {
     Entry<Integer, int[][]> best = findMinimum ? turns2Card.firstEntry() : turns2Card.lastEntry();
-    Set<Integer> cardNrs = new HashSet<>();
-    for (int r = 0; r < CARDSIZE; r++) {
-      for (int c = 0; c < CARDSIZE; c++) {
-        cardNrs.add(best.getValue()[r][c]);
-      }
-    }
+
+    Set<Integer> cardNrs = Arrays.stream(best.getValue()).flatMapToInt(Arrays::stream).boxed().collect(Collectors.toSet());
     cardNrs.removeAll(numbers.subList(0, best.getKey() + 1));
     return cardNrs.stream().mapToInt(i -> i).sum() * numbers.get(best.getKey());
   }
@@ -116,7 +98,8 @@ public class Puzzle04 extends PuzzleAbs {
         "19  8  7 25 23", //
         "20 11 10 24  4", //
         "14 21 16 12  6", //
-        "", "14 21 17 24  4", //
+        "", //
+        "14 21 17 24  4", //
         "10 16 15  9 19", //
         "18  8 23 26 20", //
         "22 11 13  6  5", //

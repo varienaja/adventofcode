@@ -46,13 +46,11 @@ public class Puzzle05 extends PuzzleAbs {
           continue;
         }
 
-        int x = x1;
-        int y = y1;
         for (int i = 0; i <= Math.max(Math.abs(lengthX), Math.abs(lengthY)); i++) {
-          String coord = x + "," + y;
+          String coord = x1 + "," + y1;
           coord2value.compute(coord, (k, v) -> v == null ? 1 : v + 1);
-          x += Integer.signum(lengthX);
-          y += Integer.signum(lengthY);
+          x1 += Integer.signum(lengthX);
+          y1 += Integer.signum(lengthY);
         }
       }
     }

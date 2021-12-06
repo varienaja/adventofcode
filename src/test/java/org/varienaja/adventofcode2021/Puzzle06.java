@@ -3,13 +3,6 @@ package org.varienaja.adventofcode2021;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -22,35 +15,24 @@ import org.junit.Test;
 public class Puzzle06 extends PuzzleAbs {
 
   private long solve(String input, int days) {
-    List<Integer> timers = Arrays.stream(input.split(",")).map(s -> Integer.parseInt(s)).collect(Collectors.toList());
-    NavigableMap<Integer, Long> tmp = new TreeMap<>();
-    timers.forEach(i -> tmp.compute(i, (k, v) -> v == null ? 1 : v + 1));
+    long[] histogram = new long[9];
+    Arrays.stream(input.split(",")).map(s -> Integer.parseInt(s)).forEach(i -> histogram[i]++);
 
-    Map<AtomicInteger, Long> age2Count = tmp.entrySet().stream().collect(Collectors.toMap(e -> new AtomicInteger(e.getKey()), Map.Entry::getValue));
-    age2Count.put(new AtomicInteger(0), 0L);
-    for (int i = tmp.lastKey() + 1; i <= 8; i++) {
-      age2Count.put(new AtomicInteger(i), 0L);
+    return solveInternal(histogram, days);
+  }
+
+  private long solveInternal(long[] histogram, int days) {
+    if (days == 0) {
+      return Arrays.stream(histogram).sum();
     }
 
-    for (int i = 0; i < days; i++) {
-      long nw = 0;
-      for (Entry<AtomicInteger, Long> e : age2Count.entrySet()) {
-        if (e.getKey().get() == 0) {
-          nw = e.getValue();
-        }
-      }
-
-      for (Entry<AtomicInteger, Long> e : age2Count.entrySet()) {
-        int newAge = e.getKey().decrementAndGet();
-        if (newAge == -1) {
-          e.getKey().set(8);
-        } else if (newAge == 6) {
-          e.setValue(e.getValue() + nw);
-        }
-      }
+    long nw = histogram[0];
+    for (int i = 1; i < histogram.length; i++) {
+      histogram[i - 1] = histogram[i];
     }
-
-    return age2Count.values().stream().mapToLong(l -> l).sum();
+    histogram[6] += nw;
+    histogram[8] = nw;
+    return solveInternal(histogram, days - 1);
   }
 
   @Test

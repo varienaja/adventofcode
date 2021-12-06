@@ -75,7 +75,7 @@ public class Puzzle05 extends PuzzleAbs {
 
     announceResultA();
     List<String> lines = getInput();
-    long result = solveA(lines); // 7576
+    long result = solveA(lines);
     System.out.println(result);
     assertEquals(7318, result);
 

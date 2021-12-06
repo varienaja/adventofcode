@@ -18,21 +18,14 @@ public class Puzzle06 extends PuzzleAbs {
     long[] histogram = new long[9];
     Arrays.stream(input.split(",")).map(s -> Integer.parseInt(s)).forEach(i -> histogram[i]++);
 
-    return solveInternal(histogram, days);
-  }
-
-  private long solveInternal(long[] histogram, int days) {
-    if (days == 0) {
-      return Arrays.stream(histogram).sum();
+    for (int i = 0; i < days; i++) {
+      long nw = histogram[0];
+      System.arraycopy(histogram, 1, histogram, 0, histogram.length - 1);
+      histogram[6] += nw;
+      histogram[8] = nw;
     }
 
-    long nw = histogram[0];
-    for (int i = 1; i < histogram.length; i++) {
-      histogram[i - 1] = histogram[i];
-    }
-    histogram[6] += nw;
-    histogram[8] = nw;
-    return solveInternal(histogram, days - 1);
+    return Arrays.stream(histogram).sum();
   }
 
   @Test

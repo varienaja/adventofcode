@@ -59,7 +59,7 @@ public class Puzzle05 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay05() {
     List<String> testInput = Arrays.asList( //
         "0,9 -> 5,9", //
         "8,0 -> 0,8", //

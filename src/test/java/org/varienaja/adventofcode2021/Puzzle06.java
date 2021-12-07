@@ -29,7 +29,7 @@ public class Puzzle06 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay06() {
     String testInput = "3,4,3,1,2";
     assertEquals(26, solve(testInput, 18));
     assertEquals(5934, solve(testInput, 80));

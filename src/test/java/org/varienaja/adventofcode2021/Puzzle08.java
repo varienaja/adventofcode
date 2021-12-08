@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2021">adventofcode.com</a>
  */
 public class Puzzle08 extends PuzzleAbs {
-  private Map<Integer, Integer> length2value = new LinkedHashMap<>();
+  private Map<Integer, Integer> length2value = new HashMap<>();
 
   public long decodeLine(String line) {
     // .DDDD. We know the segments for 1 (AB), 7 (ABD), 4 (ABFE) and 8 (ABCDEFG)
@@ -82,9 +81,7 @@ public class Puzzle08 extends PuzzleAbs {
   }
 
   private String sort(String s) {
-    char[] c = s.toCharArray();
-    Arrays.sort(c);
-    return String.valueOf(c);
+    return s.chars().sorted().mapToObj(Character::toString).collect(Collectors.joining());
   }
 
   @Test

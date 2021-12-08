@@ -64,13 +64,7 @@ public class Puzzle08 extends PuzzleAbs {
   }
 
   private int overlap(String one, String other) {
-    int overlap = 0;
-    for (char c : one.toCharArray()) {
-      if (other.indexOf(c) >= 0) {
-        overlap++;
-      }
-    }
-    return overlap;
+    return (int)one.chars().map(c -> other.indexOf(c, 0)).filter(i -> i >= 0).count();
   }
 
   private long solveA(List<String> lines) {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,153 +20,110 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2021">adventofcode.com</a>
  */
 public class Puzzle08 extends PuzzleAbs {
+  private Map<Integer, Integer> length2value = new LinkedHashMap<>();
 
   public long decodeLine(String line) {
     // Hold candidates for segments A,B..F
-    String A = ""; // .DDDD.
-    String B = ""; // E....A
-    String C = ""; // E....A
-    String D = ""; // .FFFF.
-    String E = ""; // G....B
-    String F = ""; // G....B
-    String G = ""; // .CCCC.
+    String A = ""; // .DDDD. We know the segments for 1 A+B, 7 A+B+D, 4 A+B+F+E and 8 (all), we now know D
+    String B = ""; // E....A When we see an unknown 6-long containing ABCG it must be 0
+    String C = ""; // E....A When we see an unknown 6-long containing AB it must be 9, we now know C and G
+    String D = ""; // .FFFF. When we see an unknown 6-long containing CG it must be 6, we now know A and B
+    String E = ""; // G....B When we see an unknown 5-long containing ABCD it must be 3, we now know E and F
+    String F = ""; // G....B When we see an unknown 5-long containing E it must be 5,
+    String G = ""; // .CCCC. When we see an unknown 5-long not containing E it must be 2.
 
     String[] parts = line.split("\\s+\\|\\s+");
-    List<String> input = Arrays.stream(parts[0].split("\\s+")).collect(Collectors.toList());
-    List<String> output = Arrays.stream(parts[1].split("\\s+")).collect(Collectors.toList());
+    List<String> input = Arrays.stream(parts[0].split("\\s+")).map(this::sort).collect(Collectors.toList());
+    List<String> output = Arrays.stream(parts[1].split("\\s+")).map(this::sort).collect(Collectors.toList());
 
     Map<String, Integer> decoder = new HashMap<>();
     input.stream().forEach(s -> decoder.put(s, -1));
-    output.stream().forEach(s -> decoder.put(s, -1));
 
     for (Entry<String, Integer> e : decoder.entrySet()) { // 1
-      if (e.getKey().length() == 2 && e.getValue() == -1) {
+      if (e.getKey().length() == 2) {
         e.setValue(1);
         A = e.getKey();
-        B = e.getKey();
+        B = A;
       }
     }
 
     for (Entry<String, Integer> e : decoder.entrySet()) { // 7
-      if (e.getKey().length() == 3 && e.getValue() == -1) {
+      if (e.getKey().length() == 3) {
         e.setValue(7);
-        D = e.getKey();
-        for (char c : A.toCharArray()) {
-          D = D.replaceAll("" + c, "");
-        }
+        D = minus(e.getKey(), A, B);
       }
     }
 
     for (Entry<String, Integer> e : decoder.entrySet()) { // 4
-      if (e.getKey().length() == 4 && e.getValue() == -1) {
+      if (e.getKey().length() == 4) {
         e.setValue(4);
-        E = e.getKey();
-        F = e.getKey();
-        for (char c : A.toCharArray()) {
-          E = E.replaceAll("" + c, "");
-          F = F.replaceAll("" + c, "");
-        }
+        E = minus(e.getKey(), A, B);
+        F = E;
       }
     }
 
     for (Entry<String, Integer> e : decoder.entrySet()) { // 8
-      if (e.getKey().length() == 7 && e.getValue() == -1) {
+      if (e.getKey().length() == 7) {
         e.setValue(8);
-        C = e.getKey();
-        G = e.getKey();
-        for (char c : A.toCharArray()) {
-          C = C.replaceAll("" + c, "");
-          G = G.replaceAll("" + c, "");
-        }
-        C = C.replaceAll(D, "");
-        G = G.replaceAll(D, "");
-        for (char c : E.toCharArray()) {
-          C = C.replaceAll("" + c, "");
-          G = G.replaceAll("" + c, "");
-        }
+        C = minus(e.getKey(), A, B, D, E, F);
+        G = C;
       }
     }
 
-    for (Entry<String, Integer> e : decoder.entrySet()) { // 0
-      if (e.getKey().length() == 6 && e.getValue() == -1) {
-        boolean hasABCG = true;
-        for (char c : A.toCharArray()) {
-          if (!e.getKey().contains("" + c)) {
-            hasABCG = false;
-          }
-        }
-        for (char c : C.toCharArray()) {
-          if (!e.getKey().contains("" + c)) {
-            hasABCG = false;
-          }
-        }
-        if (hasABCG) {
+    for (Entry<String, Integer> e : decoder.entrySet()) { // 0, 6 and 9
+      if (e.getKey().length() == 6) {
+        if (has(e.getKey(), A, B, C, G)) {
           e.setValue(0);
-        }
-      }
-    }
-
-    for (Entry<String, Integer> e : decoder.entrySet()) { // 6 and 9
-      if (e.getKey().length() == 6 && e.getValue() == -1) {
-        boolean hasAB = true;
-        for (char c : A.toCharArray()) {
-          if (!e.getKey().contains("" + c)) {
-            hasAB = false;
+        } else {
+          if (has(e.getKey(), A, B)) { // 9 only has C or G
+            e.setValue(9);
+            G = minus(G, e.getKey());
+            C = minus(C, G);
+          } else { // 6 only has A or B
+            e.setValue(6);
+            A = minus(B, e.getKey());
+            B = minus(B, A);
           }
-        }
-        if (hasAB) { // 9 only has C or G
-          e.setValue(9);
-          for (char c : G.toCharArray()) {
-            if (!e.getKey().contains("" + c)) {
-              C = C.replaceAll("" + c, "");
-            }
-          }
-          G = G.replaceAll(C, "");
-        } else { // 6 only has A or B
-          e.setValue(6);
-          for (char c : A.toCharArray()) {
-            if (!e.getKey().contains("" + c)) {
-              B = B.replaceAll("" + c, "");
-            }
-          }
-          A = A.replaceAll(B, "");
         }
       }
     }
 
     for (Entry<String, Integer> e : decoder.entrySet()) { // 3
-      if (e.getKey().length() == 5 && e.getValue() == -1) {
-        boolean hasABCD = true;
-        for (char c : (A + B + C + D).toCharArray()) {
-          if (!e.getKey().contains("" + c)) {
-            hasABCD = false;
-          }
-        }
-
-        if (hasABCD) { // 3
+      if (e.getKey().length() == 5) {
+        if (has(e.getKey(), A, B, C, D)) { // 3
           e.setValue(3); // 3 only has F
-          for (char c : E.toCharArray()) {
-            if (!e.getKey().contains("" + c)) {
-              F = F.replaceAll("" + c, "");
-            }
-          }
-          E = E.replaceAll(F, "");
-        }
-      }
-    }
-
-    for (Entry<String, Integer> e : decoder.entrySet()) { // 2 and 5
-      if (e.getKey().length() == 5 && e.getValue() == -1) {
-        // only 5 contains E
-        if (e.getKey().contains("" + E)) {
-          e.setValue(5);
+          E = minus(E, e.getKey());
+          F = minus(F, E);
         } else {
-          e.setValue(2);
+          if (has(e.getKey(), E)) { // only 5 contains E
+            e.setValue(5);
+          } else {
+            e.setValue(2);
+          }
         }
       }
     }
 
     return Long.parseLong(output.stream().map(decoder::get).map(i -> Integer.toString(i)).collect(Collectors.joining()));
+  }
+
+  private boolean has(String toCheck, String... contents) {
+    String content = Arrays.stream(contents).collect(Collectors.joining());
+    for (char c : content.toCharArray()) {
+      if (toCheck.indexOf(c) == -1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private String minus(String s, String... substract) {
+    for (String toSubstract : substract) {
+      for (char c : toSubstract.toCharArray()) {
+        s = s.replaceAll("" + c, "");
+      }
+    }
+    return s;
   }
 
   private long solveA(List<String> lines) {
@@ -175,20 +133,26 @@ public class Puzzle08 extends PuzzleAbs {
       Arrays.stream(parts[1].split("\\s+")).forEach(outputs::add);
     }
 
-    return outputs.stream().map(String::length).filter(l -> l == 2 || l == 3 || l == 4 || l == 7).count();
+    return outputs.stream().map(String::length).filter(length2value::containsKey).count();
   }
 
   private long solveB(List<String> lines) {
-    long sum = 0;
-    for (String line : lines) {
-      long l = decodeLine(line);
-      sum += l;
-    }
-    return sum;
+    return lines.stream().mapToLong(this::decodeLine).sum();
+  }
+
+  private String sort(String s) {
+    char[] c = s.toCharArray();
+    Arrays.sort(c);
+    return String.valueOf(c);
   }
 
   @Test
   public void testDay08() {
+    length2value.put(2, 1);
+    length2value.put(3, 7);
+    length2value.put(4, 4);
+    length2value.put(7, 8);
+
     List<String> testInput = Arrays.asList(//
         "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
         "edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc",
@@ -208,8 +172,7 @@ public class Puzzle08 extends PuzzleAbs {
     System.out.println(result);
     assertEquals(416, result);
 
-    assertEquals(1625, decodeLine("bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef")); // not
-                                                                                                                          // 1655
+    assertEquals(1625, decodeLine("bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef"));
     assertEquals(5353, decodeLine("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"));
 
     assertEquals(61229, solveB(testInput));

@@ -21,7 +21,7 @@ public class Puzzle07 extends PuzzleAbs {
     List<Long> poss = Arrays.stream(input.split(",")).map(s -> Long.parseLong(s)).sorted().collect(Collectors.toList());
     long middleElt = poss.get(poss.size() / 2);
     // The middle element has just as many smaller number on the right as it has bigger on the left
-    // Move all crabs to this position causes the least amount of steps
+    // Moving all crabs to this position causes the least amount of steps
 
     return poss.stream().mapToLong(p -> Math.abs(p - middleElt)).sum();
   }
@@ -31,8 +31,8 @@ public class Puzzle07 extends PuzzleAbs {
     double avg = poss.stream().mapToLong(l -> l).summaryStatistics().getAverage();
     long candidate1 = (long)Math.floor(avg);
     long candidate2 = (long)Math.ceil(avg);
-    // When cost is not linear but cubic, we need to take the average. Since
-    // this is a double we have to try two horizontal positions
+    // When crab.moving cost is not linear but cubic, we need to take the average.
+    // Since this is a double we have to try two horizontal positions
     // For skeptics, change candidate1 and 2 to min(poss) and max(poss)
 
     return LongStream.rangeClosed(candidate1, candidate2).map(hpos -> {

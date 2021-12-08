@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,13 +66,10 @@ public class Puzzle08 extends PuzzleAbs {
   }
 
   private long solveA(List<String> lines) {
-    List<String> outputs = new LinkedList<>();
-    for (String line : lines) {
+    return lines.stream().flatMap(line -> {
       String[] parts = line.split("\\s+\\|\\s+");
-      Arrays.stream(parts[1].split("\\s+")).forEach(outputs::add);
-    }
-
-    return outputs.stream().map(String::length).filter(length2value::containsKey).count();
+      return Arrays.stream(parts[1].split("\\s+"));
+    }).map(String::length).filter(length2value::containsKey).count();
   }
 
   private long solveB(List<String> lines) {

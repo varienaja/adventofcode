@@ -34,6 +34,10 @@ public class Puzzle09 extends PuzzleAbs {
   }
 
   private List<Point> findLows(List<String> lines) {
+    grid = lines;
+    maxX = lines.get(0).length();
+    maxY = lines.size();
+
     List<Point> lows = new LinkedList<>();
 
     for (int x = 0; x < maxX; x++) {
@@ -50,26 +54,15 @@ public class Puzzle09 extends PuzzleAbs {
   }
 
   private char getDepth(Point p) {
-    if (0 <= p.y && p.y < maxY && 0 <= p.x && p.x < maxX) {
-      return grid.get(p.y).charAt(p.x);
-    }
-    return 'A'; // 'A' is bigger than '9'
+    return 0 <= p.y && p.y < maxY && 0 <= p.x && p.x < maxX ? grid.get(p.y).charAt(p.x) : '9';
   }
 
   private long solveA(List<String> lines) {
-    grid = lines;
-    maxX = lines.get(0).length();
-    maxY = lines.size();
-
     // '/' is just before 0, so the +1 to get the risk from the depth is incorporated here
     return findLows(lines).stream().mapToInt(p -> getDepth(p) - '/').sum();
   }
 
   private long solveB(List<String> lines) {
-    grid = lines;
-    maxX = lines.get(0).length();
-    maxY = lines.size();
-
     List<Long> sizes = findLows(lines).stream() //
         .map(p -> calcBasinSize(new HashSet<>(Collections.singleton(p)))) //
         .sorted().collect(Collectors.toList());

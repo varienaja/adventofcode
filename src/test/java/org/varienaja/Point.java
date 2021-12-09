@@ -1,6 +1,9 @@
 package org.varienaja;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Point {
   public int x;
@@ -20,6 +23,10 @@ public class Point {
     return false;
   }
 
+  public Set<Point> getNeighbours() {
+    return new HashSet<>(Arrays.asList(new Point(x - 1, y), new Point(x + 1, y), new Point(x, y - 1), new Point(x, y + 1)));
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(x, y);
@@ -34,4 +41,5 @@ public class Point {
   public String toString() {
     return "(" + x + "," + y + ")";
   }
+
 }

@@ -67,8 +67,7 @@ public class Puzzle08 extends PuzzleAbs {
 
   private long solveA(List<String> lines) {
     return lines.stream().flatMap(line -> {
-      String[] parts = line.split("\\s+\\|\\s+");
-      return Arrays.stream(parts[1].split("\\s+"));
+      return Arrays.stream(line.split("\\s+\\|\\s+")[1].split("\\s+"));
     }).map(String::length).filter(length2value::containsKey).count();
   }
 

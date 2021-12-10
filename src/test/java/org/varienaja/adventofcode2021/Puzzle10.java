@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -25,10 +24,8 @@ public class Puzzle10 extends PuzzleAbs {
       int ix = push.indexOf(c);
       if (ix >= 0) {
         st.push(pop.charAt(ix));
-      } else {
-        if (c != st.pop()) {
-          return "!" + c;
-        }
+      } else if (c != st.pop()) {
+        return "!" + c;
       }
     }
 
@@ -57,9 +54,9 @@ public class Puzzle10 extends PuzzleAbs {
   }
 
   private long solveB(List<String> lines) {
-    List<String> correctedLines = lines.stream().filter(l -> !autoComplete(l).startsWith("!")).collect(Collectors.toList());
-    long[] scores = correctedLines.stream() //
-        .map(line -> autoComplete(line)) //
+    long[] scores = lines.stream() //
+        .map(this::autoComplete) //
+        .filter(l -> !l.startsWith("!")) //
         .mapToLong(line -> line.chars().mapToLong(" )]}>"::indexOf).reduce((a, b) -> 5 * a + b).getAsLong()) //
         .sorted().toArray();
     return scores[scores.length / 2];

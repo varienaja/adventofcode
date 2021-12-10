@@ -2,9 +2,11 @@ package org.varienaja.adventofcode2021;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -19,7 +21,7 @@ public class Puzzle10 extends PuzzleAbs {
   private String autoComplete(String line) {
     String push = "{(<[";
     String pop = "})>]";
-    Stack<Character> st = new Stack<>();
+    Deque<Character> st = new ArrayDeque<>();
     for (char c : line.toCharArray()) {
       int ix = push.indexOf(c);
       if (ix >= 0) {
@@ -29,11 +31,7 @@ public class Puzzle10 extends PuzzleAbs {
       }
     }
 
-    StringBuilder sb = new StringBuilder();
-    while (!st.isEmpty()) {
-      sb.append(st.pop());
-    }
-    return sb.toString();
+    return st.stream().map(String::valueOf).collect(Collectors.joining());
   }
 
   private long solveA(List<String> lines) {

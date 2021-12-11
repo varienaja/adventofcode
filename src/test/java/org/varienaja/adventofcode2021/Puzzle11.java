@@ -21,6 +21,21 @@ public class Puzzle11 extends PuzzleAbs {
   private int maxX;
   private int maxY;
 
+  private int flash(int x, int y) {
+    grid.get(y)[x] = '0';
+    int flashCount = 1;
+
+    for (Point n : new Point(x, y).getAllNeighbours()) {
+      if (0 <= n.y && n.y < maxY && 0 <= n.x && n.x < maxX && grid.get(n.y)[n.x] != '0') {
+        if (++grid.get(n.y)[n.x] > '9') {
+          flashCount += flash(n.x, n.y);
+        }
+      }
+    }
+
+    return flashCount;
+  }
+
   private void initGrid(List<String> lines) {
     grid = lines.stream().map(String::toCharArray).collect(Collectors.toList());
     maxX = lines.get(0).length();
@@ -35,27 +50,13 @@ public class Puzzle11 extends PuzzleAbs {
     }
 
     int flashCount = 0;
-    boolean somethingFlashed;
-    do {
-      somethingFlashed = false;
-      for (int y = 0; y < maxY; y++) {
-        for (int x = 0; x < maxX; x++) {
-          if (grid.get(y)[x] > '9') {
-            grid.get(y)[x] = '0';
-            flashCount++;
-            somethingFlashed = true;
-
-            for (Point n : new Point(x, y).getAllNeighbours()) {
-              if (0 <= n.y && n.y < maxY && 0 <= n.x && n.x < maxX) {
-                if (grid.get(n.y)[n.x] != '0') {
-                  grid.get(n.y)[n.x]++;
-                }
-              }
-            }
-          }
+    for (int y = 0; y < maxY; y++) {
+      for (int x = 0; x < maxX; x++) {
+        if (grid.get(y)[x] > '9') {
+          flashCount += flash(x, y);
         }
       }
-    } while (somethingFlashed);
+    }
 
     return flashCount;
   }

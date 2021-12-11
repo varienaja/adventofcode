@@ -27,7 +27,7 @@ public class Puzzle09 extends PuzzleAbs {
   private long calcBasinSize(Set<Point> basin) {
     Set<Point> toAdd;
     do {
-      toAdd = basin.stream().flatMap(p -> p.getNeighbours().stream()) //
+      toAdd = basin.stream().flatMap(p -> p.getNSWENeighbours().stream()) //
           .filter(nb -> getDepth(nb) < '9').collect(Collectors.toSet());
     } while (basin.addAll(toAdd));
     return basin.size();
@@ -45,7 +45,7 @@ public class Puzzle09 extends PuzzleAbs {
         Point p = new Point(x, y);
         char h = getDepth(p);
 
-        if (!p.getNeighbours().stream().mapToInt(this::getDepth).anyMatch(d -> d <= h)) {
+        if (!p.getNSWENeighbours().stream().mapToInt(this::getDepth).anyMatch(d -> d <= h)) {
           lows.add(p);
         }
       }

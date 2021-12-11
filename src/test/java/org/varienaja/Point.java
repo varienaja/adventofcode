@@ -23,7 +23,12 @@ public class Point {
     return false;
   }
 
-  public Set<Point> getNeighbours() {
+  public Set<Point> getAllNeighbours() {
+    return new HashSet<>(Arrays.asList(new Point(x - 1, y), new Point(x + 1, y), new Point(x, y - 1), new Point(x, y + 1), new Point(x - 1, y - 1),
+        new Point(x - 1, y + 1), new Point(x + 1, y - 1), new Point(x + 1, y + 1)));
+  }
+
+  public Set<Point> getNSWENeighbours() {
     return new HashSet<>(Arrays.asList(new Point(x - 1, y), new Point(x + 1, y), new Point(x, y - 1), new Point(x, y + 1)));
   }
 

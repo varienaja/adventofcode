@@ -36,7 +36,7 @@ public class Puzzle12 extends PuzzleAbs {
             if (fromTo[i].equals(lastCave)) {
               String to = fromTo[1 - i];
               if (!"start".equals(to)) {
-                if (Character.isUpperCase(to.charAt(0)) || mayVisitSingleCaveTwice(path, to, twiceOK)) {
+                if (Character.isUpperCase(to.charAt(0)) || addOK(path, to, twiceOK)) {
                   String newPath = path + "," + to;
                   newPaths.add(newPath);
                   added = true;
@@ -51,12 +51,12 @@ public class Puzzle12 extends PuzzleAbs {
     if (added) {
       return increaseDepth(newPaths, map, twiceOK);
     }
-    return paths.stream().filter(p -> p.endsWith("end")).collect(Collectors.toList());
+    return newPaths;
   }
 
-  private boolean mayVisitSingleCaveTwice(String path, String toAdd, boolean twiceOK) {
+  private boolean addOK(String path, String toAdd, boolean twiceAllowed) {
     if (path.contains(toAdd)) {
-      if (twiceOK) {
+      if (twiceAllowed) {
         Map<String, Integer> cave2Visits = new HashMap<>();
         for (String s : (path + "," + toAdd).split(",")) {
           if (!s.isEmpty() && Character.isLowerCase(s.charAt(0)) && !"start".equals(s) && !"end".equals(s)) {
@@ -88,7 +88,7 @@ public class Puzzle12 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay12() {
     List<String> testInput = Arrays.asList( //
         "start-A", //
         "start-b", //

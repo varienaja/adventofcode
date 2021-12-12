@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -20,39 +20,6 @@ import org.junit.Test;
  * @see <a href="https://adventofcode.com/2021">adventofcode.com</a>
  */
 public class Puzzle12 extends PuzzleAbs {
-
-  private Collection<String> increaseDepth(Collection<String> paths, List<String[]> map, boolean twiceOK) {
-    Collection<String> newPaths = new TreeSet<>();
-    boolean added = false;
-
-    for (String path : paths) {
-      int ix = path.lastIndexOf(',');
-      String lastCave = path.substring(ix + 1);
-      if ("end".equals(lastCave)) {
-        newPaths.add(path); // keep finished path
-      } else {
-        for (String[] fromTo : map) {
-          for (int i = 0; i < fromTo.length; i++) {
-            if (fromTo[i].equals(lastCave)) {
-              String to = fromTo[1 - i];
-              if (!"start".equals(to)) {
-                if (Character.isUpperCase(to.charAt(0)) || addOK(path, to, twiceOK)) {
-                  String newPath = path + "," + to;
-                  newPaths.add(newPath);
-                  added = true;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (added) {
-      return increaseDepth(newPaths, map, twiceOK);
-    }
-    return newPaths;
-  }
 
   private boolean addOK(String path, String toAdd, boolean twiceAllowed) {
     if (path.contains(toAdd)) {
@@ -75,6 +42,38 @@ public class Puzzle12 extends PuzzleAbs {
     } else {
       return true;
     }
+  }
+
+  private Collection<String> increaseDepth(Collection<String> paths, List<String[]> fromTos, boolean twiceOK) {
+    Collection<String> newPaths = new HashSet<>();
+    boolean added = false;
+
+    for (String path : paths) {
+      int ix = path.lastIndexOf(',');
+      String lastCave = path.substring(ix + 1);
+      if ("end".equals(lastCave)) {
+        newPaths.add(path); // keep finished path
+      } else {
+        for (String[] fromTo : fromTos) {
+          for (int i = 0; i < fromTo.length; i++) {
+            if (fromTo[i].equals(lastCave)) {
+              String to = fromTo[1 - i];
+              if (!"start".equals(to)) {
+                if (Character.isUpperCase(to.charAt(0)) || addOK(path, to, twiceOK)) {
+                  newPaths.add(path + "," + to);
+                  added = true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (added) {
+      return increaseDepth(newPaths, fromTos, twiceOK);
+    }
+    return newPaths;
   }
 
   private long solveA(List<String> lines) {

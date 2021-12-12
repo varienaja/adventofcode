@@ -3,9 +3,6 @@ package org.varienaja.adventofcode2021;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,53 +17,45 @@ import org.junit.Test;
 public class Puzzle12 extends PuzzleAbs {
   private final static String START = "start";
 
-  private Collection<String> increaseDepth(Collection<String> paths, List<String[]> fromTos, boolean twiceOK) {
-    Collection<String> newPaths = new HashSet<>();
-    boolean added = false;
+  private long countPaths(String path, List<String[]> fromTos, boolean twiceOK) {
+    long result = 0;
 
-    for (String path : paths) {
-      String lastCave = path.substring(path.lastIndexOf(',') + 1);
-      if ("end".equals(lastCave)) {
-        newPaths.add(path); // keep finished path
-      } else {
-        for (String[] fromTo : fromTos) {
-          for (int i = 0; i < fromTo.length; i++) {
-            if (fromTo[i].equals(lastCave)) {
-              String to = fromTo[1 - i];
-              if (!START.equals(to)) {
+    String lastCave = path.substring(path.lastIndexOf(',') + 1);
+    if ("end".equals(lastCave)) {
+      result++; // keep finished path
+    } else {
+      for (String[] fromTo : fromTos) {
+        for (int i = 0; i < fromTo.length; i++) {
+          if (fromTo[i].equals(lastCave)) {
+            String to = fromTo[1 - i];
+            if (!START.equals(to)) {
 
-                if (Character.isUpperCase(to.charAt(0)) || !path.contains(to)) {
-                  newPaths.add(path + "," + to);
-                  added = true;
-                } else {
-                  if (twiceOK && START.equals(path.substring(1, path.indexOf(',', 1)))) {
-                    // Mark path with ! to indicate one double visit to a lowercase cave
-                    newPaths.add("!" + path + "," + to);
-                    added = true;
-                  }
+              if (Character.isUpperCase(to.charAt(0)) || !path.contains(to)) {
+                result += countPaths(path + "," + to, fromTos, twiceOK);
+              } else {
+                if (twiceOK && START.equals(path.substring(1, path.indexOf(',', 1)))) {
+                  // twiceOK is not OK anymore once we've used one lowercase cave twice
+                  result += countPaths(path + "," + to, fromTos, false);
                 }
-
               }
+
             }
           }
         }
       }
     }
 
-    if (added) {
-      return increaseDepth(newPaths, fromTos, twiceOK);
-    }
-    return newPaths;
+    return result;
   }
 
   private long solveA(List<String> lines) {
     List<String[]> map = lines.stream().map(line -> line.split("-")).collect(Collectors.toList());
-    return increaseDepth(Collections.singleton("," + START), map, false).size();
+    return countPaths("," + START, map, false);
   }
 
   private long solveB(List<String> lines) {
     List<String[]> map = lines.stream().map(line -> line.split("-")).collect(Collectors.toList());
-    return increaseDepth(Collections.singleton("," + START), map, true).size();
+    return countPaths("," + START, map, true);
   }
 
   @Test

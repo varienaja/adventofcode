@@ -64,20 +64,29 @@ public class Puzzle13 extends PuzzleAbs {
     }
 
     int foldCount = once ? 1 : operations.size();
+    int maxX = 0;
+    int maxY = 0;
     for (int i = 0; i < foldCount; i++) {
       String operation = operations.get(i);
       char axis = operation.charAt(0);
       int w = Integer.parseInt(operation.substring(2));
+      if (axis == 'x') {
+        maxX = w;
+      } else {
+        maxY = w;
+      }
 
       fold(grid, axis, w);
     }
 
-    System.out.println();
-    for (int y = 0; y < 6; y++) {
-      for (int x = 0; x < 39; x++) {
-        System.out.print(grid.contains(new Point(x, y)) ? '#' : '.');
-      }
+    if (!once) {
       System.out.println();
+      for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+          System.out.print(grid.contains(new Point(x, y)) ? '#' : '.');
+        }
+        System.out.println();
+      }
     }
 
     return grid.size();

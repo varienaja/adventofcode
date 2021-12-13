@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.varienaja.Point;
@@ -20,29 +20,12 @@ import org.varienaja.Point;
  */
 public class Puzzle13 extends PuzzleAbs {
 
-  private void fold(Set<Point> grid, char axis, int w) {
-    Set<Point> modified = new HashSet<>();
-    Iterator<Point> it = grid.iterator();
-    while (it.hasNext()) {
-      Point p = it.next();
-
-      if (axis == 'x') { // horizontal
-        if (p.x >= w) {
-          it.remove();
-          int tosub = 2 * (p.x - w);
-          modified.add(new Point(p.x - tosub, p.y));
-        }
-      }
-      if (axis == 'y') { // vertical
-        if (p.y >= w) {
-          it.remove();
-          int tosub = 2 * (p.y - w);
-          modified.add(new Point(p.x, p.y - tosub));
-        }
-      }
-    }
-
-    grid.addAll(modified);
+  private Set<Point> fold(Set<Point> grid, char axis, int w) {
+    return grid.stream().map(p -> {
+      return 'x' == axis ? //
+      p.x >= w ? new Point(w - (p.x - w), p.y) : p // vertical along x
+          : p.y >= w ? new Point(p.x, w - (p.y - w)) : p; // horizontalflip
+    }).collect(Collectors.toSet());
   }
 
   private long solve(List<String> lines, boolean once) {
@@ -53,36 +36,28 @@ public class Puzzle13 extends PuzzleAbs {
     for (String line : lines) {
       if (line.isEmpty()) {
         parseDots = false;
-        continue;
-      }
-      if (parseDots) {
-        String[] parts = line.split(",");
-        grid.add(new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1])));
       } else {
-        operations.add(line.replace("fold along ", ""));
+        if (parseDots) {
+          String[] parts = line.split(",");
+          grid.add(new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1])));
+        } else {
+          operations.add(line.replace("fold along ", ""));
+        }
       }
     }
 
-    int foldCount = once ? 1 : operations.size();
-    int maxX = 0;
-    int maxY = 0;
-    for (int i = 0; i < foldCount; i++) {
-      String operation = operations.get(i);
+    for (String operation : operations.subList(0, once ? 1 : operations.size())) {
       char axis = operation.charAt(0);
       int w = Integer.parseInt(operation.substring(2));
-      if (axis == 'x') {
-        maxX = w;
-      } else {
-        maxY = w;
-      }
-
-      fold(grid, axis, w);
+      grid = fold(grid, axis, w);
     }
 
     if (!once) {
+      int maxY = grid.stream().mapToInt(p -> p.y).max().orElse(0);
+      int maxX = grid.stream().mapToInt(p -> p.x).max().orElse(0);
       System.out.println();
-      for (int y = 0; y < maxY; y++) {
-        for (int x = 0; x < maxX; x++) {
+      for (int y = 0; y <= maxY; y++) {
+        for (int x = 0; x <= maxX; x++) {
           System.out.print(grid.contains(new Point(x, y)) ? '#' : '.');
         }
         System.out.println();

@@ -22,9 +22,9 @@ public class Puzzle13 extends PuzzleAbs {
 
   private Set<Point> fold(Set<Point> grid, char axis, int w) {
     return grid.stream().map(p -> {
-      return 'x' == axis ? //
-      p.x >= w ? new Point(w - (p.x - w), p.y) : p // vertical along x
-          : p.y >= w ? new Point(p.x, w - (p.y - w)) : p; // horizontalflip
+      return 'x' == axis //
+          ? p.x >= w ? new Point(w - (p.x - w), p.y) : p // vertical
+          : p.y >= w ? new Point(p.x, w - (p.y - w)) : p; // horizontal
     }).collect(Collectors.toSet());
   }
 

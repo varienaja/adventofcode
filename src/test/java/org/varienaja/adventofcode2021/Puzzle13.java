@@ -45,7 +45,7 @@ public class Puzzle13 extends PuzzleAbs {
     grid.addAll(modified);
   }
 
-  private long solveA(List<String> lines, boolean once) {
+  private long solve(List<String> lines, boolean once) {
     Set<Point> grid = new HashSet<>();
     List<String> operations = new LinkedList<>();
 
@@ -85,19 +85,39 @@ public class Puzzle13 extends PuzzleAbs {
 
   @Test
   public void testDay13() {
-    List<String> testInput = Arrays.asList("6,10", "0,14", "9,10", "0,3", "10,4", "4,11", "6,0", "6,12", "4,1", "0,13", "10,12", "3,4", "3,0", "8,4", "1,10",
-        "2,14", "8,10", "9,0", "", "fold along y=7", "fold along x=5");
-    assertEquals(17, solveA(testInput, true));
+    List<String> testInput = Arrays.asList( //
+        "6,10", //
+        "0,14", //
+        "9,10", //
+        "0,3", //
+        "10,4", //
+        "4,11", //
+        "6,0", //
+        "6,12", //
+        "4,1", //
+        "0,13", //
+        "10,12", //
+        "3,4", //
+        "3,0", //
+        "8,4", //
+        "1,10", //
+        "2,14", //
+        "8,10", //
+        "9,0", //
+        "", //
+        "fold along y=7", //
+        "fold along x=5");
+    assertEquals(17, solve(testInput, true));
 
     announceResultA();
     List<String> lines = getInput();
-    long result = solveA(lines, true);
+    long result = solve(lines, true);
     System.out.println(result);
     assertEquals(788, result, 1);
 
-    solveA(testInput, false); // Square on StdOut
+    solve(testInput, false); // Square on StdOut
     announceResultB();
-    solveA(lines, false); // KJBKEUBG on StdOut
+    solve(lines, false); // KJBKEUBG on StdOut
   }
 
 }

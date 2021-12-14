@@ -38,17 +38,17 @@ public class Puzzle14 extends PuzzleAbs {
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
     for (int i = 0; i < cnt; i++) {
-      Map<String, Long> nfreqMap = new HashMap<>(pair2insertion);
+      Map<String, Long> newPair2insertion = new HashMap<>(pair2insertion);
       for (Entry<String, Long> e : pair2insertion.entrySet()) {
         String insertion = rules.get(e.getKey()); // Example: AB -> C (so AB becomes ACB)
 
-        nfreqMap.compute(e.getKey(), (k, v) -> v - e.getValue()); // Decrease count for AB
+        newPair2insertion.compute(e.getKey(), (k, v) -> v - e.getValue()); // Decrease count for AB
         BiFunction<String, Long, Long> increase = (k, v) -> e.getValue() + (v == null ? 0 : v);
-        nfreqMap.compute(e.getKey().charAt(0) + insertion, increase); // Increase count for AC
-        nfreqMap.compute(insertion + e.getKey().charAt(1), increase); // Increase count for CB
+        newPair2insertion.compute(e.getKey().charAt(0) + insertion, increase); // Increase count for AC
+        newPair2insertion.compute(insertion + e.getKey().charAt(1), increase); // Increase count for CB
         elt2count.compute(insertion, increase); // Increase count for C
       }
-      pair2insertion = nfreqMap;
+      pair2insertion = newPair2insertion;
     }
 
     LongSummaryStatistics stats = elt2count.values().stream().mapToLong(l -> l).summaryStatistics();

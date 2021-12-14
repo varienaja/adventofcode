@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -20,45 +23,36 @@ import org.junit.Test;
 public class Puzzle14 extends PuzzleAbs {
 
   private long solve(List<String> lines, int cnt) {
-    Map<String, String> templates = new HashMap<>();
-    for (int i = 2; i < lines.size(); i++) {
-      String[] parts = lines.get(i).split("\\s+->\\s+");
-      templates.put(parts[0], parts[1]);
-    }
+    Map<String, String> rules = lines.stream() //
+        .skip(2) //
+        .map(l -> l.split("\\s+->\\s+")) //
+        .collect(Collectors.toMap(p -> p[0], p -> p[1]));
 
-    Map<String, Long> freqMap = new HashMap<>();
-    char[] pp = lines.get(0).toCharArray();
-    for (int j = 0; j < pp.length - 1; j++) {
-      String lookup = pp[j] + "" + pp[j + 1];
-      freqMap.compute(lookup, (k, v) -> v == null ? 1 : v + 1);
+    String polygon = lines.get(0);
+    Map<String, Long> pair2insertion = new HashMap<>();
+    for (int j = 0; j < polygon.length() - 1; j++) {
+      pair2insertion.compute(polygon.substring(j, j + 2), (k, v) -> v == null ? 1 : v + 1);
     }
-    for (String s : templates.keySet()) {
-      freqMap.compute(s, (k, v) -> v == null ? 0 : v);
-    }
+    Map<String, Long> elt2count = polygon.chars() //
+        .mapToObj(Character::toString) //
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
     for (int i = 0; i < cnt; i++) {
-      Map<String, Long> nfreqMap = new HashMap<>(freqMap);
-      for (Entry<String, Long> e : freqMap.entrySet()) {
-        String val = templates.get(e.getKey());
-        if (e.getValue() > 0) {
-          nfreqMap.compute(e.getKey(), (k, v) -> v - e.getValue());
+      Map<String, Long> nfreqMap = new HashMap<>(pair2insertion);
+      for (Entry<String, Long> e : pair2insertion.entrySet()) {
+        BiFunction<String, Long, Long> update = (k, v) -> e.getValue() + (v == null ? 0 : v);
 
-          String one = val + e.getKey().charAt(1);
-          nfreqMap.compute(one, (k, v) -> v + e.getValue());
-          String two = e.getKey().charAt(0) + val;
-          nfreqMap.compute(two, (k, v) -> v + e.getValue());
-        }
+        String insertion = rules.get(e.getKey()); // Example: AB -> C (so AB becomes ACB)
+        nfreqMap.compute(e.getKey(), (k, v) -> v - e.getValue()); // Decrease count for AB
+        nfreqMap.compute(e.getKey().charAt(0) + insertion, update); // Increase count for AC
+        nfreqMap.compute(insertion + e.getKey().charAt(1), update); // Increase count for CB
+
+        elt2count.compute(insertion, update);
       }
-      freqMap = nfreqMap;
+      pair2insertion = nfreqMap;
     }
 
-    Map<String, Long> freq = new HashMap<>();
-    for (Entry<String, Long> e : freqMap.entrySet()) {
-      freq.compute("" + e.getKey().charAt(1), (k, v) -> v == null ? e.getValue() : v + e.getValue());
-    }
-    freq.compute("" + lines.get(0).charAt(0), (k, v) -> v + 1);
-
-    LongSummaryStatistics stats = freq.values().stream().mapToLong(l -> l).summaryStatistics();
+    LongSummaryStatistics stats = elt2count.values().stream().mapToLong(l -> l).summaryStatistics();
     return stats.getMax() - stats.getMin();
   }
 

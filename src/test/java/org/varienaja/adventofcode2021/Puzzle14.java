@@ -40,14 +40,13 @@ public class Puzzle14 extends PuzzleAbs {
     for (int i = 0; i < cnt; i++) {
       Map<String, Long> nfreqMap = new HashMap<>(pair2insertion);
       for (Entry<String, Long> e : pair2insertion.entrySet()) {
-        BiFunction<String, Long, Long> update = (k, v) -> e.getValue() + (v == null ? 0 : v);
-
         String insertion = rules.get(e.getKey()); // Example: AB -> C (so AB becomes ACB)
-        nfreqMap.compute(e.getKey(), (k, v) -> v - e.getValue()); // Decrease count for AB
-        nfreqMap.compute(e.getKey().charAt(0) + insertion, update); // Increase count for AC
-        nfreqMap.compute(insertion + e.getKey().charAt(1), update); // Increase count for CB
 
-        elt2count.compute(insertion, update);
+        nfreqMap.compute(e.getKey(), (k, v) -> v - e.getValue()); // Decrease count for AB
+        BiFunction<String, Long, Long> increase = (k, v) -> e.getValue() + (v == null ? 0 : v);
+        nfreqMap.compute(e.getKey().charAt(0) + insertion, increase); // Increase count for AC
+        nfreqMap.compute(insertion + e.getKey().charAt(1), increase); // Increase count for CB
+        elt2count.compute(insertion, increase); // Increase count for C
       }
       pair2insertion = nfreqMap;
     }

@@ -20,6 +20,7 @@ public class Puzzle16 extends PuzzleAbs {
   private int ix;
 
   private long calcLine(String t, boolean doCalculation) {
+    long result;
     long version = Long.parseLong(t.substring(ix + 0, ix + 3), 2);
 
     String ttt = t.substring(ix + 3, ix + 6);
@@ -32,7 +33,7 @@ public class Puzzle16 extends PuzzleAbs {
         sb.append(five.substring(1));
         ix += 5;
       } while (five.startsWith("1"));
-      return doCalculation ? Long.parseLong(sb.toString(), 2) : version;
+      result = Long.parseLong(sb.toString(), 2);
     } else {
       List<Long> vals = new LinkedList<>();
 
@@ -50,33 +51,31 @@ public class Puzzle16 extends PuzzleAbs {
           vals.add(calcLine(t, doCalculation));
         }
       }
-      if (!doCalculation) {
-        return version + vals.stream().mapToLong(l -> l).sum();
-      }
 
-      if (ttt.equals("000")) {
-        return vals.stream().mapToLong(l -> l).sum();
+      if (ttt.equals("000") || !doCalculation) {
+        result = vals.stream().mapToLong(l -> l).sum();
+        version += result;
       } else if (ttt.equals("001")) {
-        return vals.stream().mapToLong(l -> l).reduce((a, b) -> a * b).getAsLong();
+        result = vals.stream().mapToLong(l -> l).reduce((a, b) -> a * b).getAsLong();
       } else if (ttt.equals("010")) {
-        return vals.stream().mapToLong(l -> l).min().getAsLong();
+        result = vals.stream().mapToLong(l -> l).min().getAsLong();
       } else if (ttt.equals("011")) {
-        return vals.stream().mapToLong(l -> l).max().getAsLong();
+        result = vals.stream().mapToLong(l -> l).max().getAsLong();
       } else if (ttt.equals("101")) {
-        return vals.get(0) > vals.get(1) ? 1L : 0L;
+        result = vals.get(0) > vals.get(1) ? 1L : 0L;
       } else if (ttt.equals("110")) {
-        return vals.get(0) < vals.get(1) ? 1L : 0L;
-      } else if (ttt.equals("111")) {
-        return vals.get(0).equals(vals.get(1)) ? 1L : 0L;
+        result = vals.get(0) < vals.get(1) ? 1L : 0L;
+      } else /* if (ttt.equals("111")) */ {
+        result = vals.get(0).equals(vals.get(1)) ? 1L : 0L;
       }
     }
 
-    return 0L;
+    return doCalculation ? result : version;
   }
 
   private long solveA(String line) {
     ix = 0;
-    return calcLine(transform(line),  false);
+    return calcLine(transform(line), false);
   }
 
   private long solveB(String line) {
@@ -85,7 +84,7 @@ public class Puzzle16 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay16() {
     assertEquals(16, solveA("8A004A801A8002F478"));
     assertEquals(12, solveA("620080001611562C8802118E34"));
     assertEquals(23, solveA("C0015000016115A2E0802F182340"));

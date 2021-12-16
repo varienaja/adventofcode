@@ -23,6 +23,7 @@ import org.varienaja.Point;
  * @see <a href="https://adventofcode.com/2021">adventofcode.com</a>
  */
 public class Puzzle15 extends PuzzleAbs {
+  private static final boolean DEBUG = false;
 
   private void findShortestPath(Map<Point, Long> p2dist, Point start, List<String> lines, Point dest) {
     Set<Point> todoSet = new HashSet<>();
@@ -65,11 +66,10 @@ public class Puzzle15 extends PuzzleAbs {
       }
       System.out.println();
     }
-
     System.out.println();
   }
 
-  private long solveA(List<String> lines, boolean showGrid) {
+  private long solveA(List<String> lines) {
     Map<Point, Long> p2dist = new HashMap<>();
     for (int y = 0; y < lines.size(); y++) {
       String line = lines.get(y);
@@ -84,14 +84,14 @@ public class Puzzle15 extends PuzzleAbs {
 
     findShortestPath(p2dist, start, lines, dest);
 
-    if (showGrid) {
+    if (DEBUG) {
       printGrid(p2dist, lines);
     }
 
     return p2dist.get(dest);
   }
 
-  private long solveB(List<String> lines, boolean showGrid) {
+  private long solveB(List<String> lines) {
     // Stretch vertically
     List<String> newLinesA = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
@@ -125,7 +125,7 @@ public class Puzzle15 extends PuzzleAbs {
       newLines.add(sb.toString());
     }
 
-    return solveA(newLines, showGrid);
+    return solveA(newLines);
 
   }
 
@@ -142,17 +142,17 @@ public class Puzzle15 extends PuzzleAbs {
         "3125421639", //
         "1293138521", //
         "2311944581");
-    assertEquals(40, solveA(testInput, false));
+    assertEquals(40, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
-    long result = solveA(lines, false);
+    long result = solveA(lines);
     System.out.println(result);
     assertEquals(745, result);
 
-    assertEquals(315, solveB(testInput, false));
+    assertEquals(315, solveB(testInput));
     announceResultB();
-    result = solveB(lines, false);
+    result = solveB(lines);
     System.out.println(result);
     assertEquals(3002, result);
   }

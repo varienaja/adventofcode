@@ -19,7 +19,7 @@ import org.junit.Test;
 public class Puzzle16 extends PuzzleAbs {
   private int ix;
 
-  private long calcLine(String t, int packetCount, boolean doCalculation) {
+  private long calcLine(String t, boolean doCalculation) {
     long version = Long.parseLong(t.substring(ix + 0, ix + 3), 2);
 
     String ttt = t.substring(ix + 3, ix + 6);
@@ -40,14 +40,14 @@ public class Puzzle16 extends PuzzleAbs {
         int cnt = Integer.parseInt(t.substring(ix + 7, ix + 18), 2);
         ix += 18;
         for (int i = 0; i < cnt; i++) {
-          vals.add(calcLine(t, 1, doCalculation));
+          vals.add(calcLine(t, doCalculation));
         }
       } else {
         int lll = Integer.parseInt(t.substring(ix + 7, ix + 22), 2);
         ix += 22;
         int to = ix + lll;
         while (ix != to) {
-          vals.add(calcLine(t, 1, doCalculation));
+          vals.add(calcLine(t, doCalculation));
         }
       }
       if (!doCalculation) {
@@ -75,15 +75,13 @@ public class Puzzle16 extends PuzzleAbs {
   }
 
   private long solveA(String line) {
-    String t = transform(line);
     ix = 0;
-    return calcLine(t, 1, false);
+    return calcLine(transform(line),  false);
   }
 
   private long solveB(String line) {
-    String t = transform(line);
     ix = 0;
-    return calcLine(t, 1, true);
+    return calcLine(transform(line), true);
   }
 
   @Test

@@ -20,7 +20,7 @@ public class Puzzle16 extends PuzzleAbs {
   private int ix;
 
   private long calcLine(String t, boolean doCalculation) {
-    long result;
+    long result = 0L;
     long version = Long.parseLong(t.substring(ix + 0, ix + 3), 2);
 
     String ttt = t.substring(ix + 3, ix + 6);
@@ -65,7 +65,7 @@ public class Puzzle16 extends PuzzleAbs {
         result = vals.get(0) > vals.get(1) ? 1L : 0L;
       } else if (ttt.equals("110")) {
         result = vals.get(0) < vals.get(1) ? 1L : 0L;
-      } else /* if (ttt.equals("111")) */ {
+      } else if (ttt.equals("111")) {
         result = vals.get(0).equals(vals.get(1)) ? 1L : 0L;
       }
     }

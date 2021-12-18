@@ -30,12 +30,12 @@ public class Puzzle18 extends PuzzleAbs {
 
     for (int i = 0; i < ss.length; i++) {
       char c = ss[i];
-      if (c == '[') {
-        int nextCloseBracket = s.indexOf(']', i + 1);
-        int nextOpenBracket = s.indexOf('[', i + 1);
+      if (c == '(') {
+        int nextCloseBracket = s.indexOf(')', i + 1);
+        int nextOpenBracket = s.indexOf('(', i + 1);
         if (nextOpenBracket == -1 || nextCloseBracket < nextOpenBracket) {
           // find a pair that is inside 4 pairs
-          int closeBracket = s.indexOf(']', i);
+          int closeBracket = s.indexOf(')', i);
           String pair = s.substring(i + 1, closeBracket);
 
           String[] ab = pair.split(",");
@@ -48,7 +48,6 @@ public class Puzzle18 extends PuzzleAbs {
           String after = s.substring(closeBracket + 1);
           String result = before + Long.toString(nv) + after;
           return calcMagnitude(result);
-
         }
       }
     }
@@ -69,22 +68,19 @@ public class Puzzle18 extends PuzzleAbs {
       if (c == '(') {
         bracketDepth++;
 
-        if (bracketDepth >= 5 && s.charAt(i + 4) == ')') {
+        if (bracketDepth > 4 && s.charAt(i + 4) == ')') {
           String pair = s.substring(i + 1, i + 4);
-          String[] ab = pair.split(",");
-          int a = ab[0].charAt(0) - '0';
-          int b = ab[1].charAt(0) - '0';
 
-          for (int as = i; as >= 0; as--) {
+          for (int as = i; as >= 0; as--) { // Increase value to the left
             if (ss[as] >= '0') {
-              ss[as] += a;
+              ss[as] += pair.charAt(0) - '0';
               break;
             }
           }
 
-          for (int bs = i + 4; bs < ss.length; bs++) {
+          for (int bs = i + 4; bs < ss.length; bs++) { // Increase value to the right
             if (ss[bs] >= '0') {
-              ss[bs] += b;
+              ss[bs] += pair.charAt(2) - '0';
               break;
             }
           }
@@ -100,38 +96,42 @@ public class Puzzle18 extends PuzzleAbs {
     return s;
   }
 
-  private String solveA(List<String> lines) {
+  private String reduce(String s) {
+    boolean changed = true;
+    while (changed) {
+      changed = false;
+
+      boolean exploded = true;
+      while (exploded) {
+        String result = explode(s);
+        exploded = !result.equals(s);
+        s = result;
+        if (exploded) {
+          changed = true;
+        }
+      }
+
+      boolean split = true;
+      String result = split(s);
+      split = !result.equals(s);
+      s = result;
+      if (split) {
+        changed = true;
+      }
+    }
+    return s;
+  }
+
+  private long solveA(List<String> lines) {
     lines = lines.stream().map(line -> line.replace('[', '(').replace(']', ')')).collect(Collectors.toList());
     String sum = lines.get(0);
 
     for (int i = 1; i < lines.size(); i++) {
       sum = add(sum, lines.get(i));
-
-      boolean changed = true;
-      while (changed) {
-        changed = false;
-
-        boolean exploded = true;
-        while (exploded) {
-          String result = explode(sum);
-          exploded = !result.equals(sum);
-          sum = result;
-          if (exploded) {
-            changed = true;
-          }
-        }
-
-        boolean split = true;
-        String result = split(sum);
-        split = !result.equals(sum);
-        sum = result;
-        if (split) {
-          changed = true;
-        }
-      }
+      sum = reduce(sum);
     }
 
-    return sum.replace('(', '[').replace(')', ']');
+    return calcMagnitude(sum);
   }
 
   private long solveB(List<String> lines) {
@@ -139,8 +139,7 @@ public class Puzzle18 extends PuzzleAbs {
     for (String a : lines) {
       for (String b : lines) {
         if (!a.equals(b)) {
-          String sum = solveA(Arrays.asList(a, b));
-          max = Math.max(max, calcMagnitude(sum));
+          max = Math.max(max, solveA(Arrays.asList(a, b)));
         }
       }
     }
@@ -174,13 +173,14 @@ public class Puzzle18 extends PuzzleAbs {
 
   @Test
   public void testAssumption() {
-
     assertTrue('[' > '9');
     assertTrue(']' > '9');
+    // Brackets are greater than numbers, so I really need to get rid of them
 
     assertTrue('(' < '0');
     assertTrue(',' < '0');
     assertTrue(')' < '0');
+    // Parentheses and commas are safe
   }
 
   @Test
@@ -196,14 +196,13 @@ public class Puzzle18 extends PuzzleAbs {
         "[[9,3],[[9,9],[6,[4,9]]]]", //
         "[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]", //
         "[[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]");
-    assertEquals(4140, calcMagnitude(solveA(testInput)));
+    assertEquals(4140, solveA(testInput));
 
     announceResultA();
     List<String> lines = getInput();
-    String result = solveA(lines);
-    long m = calcMagnitude(result);
-    System.out.println(m);
-    assertEquals(3763, m);
+    long result = solveA(lines);
+    System.out.println(result);
+    assertEquals(3763, result);
 
     testInput = Arrays.asList( //
         "[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]", //
@@ -219,9 +218,9 @@ public class Puzzle18 extends PuzzleAbs {
     assertEquals(3993, solveB(testInput));
 
     announceResultB();
-    m = solveB(lines);
-    System.out.println(m);
-    assertEquals(4664, m);
+    result = solveB(lines);
+    System.out.println(result);
+    assertEquals(4664, result);
   }
 
 }

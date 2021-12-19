@@ -33,13 +33,18 @@ public class Puzzle19 extends PuzzleAbs {
           // For all points of the scanner's beacon list: check how many points
           // from the candidate's beacon list match position with the current dx, dy, dz
           int overlap = 0;
-          for (int[] saa : scanner) {
+
+          for (int j = 0; j < scanner.size(); j++) {
+            if (12 - overlap > scanner.size() - j) {
+              break; // It's no use to continue; we'll never find 12 matches
+            }
+
+            int[] saa = scanner.get(j);
             int x = saa[0];
             int y = saa[1];
             int z = saa[2];
 
-            for (int j = 0; j < rotatedCandidate.size(); j++) {
-              int[] sbb = rotatedCandidate.get(j);
+            for (int[] sbb : rotatedCandidate) {
               int xx = sbb[0] + dx;
               int yy = sbb[1] + dy;
               int zz = sbb[2] + dz;
@@ -62,6 +67,7 @@ public class Puzzle19 extends PuzzleAbs {
                       dx, dy, dz
                   };
                 }
+                break;
               }
             }
           }
@@ -103,27 +109,27 @@ public class Puzzle19 extends PuzzleAbs {
     return result;
   }
 
-  private int[] pointTurn(int[] p) {
-    return new int[] {
-        -p[1], p[0], p[2]
-    };
-  }
-
   private int[] pointRoll(int[] p) {
     return new int[] {
         p[0], p[2], -p[1]
     };
   }
 
+  private int[] pointTurn(int[] p) {
+    return new int[] {
+        -p[1], p[0], p[2]
+    };
+  }
+
   private void solve(List<String> lines) {
     List<List<int[]>> uncalibrated = new LinkedList<>();
-    List<int[]> scanner = new LinkedList<>();
+    List<int[]> scanner = new ArrayList<>();
     for (String line : lines) {
       if (line.startsWith("---")) {
         if (!scanner.isEmpty()) {
           uncalibrated.add(scanner);
         }
-        scanner = new LinkedList<>();
+        scanner = new ArrayList<>();
       } else if (!line.isEmpty()) {
         String[] parts = line.split(",");
         int x = Integer.parseInt(parts[0]);
@@ -157,8 +163,7 @@ public class Puzzle19 extends PuzzleAbs {
     points = new HashSet<>();
     for (List<int[]> pt : adjusted) {
       for (int[] p : pt) {
-        String po = Arrays.toString(p);
-        points.add(po);
+        points.add(Arrays.toString(p));
       }
     }
   }

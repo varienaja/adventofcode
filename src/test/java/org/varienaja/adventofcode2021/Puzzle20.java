@@ -57,11 +57,11 @@ public class Puzzle20 extends PuzzleAbs {
 
   private Set<Point> parse(List<String> lines) {
     Set<Point> lightPixels = new HashSet<>();
-    for (int i = 2; i < lines.size(); i++) {
-      char[] pixels = lines.get(i).toCharArray();
-      for (int j = 0; j < pixels.length; j++) {
-        if (pixels[j] == '#') {
-          lightPixels.add(new Point(j, i - 2));
+    for (int y = 0; y < lines.size() - 2; y++) {
+      String line = lines.get(y + 2);
+      for (int x = 0; x < line.length(); x++) {
+        if (line.charAt(x) == '#') {
+          lightPixels.add(new Point(x, y));
         }
       }
     }

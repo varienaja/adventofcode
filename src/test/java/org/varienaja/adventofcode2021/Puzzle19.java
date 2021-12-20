@@ -144,7 +144,6 @@ public class Puzzle19 extends PuzzleAbs {
     distances = new LinkedList<>();
     List<List<int[]>> adjusted = new LinkedList<>();
     adjusted.add(scanner); // Just take one scanner result
-    uncalibrated.remove(scanner);
 
     while (!uncalibrated.isEmpty()) { // Search for a candidate that overlaps
       outer: for (List<int[]> ok : adjusted) {
@@ -191,7 +190,7 @@ public class Puzzle19 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testDay19() {
     List<String> testInput = Arrays.asList( //
         "--- scanner 0 ---", //
         "404,-588,-901", //

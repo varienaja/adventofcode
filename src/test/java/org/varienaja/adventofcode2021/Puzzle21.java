@@ -61,7 +61,9 @@ public class Puzzle21 extends PuzzleAbs {
     long rolls = 0;
     int diceVal = 1;
     while (true) {
-      int r1 = diceVal++; // Don't care about diceVal getting > 100, as 101 has the same effect as 1
+      // Don't care about diceVal getting > 100, because 101 has the same effect as
+      // 1 because our playing area is only 10 fields long.
+      int r1 = diceVal++;
       int r2 = diceVal++;
       int r3 = diceVal++;
       rolls += 3;

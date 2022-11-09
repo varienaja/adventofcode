@@ -3,6 +3,7 @@ package org.varienaja.adventofcode2020;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2020.

@@ -16,6 +16,14 @@ public class Point {
     hash = 31099 * x + 773 * y;
   }
 
+  public double angle() {
+    double result = 0;
+    if (x < 0) {
+      result = Math.PI;
+    }
+    return result + Math.atan((double)y / (double)x);
+  }
+
   @Override
   public boolean equals(Object other) {
     if (other instanceof Point) {
@@ -30,13 +38,33 @@ public class Point {
         new Point(x - 1, y + 1), new Point(x + 1, y - 1), new Point(x + 1, y + 1)));
   }
 
+  public Point getEast() {
+    return new Point(x + 1, y);
+  }
+
+  public Point getNorth() {
+    return new Point(x, y - 1);
+  }
+
   public Set<Point> getNSWENeighbours() {
-    return new HashSet<>(Arrays.asList(new Point(x - 1, y), new Point(x + 1, y), new Point(x, y - 1), new Point(x, y + 1)));
+    return new HashSet<>(Arrays.asList(getWest(), getEast(), getNorth(), getSouth()));
+  }
+
+  public Point getSouth() {
+    return new Point(x, y + 1);
+  }
+
+  public Point getWest() {
+    return new Point(x - 1, y);
   }
 
   @Override
   public int hashCode() {
     return hash;
+  }
+
+  public int manhattanDistance(Point target) {
+    return Math.abs(target.x - x) + Math.abs(target.y - y);
   }
 
   public boolean nextTo(Point other) {

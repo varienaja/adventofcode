@@ -10,6 +10,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.junit.Test;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2020.

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2021.

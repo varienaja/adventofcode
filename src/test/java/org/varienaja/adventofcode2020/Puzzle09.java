@@ -7,6 +7,7 @@ import java.util.LongSummaryStatistics;
 import java.util.stream.LongStream;
 
 import org.junit.Test;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2020.

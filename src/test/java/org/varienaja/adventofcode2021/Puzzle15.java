@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.varienaja.Point;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2021.

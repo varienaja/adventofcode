@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
+import org.varienaja.PuzzleAbs;
 
 /**
  * Solutions for Advent of Code 2020.

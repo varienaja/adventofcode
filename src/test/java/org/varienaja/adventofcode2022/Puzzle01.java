@@ -2,7 +2,6 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -17,29 +16,50 @@ import org.varienaja.PuzzleAbs;
  * @see <a href="https://adventofcode.com/2022">adventofcode.com</a>
  */
 public class Puzzle01 extends PuzzleAbs {
-  private NavigableSet<Long> elfCalories = new TreeSet<>((l1, l2) -> Long.compare(l2, l1));
+
+  @Test
+  public void doDay01a() {
+    announceResultA();
+    List<String> lines = getInput();
+    long result = solveA(lines);
+    assertEquals(66186L, result);
+    System.out.println(result);
+  }
+
+  @Test
+  public void doDay01b() {
+    announceResultB();
+    List<String> lines = getInput();
+    long result = solveB(lines);
+    assertEquals(196804L, result);
+    System.out.println(result);
+  }
 
   private long solveA(List<String> lines) {
-    elfCalories.clear();
+    return sumTop(lines, 1);
+  }
+
+  private long solveB(List<String> lines) {
+    return sumTop(lines, 3);
+  }
+
+  private long sumTop(List<String> lines, int count) {
+    NavigableSet<Long> elfCalories = new TreeSet<>((l1, l2) -> Long.compare(l2, l1));
 
     long elfCals = 0L;
     for (String l : lines) {
       if (l.isEmpty()) {
         elfCalories.add(elfCals);
+        if (elfCalories.size() > count) { // Optimization for very large inputs
+          elfCalories.pollLast();
+        }
         elfCals = 0L;
       } else {
         elfCals += Long.parseLong(l);
       }
     }
 
-    return elfCalories.iterator().next();
-  }
-
-  private long solveB(List<String> lines) {
-    solveA(lines);
-
-    Iterator<Long> it = elfCalories.iterator();
-    return it.next() + it.next() + it.next();
+    return elfCalories.stream().mapToLong(l -> l).sum();
   }
 
   @Test
@@ -62,18 +82,7 @@ public class Puzzle01 extends PuzzleAbs {
         "" //
     );
     assertEquals(24000, solveA(testInput));
-
-    announceResultA();
-    List<String> lines = getInput();
-    long result = solveA(lines);
-    assertEquals(66186L, result);
-    System.out.println(result);
-
     assertEquals(45000, solveB(testInput));
-    announceResultB();
-    result = solveB(lines);
-    assertEquals(196804L, result);
-    System.out.println(result);
   }
 
 }

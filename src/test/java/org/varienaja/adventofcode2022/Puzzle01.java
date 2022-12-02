@@ -18,19 +18,17 @@ import org.varienaja.PuzzleAbs;
 public class Puzzle01 extends PuzzleAbs {
 
   @Test
-  public void doDay01a() {
+  public void doA() {
     announceResultA();
-    List<String> lines = getInput();
-    long result = solveA(lines);
+    long result = solveA(getInput());
     assertEquals(66186L, result);
     System.out.println(result);
   }
 
   @Test
-  public void doDay01b() {
+  public void doB() {
     announceResultB();
-    List<String> lines = getInput();
-    long result = solveB(lines);
+    long result = solveB(getInput());
     assertEquals(196804L, result);
     System.out.println(result);
   }
@@ -63,7 +61,7 @@ public class Puzzle01 extends PuzzleAbs {
   }
 
   @Test
-  public void testDay01() {
+  public void testAB() {
     List<String> testInput = List.of( //
         "1000", //
         "2000", //

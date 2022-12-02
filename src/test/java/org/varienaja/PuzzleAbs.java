@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PuzzleAbs {
 
@@ -36,12 +37,7 @@ public class PuzzleAbs {
   }
 
   protected List<Long> getLongInput() {
-    List<String> input = getInput();
-    List<Long> result = new ArrayList<>(input.size());
-    for (String s : getInput()) {
-      result.add(Long.parseLong(s));
-    }
-    return result;
+    return getInput().stream().map(Long::parseLong).collect(Collectors.toCollection(ArrayList::new));
   }
 
   private String getMyNumber() {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
 
@@ -14,6 +15,7 @@ import org.varienaja.PuzzleAbs;
  * @see <a href="https://adventofcode.com/2022">adventofcode.com</a>
  */
 public class Puzzle06 extends PuzzleAbs {
+  int start = 0;
 
   @Test
   public void doA() {
@@ -31,9 +33,19 @@ public class Puzzle06 extends PuzzleAbs {
     System.out.println(result);
   }
 
+  @Test
+  @Ignore
+  public void doC() {
+    announceResultC();
+    long result = solveC(getLargeInputString());
+    assertEquals(506020000L, result);
+    System.out.println(result);
+  }
+
   private long solve(String line, int distinctCount) {
-    for (int ix = distinctCount; ix < line.length(); ix++) {
+    for (int ix = distinctCount + start; ix < line.length(); ix++) {
       if (IntStream.range(ix - distinctCount, ix).map(i -> line.charAt(i)).distinct().count() == distinctCount) {
+        start = ix;
         return ix;
       }
     }
@@ -41,11 +53,23 @@ public class Puzzle06 extends PuzzleAbs {
   }
 
   private long solveA(String line) {
+    start = 0;
     return solve(line, 4);
   }
 
   private long solveB(String line) {
+    start = 0;
     return solve(line, 14);
+  }
+
+  private long solveC(String line) {
+    long sum = 0;
+    for (int i = 1; i <= 94; i++) {
+      long result = solve(line, i);
+      System.out.println(result);
+      sum += result;
+    }
+    return sum;
   }
 
   @Test

@@ -5,6 +5,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Point {
+  public enum Direction {
+    north(0, -1), south(0, 1), west(-1, 0), east(1, 0);
+
+    protected int dx;
+    protected int dy;
+
+    Direction(int dx, int dy) {
+      this.dx = dx;
+      this.dy = dy;
+    }
+  }
+
   public final int x;
   public final int y;
   private final int hash;
@@ -14,6 +26,10 @@ public class Point {
     this.y = y;
 
     hash = 31099 * x + 773 * y;
+  }
+
+  public Point add(Direction d) {
+    return new Point(x + d.dx, y + d.dy);
   }
 
   public double angle() {
@@ -39,11 +55,11 @@ public class Point {
   }
 
   public Point getEast() {
-    return new Point(x + 1, y);
+    return add(Direction.east);
   }
 
   public Point getNorth() {
-    return new Point(x, y - 1);
+    return add(Direction.north);
   }
 
   public Set<Point> getNSWENeighbours() {
@@ -51,11 +67,11 @@ public class Point {
   }
 
   public Point getSouth() {
-    return new Point(x, y + 1);
+    return add(Direction.south);
   }
 
   public Point getWest() {
-    return new Point(x - 1, y);
+    return add(Direction.west);
   }
 
   @Override

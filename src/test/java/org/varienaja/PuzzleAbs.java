@@ -23,9 +23,19 @@ public class PuzzleAbs {
     System.out.print("b: ");
   }
 
+  protected void announceResultC() {
+    announceResult();
+    System.out.print("c: ");
+  }
+
   protected List<String> getInput() {
+    return getInput(false);
+  }
+
+  private List<String> getInput(boolean large) {
     try {
-      String resourceName = getMyYear() + "/day" + getMyNumber() + ".txt";
+      String suffix = large ? "_large" : "";
+      String resourceName = getMyYear() + "/day" + getMyNumber() + suffix + ".txt";
       return Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource(resourceName).toURI()));
     } catch (Exception e) { // Ignore
     }
@@ -34,6 +44,10 @@ public class PuzzleAbs {
 
   protected String getInputString() {
     return getInput().get(0);
+  }
+
+  protected String getLargeInputString() {
+    return getInput(true).get(0);
   }
 
   protected List<Long> getLongInput() {

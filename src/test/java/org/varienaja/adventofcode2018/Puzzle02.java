@@ -5,12 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
-
-import com.google.common.base.Functions;
 
 /**
  * Solutions for Advent of Code 2018.
@@ -42,7 +41,7 @@ public class Puzzle02 extends PuzzleAbs {
     long threeCount = 0;
 
     for (String s : input) {
-      Map<Character, Long> char2count = s.chars().mapToObj(c -> (char)c).collect(Collectors.groupingBy(Functions.identity(), Collectors.counting()));
+      Map<Character, Long> char2count = s.chars().mapToObj(c -> (char)c).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
       for (Long l : new HashSet<>(char2count.values())) {
         if (l == 2L) {

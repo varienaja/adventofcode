@@ -7,13 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.varienaja.Point;
 import org.varienaja.PuzzleAbs;
-
-import com.google.common.base.Functions;
 
 /**
  * Solutions for Advent of Code 2018.
@@ -73,7 +72,7 @@ public class Puzzle18 extends PuzzleAbs {
           Map<Character, Long> adjacent2Count = p.getAllNeighbours().stream() //
               .map(grid1::get) //
               .filter(Objects::nonNull) //
-              .collect(Collectors.groupingBy(Functions.identity(), Collectors.counting()));
+              .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
           if (c == OPEN) {
             // Becomes trees if >=3 are trees, otherwise nothing happens

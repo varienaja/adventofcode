@@ -8,7 +8,18 @@ public class Point {
   public enum Direction {
     north(0, -1), south(0, 1), west(-1, 0), east(1, 0);
 
+    public static Direction fromChar(char c) {
+      if (c == 'U' || c == 'N') { // Up, North
+        return north;
+      } else if (c == 'D' || c == 'S') {// Down, South
+        return south;
+      } else if (c == 'R' || c == 'E') { // Right, East
+        return east;
+      }
+      return west;
+    }
     protected int dx;
+
     protected int dy;
 
     Direction(int dx, int dy) {

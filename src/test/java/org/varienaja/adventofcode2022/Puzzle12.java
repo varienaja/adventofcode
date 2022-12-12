@@ -2,14 +2,15 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -50,13 +51,11 @@ public class Puzzle12 extends PuzzleAbs {
     assertEquals(29L, solveB(getTestInput()));
   }
 
-  private Integer findWay(Point from, Point to, Map<Point, Character> world) {
+  private Integer findWay(Set<Point> from, Point to, Map<Point, Character> world) {
     // Dijkstra... find route to 'to', going 1 step, and no more than one step up (but more than one down!)
-    Map<Point, Integer> visited = new HashMap<>();
-    visited.put(from, 0);
-
-    Queue<Point> queue = new PriorityQueue<>((p1, p2) -> visited.get(p1) - visited.get(p2));
-    queue.add(from);
+    Map<Point, Integer> visited = from.stream().collect(Collectors.toMap(Function.identity(), p -> 0, (p1, p2) -> p1, HashMap::new));
+    Queue<Point> queue = new PriorityQueue<>(Comparator.comparing(visited::get));
+    queue.addAll(from);
 
     while (!queue.isEmpty()) {
       Point p = queue.poll();
@@ -64,22 +63,16 @@ public class Puzzle12 extends PuzzleAbs {
         return visited.get(to);
       }
 
-      if (world.containsKey(p)) {
-        char h = world.get(p);
-
-        Set<Point> next = p.getNSWENeighbours().stream() //
-            .filter(nb -> !visited.containsKey(nb)) //
-            .filter(world::containsKey) //
-            .filter(nb -> world.get(nb) - h <= 1) //
-            .collect(Collectors.toSet());
-        for (Point possible : next) {
-          int dist = visited.get(p);
-          visited.put(possible, dist + 1);
-          queue.offer(possible);
-        }
-      }
+      char h = world.get(p);
+      int dist = visited.get(p) + 1;
+      p.getNSWENeighbours().stream() //
+          .filter(nb -> !visited.containsKey(nb)) //
+          .filter(world::containsKey) //
+          .filter(nb -> world.get(nb) - h <= 1) //
+          .peek(possible -> visited.put(possible, dist)) //
+          .forEach(queue::offer);
     }
-    return null;
+    return null; // no way from 'from' to 'to'
   }
 
   private List<String> getTestInput() {
@@ -88,58 +81,41 @@ public class Puzzle12 extends PuzzleAbs {
         "abcryxxl", //
         "accszExk", //
         "acctuvwj", //
-        "abdefghi")// )
-    ;
+        "abdefghi");
   }
 
-  private long solveA(List<String> lines) {
-    Point start = null;
-    Point target = null;
+  private long solve(List<String> lines, boolean partB) {
     Map<Point, Character> world = new HashMap<>();
+    Set<Point> start = new HashSet<>();
+    Point target = null;
 
     for (int y = 0; y < lines.size(); y++) {
       String line = lines.get(y);
       for (int x = 0; x < line.length(); x++) {
         Point p = new Point(x, y);
-        world.put(p, line.charAt(x));
-        if (line.charAt(x) == 'S') {
+        char c = line.charAt(x);
+        world.put(p, c);
+        if (c == 'S') {
           world.put(p, 'a');
-          start = p;
-        } else if (line.charAt(x) == 'E') {
+          start.add(p);
+        } else if (c == 'E') {
           world.put(p, 'z');
           target = p;
+        } else if (partB && c == 'a') {
+          start.add(p);
         }
       }
     }
 
     return findWay(start, target, world);
+  }
 
+  private long solveA(List<String> lines) {
+    return solve(lines, false);
   }
 
   private long solveB(List<String> lines) {
-    Set<Point> start = new HashSet<>();
-    Point target = null;
-    Map<Point, Character> world = new HashMap<>();
-
-    for (int y = 0; y < lines.size(); y++) {
-      String line = lines.get(y);
-      for (int x = 0; x < line.length(); x++) {
-        Point p = new Point(x, y);
-        world.put(p, line.charAt(x));
-        if (line.charAt(x) == 'S') {
-          world.put(p, 'a');
-          start.add(p);
-        } else if (line.charAt(x) == 'E') {
-          world.put(p, 'z');
-          target = p;
-        } else if (line.charAt(x) == 'a') {
-          start.add(p);
-        }
-      }
-    }
-
-    Point tt = target;
-    return start.stream().map(s -> findWay(s, tt, world)).filter(Objects::nonNull).mapToInt(i -> i).min().orElseThrow();
+    return solve(lines, true);
   }
 
 }

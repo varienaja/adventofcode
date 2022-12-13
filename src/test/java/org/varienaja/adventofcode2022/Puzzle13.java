@@ -2,15 +2,20 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -109,51 +114,20 @@ public class Puzzle13 extends PuzzleAbs {
         "[1,[2,[3,[4,[5,6,0]]]],8,9]");
   }
 
-  private Object parse(Queue<Character> line) {
-    if ('[' == line.peek()) {
-      return parseList(line);
+  private Object jsonToJava(JsonValue v) {
+    if (ValueType.ARRAY.equals(v.getValueType())) {
+      return ((JsonArray)v).stream().map(this::jsonToJava).collect(Collectors.toList());
+    } else if (ValueType.NUMBER.equals(v.getValueType())) {
+      return ((JsonNumber)v).intValue();
     }
-    return parseNumber(line);
-  }
 
-  private List<Object> parseItems(Queue<Character> line) {
-    List<Object> result = new ArrayList<>();
-
-    char c;
-    while ((c = line.peek()) != ']') {
-      if (Character.isDigit(c)) {
-        result.add(parseNumber(line));
-      } else {
-        if (c == ',') {
-          line.poll();
-        }
-        result.add(parse(line));
-      }
-    }
-    return result;
+    throw new IllegalArgumentException();
   }
 
   @SuppressWarnings("unchecked")
   private List<Object> parseLine(String line) {
-    return (List<Object>)parse(line.chars().mapToObj(c -> (char)c).collect(Collectors.toCollection(LinkedList::new)));
-  }
-
-  private List<Object> parseList(Queue<Character> line) {
-    line.poll(); // [
-    List<Object> result = new ArrayList<>();
-    result.addAll(parseItems(line));
-    line.poll(); // ]
-    return result;
-  }
-
-  private Integer parseNumber(Queue<Character> line) {
-    StringBuilder sb = new StringBuilder();
-
-    while (Character.isDigit(line.peek())) {
-      sb.append(line.poll());
-    }
-
-    return Integer.parseInt(sb.toString());
+    JsonReader reader = Json.createReader(new StringReader(line));
+    return (List<Object>)jsonToJava(reader.read());
   }
 
   private long solveA(List<String> lines) {
@@ -162,10 +136,7 @@ public class Puzzle13 extends PuzzleAbs {
     long ix = 1;
     Iterator<String> it = lines.iterator();
     while (it.hasNext()) {
-      String left = it.next();
-      String right = it.next();
-
-      if (compare(parseLine(left), parseLine(right)) <= 0) {
+      if (compare(parseLine(it.next()), parseLine(it.next())) <= 0) {
         result += ix;
       }
       ix++;

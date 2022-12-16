@@ -19,22 +19,22 @@ import org.varienaja.PuzzleAbs;
  */
 public class Puzzle16 extends PuzzleAbs {
 
-  private class Key {
+  private class State {
     int pos;
     long vOpen;
     int time;
     boolean partB;
 
-    Key(int pos, long vOpen, int time, boolean partB) {
-      this.pos = pos;
+    State(int pos, long vOpen, int time, boolean partB) {
       this.vOpen = vOpen;
+      this.pos = pos;
       this.time = time;
       this.partB = partB;
     }
 
     @Override
     public boolean equals(Object o) {
-      Key other = (Key)o;
+      State other = (State)o;
       return other.pos == pos && other.vOpen == vOpen && other.time == time && other.partB == partB;
     }
 
@@ -44,10 +44,11 @@ public class Puzzle16 extends PuzzleAbs {
     }
   }
 
-  private Map<Key, Long> solutions;
-  private long[] rates;
+  private Map<State, Long> states;
+  private int[] rates;
   private int[][] connections;
   private int startPos;
+  int[][] dist;
 
   @Test
   public void doA() {
@@ -75,6 +76,45 @@ public class Puzzle16 extends PuzzleAbs {
     assertEquals(1707L, solveB(getTestInput()));
   }
 
+  private void calcFloydWarshall() {
+    // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    // let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)
+    dist = new int[rates.length][rates.length];
+    for (int i = 0; i < dist.length; i++) {
+      for (int j = 0; j < dist[i].length; j++) {
+        dist[i][j] = 9999;
+      }
+    }
+
+    // for each edge (u, v) do
+    // ...dist[u][v] ← w(u, v) // The weight of the edge (u, v)
+    for (int i = 0; i < connections.length; i++) {
+      for (int j : connections[i]) {
+        dist[i][j] = 1; // connections[i][j];
+      }
+    }
+
+    // for each vertex v do
+    // ...dist[v][v] ← 0
+    for (int i = 0; i < dist.length; i++) {
+      dist[i][i] = 0;
+    }
+
+    // for k from 1 to |V|
+    // for i from 1 to |V|
+    // for j from 1 to |V|
+    // if dist[i][j] > dist[i][k] + dist[k][j]
+    // dist[i][j] ← dist[i][k] + dist[k][j]
+    // end if
+    for (int k = 0; k < dist.length; k++) {
+      for (int i = 0; i < dist.length; i++) {
+        for (int j = 0; j < dist.length; j++) {
+          dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+        }
+      }
+    }
+  }
+
   private List<String> getTestInput() {
     return List.of( //
         "Valve AA has flow rate=0; tunnels lead to valves DD, II, BB", //
@@ -90,9 +130,9 @@ public class Puzzle16 extends PuzzleAbs {
   }
 
   private void parse(List<String> lines) {
-    solutions = new HashMap<>();
+    states = new HashMap<>();
     Map<String, Integer> name2ix = new HashMap<>();
-    rates = new long[lines.size()];
+    rates = new int[lines.size()];
 
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);
@@ -108,54 +148,73 @@ public class Puzzle16 extends PuzzleAbs {
       if (ix == 6) {
         ix = line.indexOf("valve ") + 6;
       }
-
       connections[i] = Pattern.compile(",\\s").splitAsStream(line.substring(ix)).mapToInt(name2ix::get).toArray();
     }
 
     startPos = name2ix.get("AA");
+    calcFloydWarshall();
   }
 
-  private long solve(Key key) {
-    if (key.time == 0) {
-      return key.partB ? solve(new Key(startPos, key.vOpen, 26, false)) : 0L;
-    }
-
-    if (solutions.containsKey(key)) {
-      return solutions.get(key);
+  private long solve(State s) {
+    // from https://github.com/betaveros/advent-of-code-2022/blob/main/p16.noul
+    if (states.containsKey(s)) {
+      return states.get(s);
     }
 
     long result = 0L;
-    boolean newValveOpened = (key.vOpen & 1L << key.pos) == 0L;
-    if (newValveOpened && rates[key.pos] > 0L) {
-      long newOpen = key.vOpen | 1L << key.pos;
-      result = Math.max(result, (key.time - 1) * rates[key.pos] + solve(new Key(key.pos, newOpen, key.time - 1, key.partB)));
-    } // else { //this else makes things much quicker but unfortunately does not reliably work: sometimes you have to
-      // move first, not open first
-    for (int nextPos : connections[key.pos]) {
-      result = Math.max(result, solve(new Key(nextPos, key.vOpen, key.time - 1, key.partB)));
-    }
-    // }
-    solutions.put(key, result);
 
+    for (int nextPos = 0; nextPos < rates.length; ++nextPos) {
+      if (rates[nextPos] > 0) {
+        boolean newValveOpened = (s.vOpen & 1L << nextPos) == 0L;
+        if (newValveOpened) {
+          long newOpen = s.vOpen | 1L << nextPos;
+
+          int distance = dist[s.pos][nextPos];
+          if (distance < s.time) {
+            result = Math.max(result, rates[nextPos] * (s.time - distance - 1) + solve(new State(nextPos, newOpen, s.time - distance - 1, s.partB)));
+          }
+        }
+      }
+    }
+    if (result == 0L && s.partB) {
+      result = solve(new State(startPos, s.vOpen, 26, false));
+    }
+
+    states.put(s, result);
     return result;
   }
 
   private long solveA(List<String> lines) {
     parse(lines);
-    try {
-      return solve(new Key(startPos, 0L, 30, false));
-    } finally {
-      System.out.println("Solutions: " + solutions.size());
-    }
+    return solve(new State(startPos, 0L, 30, false));
   }
 
   private long solveB(List<String> lines) {
     parse(lines);
-    try {
-      return solve(new Key(startPos, 0L, 26, true));
-    } finally {
-      System.out.println("Solutions: " + solutions.size());
+    return solve(new State(startPos, 0L, 26, true));
+  }
+
+  private long solveSlower(State s) {
+    if (s.time == 0) {
+      return s.partB ? solve(new State(startPos, s.vOpen, 26, false)) : 0L;
     }
+
+    if (states.containsKey(s)) {
+      return states.get(s);
+    }
+
+    long result = 0L;
+    boolean newValveOpened = (s.vOpen & 1L << s.pos) == 0L;
+    if (newValveOpened && rates[s.pos] > 0L) {
+      long newOpen = s.vOpen | 1L << s.pos;
+      result = Math.max(result, (s.time - 1) * rates[s.pos] + solve(new State(s.pos, newOpen, s.time - 1, s.partB)));
+    }
+    for (int nextPos : connections[s.pos]) {
+      result = Math.max(result, solve(new State(nextPos, s.vOpen, s.time - 1, s.partB)));
+    }
+    states.put(s, result);
+
+    return result;
   }
 
 }

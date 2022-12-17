@@ -19,11 +19,11 @@ import org.varienaja.PuzzleAbs;
  */
 public class Puzzle16 extends PuzzleAbs {
 
-  private class State {
-    int pos;
-    long vOpen;
-    int time;
-    boolean partB;
+  private static class State {
+    final int pos;
+    final long vOpen;
+    final int time;
+    final boolean partB;
 
     State(int pos, long vOpen, int time, boolean partB) {
       this.vOpen = vOpen;
@@ -176,8 +176,8 @@ public class Puzzle16 extends PuzzleAbs {
         }
       }
     }
-    if (result == 0L && s.partB) {
-      result = solve(new State(startPos, s.vOpen, 26, false));
+    if (s.partB) {
+      result = Math.max(result, solve(new State(startPos, s.vOpen, 26, false)));
     }
 
     states.put(s, result);
@@ -192,29 +192,6 @@ public class Puzzle16 extends PuzzleAbs {
   private long solveB(List<String> lines) {
     parse(lines);
     return solve(new State(startPos, 0L, 26, true));
-  }
-
-  private long solveSlower(State s) {
-    if (s.time == 0) {
-      return s.partB ? solve(new State(startPos, s.vOpen, 26, false)) : 0L;
-    }
-
-    if (states.containsKey(s)) {
-      return states.get(s);
-    }
-
-    long result = 0L;
-    boolean newValveOpened = (s.vOpen & 1L << s.pos) == 0L;
-    if (newValveOpened && rates[s.pos] > 0L) {
-      long newOpen = s.vOpen | 1L << s.pos;
-      result = Math.max(result, (s.time - 1) * rates[s.pos] + solve(new State(s.pos, newOpen, s.time - 1, s.partB)));
-    }
-    for (int nextPos : connections[s.pos]) {
-      result = Math.max(result, solve(new State(nextPos, s.vOpen, s.time - 1, s.partB)));
-    }
-    states.put(s, result);
-
-    return result;
   }
 
 }

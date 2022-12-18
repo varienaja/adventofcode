@@ -111,7 +111,9 @@ public class Puzzle15 extends PuzzleAbs {
     Map<Point, Integer> sensor2beaconDist = parse(lines).entrySet().stream()
         .collect(Collectors.toMap(Entry::getKey, e -> e.getKey().manhattanDistance(e.getValue())));
 
-    for (Entry<Point, Integer> e : sensor2beaconDist.entrySet()) { // check circumference of all sensors
+    // check circumference of all sensors.
+    // Better: check around intersections of diagonal lines that form the border around sensors
+    for (Entry<Point, Integer> e : sensor2beaconDist.entrySet()) {
       int d = e.getValue();
 
       for (int dx = -d - 1; dx <= d + 1; dx++) {

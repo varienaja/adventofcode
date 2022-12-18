@@ -2,15 +2,17 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.varienaja.Point3D;
 import org.varienaja.PuzzleAbs;
 
 /**
@@ -20,33 +22,6 @@ import org.varienaja.PuzzleAbs;
  * @see <a href="https://adventofcode.com/2022">adventofcode.com</a>
  */
 public class Puzzle18 extends PuzzleAbs {
-
-  class Point3D {
-    final int[] dims;
-
-    Point3D(Point3D p) {
-      dims = new int[3];
-      System.arraycopy(p.dims, 0, dims, 0, 3);
-    }
-
-    Point3D(String x, String y, String z) {
-      dims = new int[3];
-      dims[0] = Integer.parseInt(x);
-      dims[1] = Integer.parseInt(y);
-      dims[2] = Integer.parseInt(z);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      Point3D p = (Point3D)o;
-      return Arrays.equals(dims, p.dims);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(dims[0], dims[1], dims[2]);
-    }
-  }
 
   @Test
   public void doA() {
@@ -74,6 +49,13 @@ public class Puzzle18 extends PuzzleAbs {
     assertEquals(58, solveB(getTestInput()));
   }
 
+  private long countNeighbours(Set<Point3D> points, Predicate<Point3D> filter) {
+    return points.stream() //
+        .flatMap(p -> p.getNSWEUDNeighbours().stream()) //
+        .filter(filter) //
+        .count();
+  }
+
   private List<String> getTestInput() {
     return List.of( //
         "2,2,2", //
@@ -92,91 +74,45 @@ public class Puzzle18 extends PuzzleAbs {
   }
 
   private Set<Point3D> parse(List<String> lines) {
-    Set<Point3D> result = new HashSet<>();
-    for (String line : lines) {
-      String[] parts = line.split(",");
-
-      Point3D point = new Point3D(parts[0], parts[1], parts[2]);
-      result.add(point);
-    }
-    return result;
+    return lines.stream() //
+        .map(line -> line.split(",")) //
+        .map(arr -> new Point3D(arr[0], arr[1], arr[2])) //
+        .collect(Collectors.toSet());
   }
 
   private long solveA(List<String> lines) {
     Set<Point3D> points = parse(lines);
 
-    long result = 0;
-    for (Point3D p : points) { // check 6 nbs of p
-      for (int i = 0; i < 3; i++) {
-        for (int dp : new int[] {
-            -1, 1
-        }) {
-          Point3D nb = new Point3D(p);
-          nb.dims[i] += dp;
-          if (!points.contains(nb)) {
-            ++result;
-          }
-        }
-      }
-    }
-
-    return result;
+    return countNeighbours(points, Predicate.not(points::contains));
   }
 
   private long solveB(List<String> lines) {
     Set<Point3D> points = parse(lines);
-    IntSummaryStatistics stats = points.stream().flatMapToInt(p -> Arrays.stream(p.dims)).summaryStatistics();
+    IntSummaryStatistics stats = points.stream().flatMapToInt(p -> IntStream.of(p.x, p.y, p.z)).summaryStatistics();
     int min = stats.getMin() - 1;
     int max = stats.getMax() + 1;
 
     // Sweep cube from (min,min,min) to (max,max,max), collect everything that is 'outside' lava (not in points)
     Set<Point3D> outside = new HashSet<>();
-    Point3D starter = new Point3D("" + min, "" + min, "" + min);
-    if (points.contains(starter)) {
-      throw new IllegalStateException();
-    }
-    Set<Point3D> toRemove = new HashSet<>();
-    toRemove.add(starter);
-    while (!toRemove.isEmpty()) {
-      Iterator<Point3D> it = toRemove.iterator();
-      Point3D c = it.next();
+
+    Set<Point3D> toCheck = new HashSet<>();
+    toCheck.add(new Point3D(min, min, min));
+    while (!toCheck.isEmpty()) {
+      Iterator<Point3D> it = toCheck.iterator();
+      Point3D oPoint = it.next();
       it.remove();
-      outside.add(c);
+      outside.add(oPoint);
 
-      for (int i = 0; i < 3; i++) {
-        for (int dp : new int[] {
-            -1, 1
-        }) {
-          Point3D nb = new Point3D(c);
-          nb.dims[i] += dp;
-          if (!points.contains(nb)) {
-            if (nb.dims[0] >= min && nb.dims[0] <= max && //
-                nb.dims[1] >= min && nb.dims[1] <= max && //
-                nb.dims[2] >= min && nb.dims[2] <= max) {
-              if (!outside.contains(nb)) {
-                toRemove.add(nb);
-              }
-            }
-          }
-        }
-      }
+      oPoint.getNSWEUDNeighbours().stream() //
+          .filter(Predicate.not(points::contains)) //
+          .filter(nb -> nb.x >= min && nb.x <= max && //
+              nb.y >= min && nb.y <= max && //
+              nb.z >= min && nb.z <= max) //
+          .filter(Predicate.not(outside::contains)) //
+          .forEach(toCheck::add);
     }
 
-    long result = 0;
-    for (Point3D p : points) { // check 6 nbs of p
-      for (int i = 0; i < 3; i++) {
-        for (int dp : new int[] {
-            -1, 1
-        }) {
-          Point3D nb = new Point3D(p);
-          nb.dims[i] += dp;
-          if (outside.contains(nb)) {
-            ++result;
-          }
-        }
-      }
-    }
-
-    return result;
+    return countNeighbours(points, outside::contains);
   }
+
 }

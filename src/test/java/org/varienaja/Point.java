@@ -2,6 +2,7 @@ package org.varienaja;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Point {
@@ -18,8 +19,8 @@ public class Point {
       }
       return west;
     }
-    protected int dx;
 
+    protected int dx;
     protected int dy;
 
     Direction(int dx, int dy) {
@@ -30,13 +31,10 @@ public class Point {
 
   public final int x;
   public final int y;
-  private final int hash;
 
   public Point(int x, int y) {
     this.x = x;
     this.y = y;
-
-    hash = 31099 * x + 773 * y;
   }
 
   public Point add(Direction d) {
@@ -87,7 +85,7 @@ public class Point {
 
   @Override
   public int hashCode() {
-    return hash;
+    return Objects.hash(x, y);
   }
 
   public int manhattanDistance(Point target) {

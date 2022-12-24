@@ -22,11 +22,11 @@ import org.varienaja.PuzzleAbs;
  */
 public class Puzzle11 extends PuzzleAbs {
   class Monkey {
-    Queue<Integer> items = new LinkedList<>();
-    int tester;
+    Queue<Long> items = new LinkedList<>();
+    long tester;
     int monkeyFalse;
     int monkeyTrue;
-    Function<Integer, Integer> operation;
+    Function<Long, Long> operation;
     long inspections;
 
     Monkey(List<String> lines, int offset) {
@@ -34,7 +34,7 @@ public class Puzzle11 extends PuzzleAbs {
 
       String s = lines.get(offset + 1);
       String[] startItems = s.split(": ")[1].split(", ");
-      Stream.of(startItems).mapToInt(Integer::parseInt).forEach(items::add);
+      Stream.of(startItems).mapToLong(Long::parseLong).forEach(items::add);
 
       s = lines.get(offset + 2);
       if (s.contains("old +")) {
@@ -59,7 +59,7 @@ public class Puzzle11 extends PuzzleAbs {
 
     void inspect() {
       while (!items.isEmpty()) {
-        int item = items.poll();
+        long item = items.poll();
         item = operation.apply(item);
 
         if (lcm == 1) {
@@ -67,13 +67,11 @@ public class Puzzle11 extends PuzzleAbs {
         } else {
           item %= lcm;
         }
-
         if (item % tester == 0L) {
           monkeys[monkeyTrue].items.offer(item);
         } else {
           monkeys[monkeyFalse].items.offer(item);
         }
-
         inspections++;
       }
     }

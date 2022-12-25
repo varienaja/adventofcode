@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.varienaja.Point;
-import org.varienaja.Point.Direction;
 import org.varienaja.PuzzleAbs;
 
 /**
@@ -69,7 +68,7 @@ public class Puzzle09 extends PuzzleAbs {
       char dir = line.charAt(0); // U, D, L, R
 
       for (int i = 0; i < dist; i++) {
-        snake[0] = snake[0].add(Direction.fromChar(dir));
+        snake[0] = snake[0].add(Point.directionFromChar(dir));
 
         // Move rest of snake
         for (int j = 0; j < snakeLength - 1; j++) {

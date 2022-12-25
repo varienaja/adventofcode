@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.varienaja.Point;
-import org.varienaja.Point.Direction;
 import org.varienaja.PuzzleAbs;
 
 /**
@@ -63,41 +62,41 @@ public class Puzzle22 extends PuzzleAbs {
         "10R5L5R10L4R5L5");
   }
 
-  private Direction mapDirection(int facing) {
+  private Point mapDirection(int facing) {
     if (facing == 0) {
-      return Direction.east;
+      return Point.dEast;
     }
     if (facing == 1) {
-      return Direction.south;
+      return Point.dSouth;
     }
     if (facing == 2) {
-      return Direction.west;
+      return Point.dWest;
     }
-    return Direction.north;
+    return Point.dNorth;
   }
 
-  private int mapFace(Direction d) {
-    if (d == Direction.east) {
+  private int mapFace(Point d) {
+    if (Point.dEast.equals(d)) {
       return 0;
     }
-    if (d == Direction.west) {
+    if (Point.dWest.equals(d)) {
       return 2;
     }
-    if (d == Direction.north) {
+    if (Point.dNorth.equals(d)) {
       return 3;
     }
     return 1;
   }
 
-  private Direction opposite(Direction d) {
-    if (d == Direction.north) {
-      return Direction.south;
-    } else if (d == Direction.south) {
-      return Direction.north;
-    } else if (d == Direction.west) {
-      return Direction.east;
+  private Point opposite(Point d) {
+    if (Point.dNorth.equals(d)) {
+      return Point.dSouth;
+    } else if (Point.dSouth.equals(d)) {
+      return Point.dNorth;
+    } else if (Point.dWest.equals(d)) {
+      return Point.dEast;
     }
-    return Direction.west;
+    return Point.dWest;
   }
 
   private long solveA(List<String> lines) {
@@ -108,7 +107,7 @@ public class Puzzle22 extends PuzzleAbs {
 
     Point myPos = new Point(1, 1);
     int myFacing = 0;
-    Direction d = Direction.east;
+    Point d = Point.dEast;
 
     int y = 0;
     boolean parsingMaze = true;
@@ -156,7 +155,7 @@ public class Puzzle22 extends PuzzleAbs {
           // opposite direction...
           // find until no point found, if stone: don't move
           Point wrapPos = new Point(myPos.x, myPos.y);
-          Direction op = opposite(d);
+          Point op = opposite(d);
           char wrap = ' ';
           do {
             wrap = maze.get(wrapPos);
@@ -206,7 +205,7 @@ public class Puzzle22 extends PuzzleAbs {
 
     Point myPos = new Point(1, 1);
     int myFacing = 0;
-    Direction d = Direction.east;
+    Point d = Point.dEast;
 
     int y = 0;
     boolean parsingMaze = true;
@@ -253,55 +252,55 @@ public class Puzzle22 extends PuzzleAbs {
         if (m == null) { // wrap around.. TYPE B
           Point wrapPos = null;
           if (nextPos.x >= 150) { // Beast
-            d = Direction.west;
+            d = Point.dWest;
             wrapPos = new Point(99, 149 - myPos.y);
           } else if (nextPos.y < 0) { // D or E
             if (nextPos.x >= 100) { // Eup
               wrapPos = new Point(myPos.x - 100, 199);
             } else { // Dup
               wrapPos = new Point(0, myPos.x + 100);
-              d = Direction.east;
+              d = Point.dEast;
             }
           } else if (nextPos.x < 0) { // D or G
             if (nextPos.y >= 150) { // Dwest
               wrapPos = new Point(myPos.y - 100, 0);
-              d = Direction.south;
+              d = Point.dSouth;
             } else { // Gwest
               wrapPos = new Point(50, 149 - myPos.y);
-              d = Direction.east;
+              d = Point.dEast;
             }
           } else if (nextPos.y < 100 && nextPos.x < 50) { // J or G
             if (myPos.y < 50) { // Gwest2
               wrapPos = new Point(0, 149 - myPos.y);
-              d = Direction.east;
+              d = Point.dEast;
             } else { // Jwest
-              if (d == Direction.west) {
+              if (d == Point.dWest) {
                 wrapPos = new Point(myPos.y - 50, 100);
-                d = Direction.south;
+                d = Point.dSouth;
               } else { // Jnorth
                 wrapPos = new Point(50, myPos.x + 50);
-                d = Direction.east;
+                d = Point.dEast;
               }
             }
           } else if (nextPos.y >= 150 && nextPos.x >= 50) { // Csouth / Ceast
-            if (d == Direction.south) { // Csouth
+            if (d == Point.dSouth) { // Csouth
               wrapPos = new Point(49, myPos.x + 100);
-              d = Direction.west;
+              d = Point.dWest;
             } else { // Ceast
               wrapPos = new Point(myPos.y - 100, 149);
-              d = Direction.north;
+              d = Point.dNorth;
             }
           } else if (nextPos.y >= 200) { // Esouth
             wrapPos = new Point(myPos.x + 100, 0);
           } else if (nextPos.x >= 100 && nextPos.y >= 50) { // Asouth, Aeast, beast
             if (nextPos.y >= 100) { // Beast2
-              d = Direction.west;
+              d = Point.dWest;
               wrapPos = new Point(149, 149 - myPos.y);
-            } else if (d == Direction.east) { // Aeast
-              d = Direction.north;
+            } else if (d == Point.dEast) { // Aeast
+              d = Point.dNorth;
               wrapPos = new Point(myPos.y + 50, 49);
             } else { // aSouth
-              d = Direction.west;
+              d = Point.dWest;
               wrapPos = new Point(99, myPos.x - 50);
             }
           }

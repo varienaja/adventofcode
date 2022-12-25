@@ -6,27 +6,24 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Point {
-  public enum Direction {
-    north(0, -1), south(0, 1), west(-1, 0), east(1, 0);
+  public static Point dNorthEast = new Point(1, -1);
+  public static Point dNorthWest = new Point(-1, -1);
+  public static Point dNorth = new Point(0, -1);
+  public static Point dSouth = new Point(0, 1);
+  public static Point dSouthEast = new Point(1, 1);
+  public static Point dSouthWest = new Point(-1, 1);
+  public static Point dWest = new Point(-1, 0);
+  public static Point dEast = new Point(1, 0);
 
-    public static Direction fromChar(char c) {
-      if (c == 'U' || c == 'N') { // Up, North
-        return north;
-      } else if (c == 'D' || c == 'S') {// Down, South
-        return south;
-      } else if (c == 'R' || c == 'E') { // Right, East
-        return east;
-      }
-      return west;
+  public static Point directionFromChar(char c) {
+    if (c == 'U' || c == 'N') { // Up, North
+      return dNorth;
+    } else if (c == 'D' || c == 'S') {// Down, South
+      return dSouth;
+    } else if (c == 'R' || c == 'E') { // Right, East
+      return dEast;
     }
-
-    protected int dx;
-    protected int dy;
-
-    Direction(int dx, int dy) {
-      this.dx = dx;
-      this.dy = dy;
-    }
+    return dWest;
   }
 
   public final int x;
@@ -37,8 +34,8 @@ public class Point {
     this.y = y;
   }
 
-  public Point add(Direction d) {
-    return new Point(x + d.dx, y + d.dy);
+  public Point add(Point d) {
+    return new Point(x + d.x, y + d.y);
   }
 
   public double angle() {
@@ -59,16 +56,31 @@ public class Point {
   }
 
   public Set<Point> getAllNeighbours() {
-    return new HashSet<>(Arrays.asList(new Point(x - 1, y), new Point(x + 1, y), new Point(x, y - 1), new Point(x, y + 1), new Point(x - 1, y - 1),
-        new Point(x - 1, y + 1), new Point(x + 1, y - 1), new Point(x + 1, y + 1)));
+    return new HashSet<>(Arrays.asList(getWest(), getEast(), getNorth(), getSouth(), getNorthEast(), getNorthWest(), getSouthEast(), getSouthWest()));
   }
 
   public Point getEast() {
-    return add(Direction.east);
+    return add(dEast);
+  }
+
+  public Set<Point> getEastNeighbours() {
+    return new HashSet<>(Arrays.asList(getEast(), getNorthEast(), getSouthEast()));
   }
 
   public Point getNorth() {
-    return add(Direction.north);
+    return add(dNorth);
+  }
+
+  public Point getNorthEast() {
+    return add(dNorthEast);
+  }
+
+  public Set<Point> getNorthNeighbours() {
+    return new HashSet<>(Arrays.asList(getNorth(), getNorthWest(), getNorthEast()));
+  }
+
+  public Point getNorthWest() {
+    return add(dNorthWest);
   }
 
   public Set<Point> getNSWENeighbours() {
@@ -76,11 +88,27 @@ public class Point {
   }
 
   public Point getSouth() {
-    return add(Direction.south);
+    return add(dSouth);
+  }
+
+  public Point getSouthEast() {
+    return add(dSouthEast);
+  }
+
+  public Set<Point> getSouthNeighbours() {
+    return new HashSet<>(Arrays.asList(getSouth(), getSouthEast(), getSouthWest()));
+  }
+
+  public Point getSouthWest() {
+    return add(dSouthWest);
   }
 
   public Point getWest() {
-    return add(Direction.west);
+    return add(dWest);
+  }
+
+  public Set<Point> getWestNeighbours() {
+    return new HashSet<>(Arrays.asList(getWest(), getNorthWest(), getSouthWest()));
   }
 
   @Override

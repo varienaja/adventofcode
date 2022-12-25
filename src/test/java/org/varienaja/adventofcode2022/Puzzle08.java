@@ -45,7 +45,7 @@ public class Puzzle08 extends PuzzleAbs {
 
   private long calcScenicScore(List<String> lines, Point treeHouseCandidate, long maxX, long maxY) {
     long score = 1;
-    for (Point.Direction d : Point.Direction.values()) {
+    for (Point d : new Point(0, 0).getNSWENeighbours()) {
       Point tree = new Point(treeHouseCandidate.x, treeHouseCandidate.y);
       boolean visible = true;
       char height = lines.get(tree.y).charAt(tree.x);
@@ -70,7 +70,7 @@ public class Puzzle08 extends PuzzleAbs {
   }
 
   private boolean isVisible(List<String> lines, Point start, long maxX, long maxY) {
-    for (Point.Direction d : Point.Direction.values()) {
+    for (Point d : new Point(0, 0).getNSWENeighbours()) {
       Point tree = new Point(start.x, start.y);
       boolean visible = true;
       char height = lines.get(tree.y).charAt(tree.x);
@@ -95,7 +95,7 @@ public class Puzzle08 extends PuzzleAbs {
     int maxX = lines.size() - 1;
     int maxY = lines.get(0).length() - 1;
 
-    return IntStream.rangeClosed(0, maxX).parallel().mapToLong( //
+    return IntStream.rangeClosed(0, maxX)/* .parallel() */.mapToLong( //
         x -> IntStream.rangeClosed(0, maxY).filter( //
             y -> isVisible(lines, new Point(x, y), maxX, maxY)).count() //
     ).sum();

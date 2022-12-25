@@ -23,17 +23,14 @@ import org.varienaja.PuzzleAbs;
 public class Puzzle23 extends PuzzleAbs {
   private Point[][] toScan = new Point[][] { //
       new Point[] {
-          new Point(0, -1), new Point(-1, -1), new Point(1, -1)
-      }, // north, ne, nw
-      new Point[] {
-          new Point(0, 1), new Point(-1, 1), new Point(1, 1)
-      }, // south, se, sw
-      new Point[] {
-          new Point(-1, 0), new Point(-1, -1), new Point(-1, 1)
-      }, // west, nw, sw
-      new Point[] {
-          new Point(1, 0), new Point(1, -1), new Point(1, 1)
-      } // east, ne, se
+          Point.dNorth, Point.dNorthEast, Point.dNorthWest
+      }, new Point[] {
+          Point.dSouth, Point.dSouthEast, Point.dSouthWest
+      }, new Point[] {
+          Point.dWest, Point.dNorthWest, Point.dSouthWest
+      }, new Point[] {
+          Point.dEast, Point.dNorthEast, Point.dSouthEast
+      }
   };
 
   @Test

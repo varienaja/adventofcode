@@ -39,6 +39,18 @@ public class Puzzle12 extends PuzzleAbs {
     assertEquals(380635029877596L, sum);
   }
 
+  @Test
+  public void testA() {
+    assertEquals(179, solveA(testInput1(), 10));
+    assertEquals(1940, solveA(testInput2(), 100));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(2772, solveB(testInput1()));
+    assertEquals(4686774924L, solveB(testInput2()));
+  }
+
   long lcm(long a, long b) { // Least common multiple
     long lcm = 0;
     while ((lcm += Math.max(a, b)) % Math.min(a, b) != 0) {
@@ -121,15 +133,13 @@ public class Puzzle12 extends PuzzleAbs {
 
     long counter = 0;
     while (cycleCount != 3) {
-      List<Point>[] poss = new List[] {
-          new LinkedList<Point>(), new LinkedList<Point>(), new LinkedList<Point>()
-      };
+      List<List<Point>> poss = List.of(new LinkedList<Point>(), new LinkedList<Point>(), new LinkedList<Point>());
       for (int axis = 0; axis < 3; axis++) {
         if (cycles[axis] == 0) {
           for (int[] moon : moons) {
-            poss[axis].add(new Point(moon[axis], moon[axis + 3]));
+            poss.get(axis).add(new Point(moon[axis], moon[axis + 3]));
           }
-          if (!dimension2State.get(axis).add(poss[axis])) {
+          if (!dimension2State.get(axis).add(poss.get(axis))) {
             cycles[axis] = counter;
             cycleCount++;
           }
@@ -140,18 +150,6 @@ public class Puzzle12 extends PuzzleAbs {
     }
 
     return Arrays.stream(cycles).reduce(this::lcm).orElse(-1);
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(179, solveA(testInput1(), 10));
-    assertEquals(1940, solveA(testInput2(), 100));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(2772, solveB(testInput1()));
-    assertEquals(4686774924L, solveB(testInput2()));
   }
 
   private List<String> testInput1() {

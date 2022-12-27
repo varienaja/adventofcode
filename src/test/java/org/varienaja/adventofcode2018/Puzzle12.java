@@ -30,7 +30,17 @@ public class Puzzle12 extends PuzzleAbs {
     announceResultB();
     long sum = solveB(getInput());
     System.out.println(sum);
-    assertEquals(-1, sum);
+    assertEquals(3100000000293L, sum);
+  }
+
+  @Test
+  public void testA() {
+    assertEquals(325, solveA(testInput()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(3099999995594L, solveB(testInput()));
   }
 
   private long solve(List<String> input, int generations) {
@@ -81,16 +91,6 @@ public class Puzzle12 extends PuzzleAbs {
     long sum = solve(input, 90);
     sum += (50000000000L - 90L) * 62L;
     return sum;
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(325, solveA(testInput()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(-1, solveB(testInput()));
   }
 
   private List<String> testInput() {

@@ -18,12 +18,20 @@ import org.varienaja.PuzzleAbs;
 public class Puzzle25 extends PuzzleAbs {
   private Map<Character, Integer> memory;
 
+  @Test
+  public void testDay25() {
+    announceResultA();
+    List<String> lines = getInput();
+    long sum = solveA(lines);
+    System.out.println(sum);
+    assertEquals(198, sum);
+  }
+
   private String run(List<String> input) {
     StringBuilder sb = new StringBuilder();
 
     int ip = 0;
     while (ip < input.size() && sb.length() < 20) {
-      // System.out.println(memory);
       String[] parts = input.get(ip).split("\\s");
       if ("cpy".equals(parts[0])) {
         int x;
@@ -74,6 +82,7 @@ public class Puzzle25 extends PuzzleAbs {
         }
 
         sb.append(x);
+        ip++;
       }
     }
 
@@ -81,62 +90,18 @@ public class Puzzle25 extends PuzzleAbs {
   }
 
   private long solveA(List<String> input) {
-    for (int i = 0; i < 10000; i++) {
-      StringBuilder sb = new StringBuilder();
-
-      int a = i;
-      int b = 0;
-
-      int d = a + 2532;
-      while (sb.length() < 20) {
-        a = d;
-        while (a != 0 && sb.length() < 20) {
-          b = a % 2;
-          a = a / 2;
-          sb.append(b);
-        }
-      }
-      if (sb.toString().equals("01010101010101010101")) {
-        System.out.println(i);
-      }
-
-    }
-
-    // FIXME WTF my run does only generate 1111111 or 000000???
-
     int startA = 0;
     String result;
     do {
       startA++;
       memory = new HashMap<>();
-      for (char c = 'a'; c <= 'd'; c++) {
+      memory.put('a', startA);
+      for (char c = 'b'; c <= 'd'; c++) {
         memory.put(c, 0);
       }
-
-      System.out.print(startA + ": ");
-      memory.put('a', startA);
       result = run(input);
-      System.out.println(result);
-    } while (!"0101010101010101010101010".equals(result));
+    } while (!"01010101010101010101".equals(result));
     return startA;
-  }
-
-  private long solveB(List<String> input) {
-    return -1;
-  }
-
-  @Test
-  public void testDay25() {
-    announceResultA();
-    List<String> lines = getInput();
-    long sum = solveA(lines);
-    System.out.println(sum);
-    assertEquals(-1, sum); // 2060 too high
-
-    announceResultB();
-    sum = solveB(lines);
-    System.out.println(sum);
-    assertEquals(-1, sum);
   }
 
 }

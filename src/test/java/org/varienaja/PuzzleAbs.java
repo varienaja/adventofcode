@@ -8,11 +8,6 @@ import java.util.stream.Collectors;
 
 public class PuzzleAbs {
 
-  private void announceResult() {
-    System.out.print("Solution ");
-    System.out.print(getMyNumber());
-  }
-
   protected void announceResultA() {
     announceResult();
     System.out.print("a: ");
@@ -23,20 +18,10 @@ public class PuzzleAbs {
     System.out.print("b: ");
   }
 
-  protected void announceResultC() {
-    announceResult();
-    System.out.print("c: ");
-  }
-
   protected List<String> getInput() {
-    return getInput(false);
-  }
-
-  private List<String> getInput(boolean large) {
     try {
-      String suffix = large ? "_large" : "";
-      String resourceName = getMyYear() + "/day" + getMyNumber() + suffix + ".txt";
-      return Files.readAllLines(Paths.get(this.getClass().getClassLoader().getResource(resourceName).toURI()));
+      String resourceName = getMyYear() + "/day" + getMyNumber() + ".txt";
+      return Files.readAllLines(Paths.get(getClass().getClassLoader().getResource(resourceName).toURI()));
     } catch (Exception e) { // Ignore
     }
     return null;
@@ -46,18 +31,19 @@ public class PuzzleAbs {
     return getInput().get(0);
   }
 
-  protected String getLargeInputString() {
-    return getInput(true).get(0);
-  }
-
   protected List<Long> getLongInput() {
     return getInput().stream().map(Long::parseLong).collect(Collectors.toCollection(ArrayList::new));
+  }
+
+  private void announceResult() {
+    System.out.print("Solution ");
+    System.out.print(getMyNumber());
   }
 
   private String getMyNumber() {
     StringBuilder result = new StringBuilder();
 
-    for (char c : this.getClass().getSimpleName().toCharArray()) {
+    for (char c : getClass().getSimpleName().toCharArray()) {
       if (Character.isDigit(c)) {
         result.append(c);
       }

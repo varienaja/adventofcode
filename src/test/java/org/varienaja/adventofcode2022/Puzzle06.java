@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
 
@@ -34,12 +33,20 @@ public class Puzzle06 extends PuzzleAbs {
   }
 
   @Test
-  @Ignore
-  public void doC() {
-    announceResultC();
-    long result = solveC(getLargeInputString());
-    assertEquals(506020000L, result);
-    System.out.println(result);
+  public void testA() {
+    assertEquals(5, solveA("bvwbjplbgvbhsrlpgdmjqwftvncz"));
+    assertEquals(6, solveA("nppdvjthqldpwncqszvftbrmjlhg"));
+    assertEquals(10, solveA("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"));
+    assertEquals(11, solveA("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(19, solveB("mjqjpqmgbljsphdztnvjfqwrcgsmlb"));
+    assertEquals(23, solveB("bvwbjplbgvbhsrlpgdmjqwftvncz"));
+    assertEquals(23, solveB("nppdvjthqldpwncqszvftbrmjlhg"));
+    assertEquals(29, solveB("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"));
+    assertEquals(26, solveB("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"));
   }
 
   private long solve(String line, int distinctCount) {
@@ -60,33 +67,6 @@ public class Puzzle06 extends PuzzleAbs {
   private long solveB(String line) {
     start = 0;
     return solve(line, 14);
-  }
-
-  private long solveC(String line) {
-    long sum = 0;
-    for (int i = 1; i <= 94; i++) {
-      long result = solve(line, i);
-      System.out.println(result);
-      sum += result;
-    }
-    return sum;
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(5, solveA("bvwbjplbgvbhsrlpgdmjqwftvncz"));
-    assertEquals(6, solveA("nppdvjthqldpwncqszvftbrmjlhg"));
-    assertEquals(10, solveA("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"));
-    assertEquals(11, solveA("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(19, solveB("mjqjpqmgbljsphdztnvjfqwrcgsmlb"));
-    assertEquals(23, solveB("bvwbjplbgvbhsrlpgdmjqwftvncz"));
-    assertEquals(23, solveB("nppdvjthqldpwncqszvftbrmjlhg"));
-    assertEquals(29, solveB("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"));
-    assertEquals(26, solveB("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"));
   }
 
 }

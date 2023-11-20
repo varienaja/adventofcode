@@ -42,14 +42,14 @@ public class Puzzle01 extends PuzzleAbs {
   }
 
   private long sumTop(List<String> lines, int count) {
-    NavigableSet<Long> elfCalories = new TreeSet<>((l1, l2) -> Long.compare(l2, l1));
+    NavigableSet<Long> elfCalories = new TreeSet<>();
 
     long elfCals = 0L;
     for (String l : lines) {
       if (l.isEmpty()) {
         elfCalories.add(elfCals);
         if (elfCalories.size() > count) { // Optimization for very large inputs
-          elfCalories.pollLast();
+          elfCalories.pollFirst();
         }
         elfCals = 0L;
       } else {

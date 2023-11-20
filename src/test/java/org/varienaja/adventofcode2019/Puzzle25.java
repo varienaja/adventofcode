@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,8 +44,8 @@ public class Puzzle25 extends PuzzleAbs {
     List<String> dirs = List.of("east", "west", "north", "south");
     Random r = new Random();
     List<String> wannaTake = new ArrayList<>();
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Future<Long> f = Intcode.run(input, Map.of(), in, out);
     while (true) {
       try {
@@ -126,8 +126,8 @@ public class Puzzle25 extends PuzzleAbs {
   public long solveA(String input) {
     Scanner scanner = new Scanner(System.in);
 
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Intcode.run(input, Map.of(), in, out);
 
     while (true) {

@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -42,8 +42,8 @@ public class Puzzle21 extends PuzzleAbs {
   }
 
   public long solveA(String input) {
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+    BlockingDeque<Long> in = new LinkedBlockingDeque<>(2000);
+    BlockingDeque<Long> out = new LinkedBlockingDeque<>(2000);
 
     // ABCD
     // ??.# !C && D --> Jump
@@ -61,18 +61,12 @@ public class Puzzle21 extends PuzzleAbs {
       e.printStackTrace();
     }
 
-    long result = 0L;
-    for (long l : out) {
-      result = l;
-      // System.out.print((char)l);
-    }
-
-    return result;
+    return out.peekLast();
   }
 
   public long solveB(String input) {
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+    BlockingDeque<Long> in = new LinkedBlockingDeque<>(2000);
+    BlockingDeque<Long> out = new LinkedBlockingDeque<>(2000);
 
     programLine("NOT C J", in);
     programLine("AND D J", in);
@@ -90,13 +84,7 @@ public class Puzzle21 extends PuzzleAbs {
       e.printStackTrace();
     }
 
-    long result = 0L;
-    for (long l : out) {
-      result = l;
-      // System.out.print((char)l);
-    }
-
-    return result;
+    return out.peekLast();
   }
 
 }

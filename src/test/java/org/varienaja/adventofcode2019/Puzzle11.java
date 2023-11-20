@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -46,8 +46,8 @@ public class Puzzle11 extends PuzzleAbs {
     String directions = "nesw";
     int direction = 0;
 
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(2);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Future<Long> f = Intcode.run(input, Map.of(), in, out);
 
     while (!f.isDone()) {

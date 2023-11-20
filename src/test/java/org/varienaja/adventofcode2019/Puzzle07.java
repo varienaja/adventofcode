@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -49,33 +49,33 @@ public class Puzzle07 extends PuzzleAbs {
   private void solveA(String input, List<Long> phases, int ix, long[] inputs) {
     if (ix == 5) {
       try {
-        BlockingQueue<Long> inA = new ArrayBlockingQueue<>(2);
+        BlockingQueue<Long> inA = new LinkedBlockingDeque<>();
         inA.addAll(List.of(inputs[0], 0L));
-        BlockingQueue<Long> outA = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Long> outA = new LinkedBlockingDeque<>();
         Intcode.run(input, Map.of(), inA, outA).get();
 
-        BlockingQueue<Long> inB = new ArrayBlockingQueue<>(2);
+        BlockingQueue<Long> inB = new LinkedBlockingDeque<>();
         inB.add(inputs[1]);
         inB.add(outA.poll());
-        BlockingQueue<Long> outB = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Long> outB = new LinkedBlockingDeque<>();
         Intcode.run(input, Map.of(), inB, outB).get();
 
-        BlockingQueue<Long> inC = new ArrayBlockingQueue<>(2);
+        BlockingQueue<Long> inC = new LinkedBlockingDeque<>();
         inC.add(inputs[2]);
         inC.add(outB.poll());
-        BlockingQueue<Long> outC = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Long> outC = new LinkedBlockingDeque<>();
         Intcode.run(input, Map.of(), inC, outC).get();
 
-        BlockingQueue<Long> inD = new ArrayBlockingQueue<>(2);
+        BlockingQueue<Long> inD = new LinkedBlockingDeque<>();
         inD.add(inputs[3]);
         inD.add(outC.poll());
-        BlockingQueue<Long> outD = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Long> outD = new LinkedBlockingDeque<>();
         Intcode.run(input, Map.of(), inD, outD).get();
 
-        BlockingQueue<Long> inE = new ArrayBlockingQueue<>(2);
+        BlockingQueue<Long> inE = new LinkedBlockingDeque<>();
         inE.add(inputs[4]);
         inE.add(outD.poll());
-        BlockingQueue<Long> outE = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Long> outE = new LinkedBlockingDeque<>();
         Intcode.run(input, Map.of(), inE, outE).get();
 
         answers.add(outE.poll());
@@ -100,20 +100,20 @@ public class Puzzle07 extends PuzzleAbs {
 
   private void solveB(String input, List<Long> phases, int ix, long[] inputs) {
     if (ix == 5) {
-      BlockingQueue<Long> inA = new ArrayBlockingQueue<>(2);
+      BlockingQueue<Long> inA = new LinkedBlockingDeque<>();
       inA.add(inputs[0]);
       inA.add(0L);
 
-      BlockingQueue<Long> inB = new ArrayBlockingQueue<>(2);
+      BlockingQueue<Long> inB = new LinkedBlockingDeque<>();
       inB.add(inputs[1]);
 
-      BlockingQueue<Long> inC = new ArrayBlockingQueue<>(2);
+      BlockingQueue<Long> inC = new LinkedBlockingDeque<>();
       inC.add(inputs[2]);
 
-      BlockingQueue<Long> inD = new ArrayBlockingQueue<>(2);
+      BlockingQueue<Long> inD = new LinkedBlockingDeque<>();
       inD.add(inputs[3]);
 
-      BlockingQueue<Long> inE = new ArrayBlockingQueue<>(2);
+      BlockingQueue<Long> inE = new LinkedBlockingDeque<>();
       inE.add(inputs[4]);
 
       Intcode.run(input, Map.of(), inA, inB);

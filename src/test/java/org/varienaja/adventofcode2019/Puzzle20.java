@@ -316,7 +316,7 @@ public class Puzzle20 extends PuzzleAbs {
 
   @Test
   public void testB() {
-    assertEquals(-1, solveB(testInput1()));
+    assertEquals(26, solveB(testInput1()));
   }
 
   private List<String> testInput1() {

@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -44,8 +44,8 @@ public class Puzzle13 extends PuzzleAbs {
   }
 
   private long solveA(String input) {
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(4000);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     try {
       Intcode.run(input, Map.of(), in, out).get();
     } catch (Exception e) {
@@ -78,8 +78,8 @@ public class Puzzle13 extends PuzzleAbs {
 
     String elements = " #*-x";
     // Run code, print outcome + score, read from keyboard, do again until won?
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(1);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(4000);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Future<Long> f = Intcode.run(input, Map.of(0, 2L), in, out);
 
     Map<Point, Character> field = new HashMap<>();

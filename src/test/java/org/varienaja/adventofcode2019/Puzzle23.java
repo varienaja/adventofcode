@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -41,10 +41,10 @@ public class Puzzle23 extends PuzzleAbs {
     Map<Integer, Future<Long>> pcs = new HashMap<>();
 
     for (int i = 0; i < 50; i++) {
-      BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
+      BlockingQueue<Long> in = new LinkedBlockingDeque<>(2000);
       in.offer((long)i);
       ins.put(i, in);
-      BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+      BlockingQueue<Long> out = new LinkedBlockingDeque<>(2000);
       outs.put(i, out);
 
       pcs.put(i, Intcode.run(input, Map.of(), in, out));
@@ -89,10 +89,10 @@ public class Puzzle23 extends PuzzleAbs {
     long lastNattedY = Long.MIN_VALUE;
 
     for (int i = 0; i < 50; i++) {
-      BlockingQueue<Long> in = new ArrayBlockingQueue<>(2000);
+      BlockingQueue<Long> in = new LinkedBlockingDeque<>();
       in.offer((long)i);
       ins.put(i, in);
-      BlockingQueue<Long> out = new ArrayBlockingQueue<>(2000);
+      BlockingQueue<Long> out = new LinkedBlockingDeque<>();
       outs.put(i, out);
 
       pcs.put(i, Intcode.run(input, Map.of(), in, out));

@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -45,8 +45,8 @@ public class Puzzle15 extends PuzzleAbs {
     Point here = start;
     world.put(here, '.');
 
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(1);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(1);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Intcode.run(input, Map.of(), in, out);
     try {
       while (true) {

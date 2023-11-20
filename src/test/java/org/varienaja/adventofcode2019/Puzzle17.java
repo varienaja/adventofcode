@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -91,8 +91,8 @@ public class Puzzle17 extends PuzzleAbs {
   private long solveA(String input) {
     world = new HashMap<>();
 
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(1);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(10000);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     try {
       Intcode.run(input, Map.of(), in, out).get();
     } catch (Exception e) {
@@ -210,7 +210,7 @@ public class Puzzle17 extends PuzzleAbs {
     String fB = "R,6,L,6,R,12";
     String fC = "L,6,L,10,L,10,R,6";
 
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(80);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
     for (String s : new String[] {
         main, fA, fB, fC, "n"
     }) {
@@ -220,7 +220,7 @@ public class Puzzle17 extends PuzzleAbs {
       in.offer(10L);
     }
 
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(10000);
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     try {
       Intcode.run(input, Map.of(0, 2L), in, out).get();
     } catch (Exception e) {

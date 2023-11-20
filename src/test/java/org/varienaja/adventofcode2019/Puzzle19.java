@@ -3,8 +3,8 @@ package org.varienaja.adventofcode2019;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -35,8 +35,8 @@ public class Puzzle19 extends PuzzleAbs {
 
   public long solveA(String input) {
     long oneCount = 0;
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(2);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(1);
+    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
 
     for (long y = 0; y < 50; y++) {
       for (long x = 0; x < 50; x++) {
@@ -68,8 +68,8 @@ public class Puzzle19 extends PuzzleAbs {
 
     boolean found = false;
     while (!found) {
-      BlockingQueue<Long> in = new ArrayBlockingQueue<>(2);
-      BlockingQueue<Long> out = new ArrayBlockingQueue<>(1);
+      BlockingQueue<Long> in = new LinkedBlockingDeque<>();
+      BlockingQueue<Long> out = new LinkedBlockingDeque<>();
 
       // find next left-edge
       y++;

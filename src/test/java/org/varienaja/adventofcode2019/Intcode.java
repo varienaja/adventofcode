@@ -2,10 +2,10 @@ package org.varienaja.adventofcode2019;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +22,7 @@ public class Intcode {
 
   public static long run(String input, Map<Integer, Long> initialValues) {
     try {
-      return run(input, initialValues, new ArrayBlockingQueue<Long>(1), new ArrayBlockingQueue<Long>(1)).get();
+      return run(input, initialValues, new LinkedBlockingDeque<>(), new LinkedBlockingDeque<>()).get();
     } catch (Exception e) {
       e.printStackTrace();
       return -1;
@@ -137,7 +137,6 @@ public class Intcode {
         }
       }
     }, 0, TimeUnit.MILLISECONDS);
-
   }
 
 }

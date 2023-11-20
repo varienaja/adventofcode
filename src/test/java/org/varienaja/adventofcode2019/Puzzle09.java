@@ -2,10 +2,9 @@ package org.varienaja.adventofcode2019;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -35,37 +34,31 @@ public class Puzzle09 extends PuzzleAbs {
   }
 
   private long solveA(String input) {
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(1);
+    BlockingDeque<Long> in = new LinkedBlockingDeque<>();
     in.add(1L);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(100);
+    BlockingDeque<Long> out = new LinkedBlockingDeque<>();
     try {
       Intcode.run(input, Map.of(), in, out).get();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    LinkedList<Long> l = new LinkedList<>();
-    out.drainTo(l);
-
-    assertEquals(1, l.size());
-    return l.getLast();
+    assertEquals(1, out.size());
+    return out.pollLast();
   }
 
   private long solveB(String input) {
-    BlockingQueue<Long> in = new ArrayBlockingQueue<>(1);
+    BlockingDeque<Long> in = new LinkedBlockingDeque<>();
     in.add(2L);
-    BlockingQueue<Long> out = new ArrayBlockingQueue<>(100);
+    BlockingDeque<Long> out = new LinkedBlockingDeque<>();
     try {
       Intcode.run(input, Map.of(), in, out).get();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    LinkedList<Long> l = new LinkedList<>();
-    out.drainTo(l);
-
-    assertEquals(1, l.size());
-    return l.getLast();
+    assertEquals(1, out.size());
+    return out.pollLast();
   }
 
 }

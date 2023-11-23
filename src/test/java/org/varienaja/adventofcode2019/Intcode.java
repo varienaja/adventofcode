@@ -9,16 +9,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Intcode {
   private static final int MAX_MEMORY = 16384;
   private static ScheduledExecutorService service = new ScheduledThreadPoolExecutor(55);
-  private static AtomicBoolean waiting = new AtomicBoolean(false);
-
-  public static boolean isWaitingForInput() {
-    return waiting.get();
-  }
 
   public static long run(String input, Map<Integer, Long> initialValues) {
     try {
@@ -86,9 +80,7 @@ public class Intcode {
               break;
             case 3: // input
               cc = c == 1 ? ip + 1 : c == 0 ? program[ip + 1] : rb + (int)program[ip + 1];
-              waiting.set(true);
               program[(int)cc] = in.take();
-              waiting.set(false);
               break;
             case 4: // output
               out.put(cc);

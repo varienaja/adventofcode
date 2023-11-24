@@ -27,8 +27,6 @@ import org.varienaja.PuzzleAbs;
  */
 public class Puzzle25 extends PuzzleAbs {
 
-  // TODO much cleanup needed, but I got my answer!!
-
   class FoundCodeException extends RuntimeException {
     long code;
 
@@ -101,12 +99,11 @@ public class Puzzle25 extends PuzzleAbs {
     }
   }
 
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   /** Learned through experience that these items crash the game. */
   private Set<String> forbidden = Set.of("escape pod", "photons", "infinite loop", "molten lava", "giant electromagnet");
-  private Set<String> directions = Set.of("east", "west", "north", "south");
-  private Set<Room> world = new HashSet<>();
+  private Map<String, Room> name2room = new HashMap<>();
   private BlockingQueue<Long> in = new LinkedBlockingDeque<>();
   private BlockingQueue<Long> out = new LinkedBlockingDeque<>();
   private Room currentRoom = null;
@@ -115,38 +112,26 @@ public class Puzzle25 extends PuzzleAbs {
   private List<String> myItems = new LinkedList<>();
   private List<String> allItems = new LinkedList<>();
 
-  private Set<Room> discover(String input) {
-    Intcode.run(input, Map.of(), in, out);
-
-    do {
-      Queue<String> path = new LinkedList<>();
-
+  private void discover() {
+    Queue<String> path = new LinkedList<>();
+    while (true) {
       Room previous = currentRoom;
       currentRoom = parseRoom();
-      if (world.contains(currentRoom)) {
-        for (Room candidate : world) {
-          if (candidate.equals(currentRoom)) {
-            currentRoom = candidate;
-          }
-        }
-      } else {
-        world.add(currentRoom);
-      }
       if (lastDirection != null) {
         previous.checkeddirections.put(lastDirection, currentRoom);
         currentRoom.checkeddirections.put(opposite(lastDirection), previous);
       }
 
       if (path.isEmpty()) {
-        path.addAll(findUndiscoveredRoom());
+        path.addAll(findPathToUndiscoveredRoom());
+        if (path.isEmpty()) {
+          break; // We've discovered everything
+        }
       }
 
       String direction = path.poll();
       travelNode(direction);
-    } while (!seenAll(world));
-
-    System.out.println("Discovering complete");
-    return world;
+    }
   }
 
   @Test
@@ -197,19 +182,14 @@ public class Puzzle25 extends PuzzleAbs {
       }
     }
 
-    throw new IllegalStateException("No path from " + currentRoom + " to " + to + " found in " + world);
+    throw new IllegalStateException("No path from " + currentRoom + " to " + to + " found in " + name2room);
   }
 
-  private List<String> findUndiscoveredRoom() {
+  private List<String> findPathToUndiscoveredRoom() {
     List<String> result = new LinkedList<>();
-    if (!currentRoom.freshDirection().equals("")) { // Easy cast: trivial path
-      result.add(currentRoom.freshDirection());
-      return result;
-    }
 
-    // Find path to other undiscovered room!!
-    for (Room candidate : world) {
-      if (!candidate.freshDirection().equals("")) {
+    for (Room candidate : name2room.values()) {
+      if (!candidate.freshDirection().isEmpty()) {
         result.addAll(findPathTo(candidate));
         result.add(candidate.freshDirection());
         break;
@@ -252,9 +232,11 @@ public class Puzzle25 extends PuzzleAbs {
         items.add(item);
       }
       readLine(); // Command?
+    } else if (s6.contains("ejected back")) {
+      return parseRoom();
     }
 
-    return new Room(name, description, doors, items);
+    return name2room.computeIfAbsent(name, (s) -> new Room(name, description, doors, items));
   }
 
   private String readLine() {
@@ -285,16 +267,6 @@ public class Puzzle25 extends PuzzleAbs {
     return sb.toString();
   }
 
-  private boolean seenAll(Set<Room> world) {
-    for (Room r : world) {
-      if (!r.freshDirection().isEmpty()) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   private void sendCommand(String command) {
     if (DEBUG) {
       System.out.println("Doing '" + command + "'");
@@ -307,16 +279,19 @@ public class Puzzle25 extends PuzzleAbs {
   }
 
   public long solveA() {
-    discover(getInputString());
-    Set<Room> roomsWithItems = world.stream() //
+    Intcode.run(getInputString(), Map.of(), in, out);
+
+    discover();
+
+    // Gather all items
+    name2room.values().stream() //
         .filter(r -> !r.hasItem().isEmpty()) // with item
         .filter(r -> !forbidden.contains(r.hasItem())) // but not a forbidden one
-        .collect(Collectors.toSet());
-    for (Room roomWithItem : roomsWithItems) {
-      travelNodes(findPathTo(roomWithItem));
-      take(roomWithItem.hasItem());
-      allItems.add(roomWithItem.hasItem());
-    }
+        .forEach(r -> {
+          travelNodes(findPathTo(r));
+          take(r.hasItem());
+          allItems.add(r.hasItem());
+        });
 
     // Go to security Checkpoint
     travelNodes(findPathTo(securityCheckPoint));
@@ -352,9 +327,6 @@ public class Puzzle25 extends PuzzleAbs {
    */
   public void solveManual(String input) {
     Scanner scanner = new Scanner(System.in);
-
-    BlockingQueue<Long> in = new LinkedBlockingDeque<>();
-    BlockingQueue<Long> out = new LinkedBlockingDeque<>();
     Intcode.run(input, Map.of(), in, out);
 
     while (true) {
@@ -382,26 +354,14 @@ public class Puzzle25 extends PuzzleAbs {
   }
 
   private void travelNode(String command) {
-    if (command == null) {
-      return;
-    }
     sendCommand(command);
-
-    if (directions.contains(command)) {
-      lastDirection = command;
-    }
+    lastDirection = command;
   }
 
   private void travelNodes(List<String> commands) {
     for (String command : commands) {
       travelNode(command);
-
       currentRoom = parseRoom();
-      for (Room candidate : world) {
-        if (candidate.equals(currentRoom)) {
-          currentRoom = candidate;
-        }
-      }
     }
   }
 

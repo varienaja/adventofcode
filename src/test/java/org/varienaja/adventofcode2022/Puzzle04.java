@@ -2,7 +2,7 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -18,7 +18,7 @@ public class Puzzle04 extends PuzzleAbs {
   @Test
   public void doA() {
     announceResultA();
-    long result = solveA(getInput());
+    long result = solveA(getStreamingInput());
     assertEquals(494L, result);
     System.out.println(result);
   }
@@ -26,56 +26,9 @@ public class Puzzle04 extends PuzzleAbs {
   @Test
   public void doB() {
     announceResultB();
-    long result = solveB(getInput());
+    long result = solveB(getStreamingInput());
     assertEquals(833L, result);
     System.out.println(result);
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "2-4,6-8", //
-        "2-3,4-5", //
-        "5-7,7-9", //
-        "2-8,3-7", //
-        "6-6,4-6", //
-        "2-6,4-8");
-  }
-
-  private long solveA(List<String> lines) {
-    long result = 0L;
-
-    for (String line : lines) {
-      String[] parts = line.split("[,-]");
-      int start1 = Integer.parseInt(parts[0]);
-      int end1 = Integer.parseInt(parts[1]);
-      int start2 = Integer.parseInt(parts[2]);
-      int end2 = Integer.parseInt(parts[3]);
-
-      if (start1 >= start2 && end1 <= end2 || //
-          (start2 >= start1) && end2 <= end1) {
-        result++;
-      }
-    }
-
-    return result;
-  }
-
-  private long solveB(List<String> lines) {
-    long result = 0L;
-
-    for (String line : lines) {
-      String[] parts = line.split("[,-]");
-      int start1 = Integer.parseInt(parts[0]);
-      int end1 = Integer.parseInt(parts[1]);
-      int start2 = Integer.parseInt(parts[2]);
-      int end2 = Integer.parseInt(parts[3]);
-
-      if (start1 <= end2 && start2 <= end1) {
-        result++;
-      }
-    }
-
-    return result;
   }
 
   @Test
@@ -86,6 +39,43 @@ public class Puzzle04 extends PuzzleAbs {
   @Test
   public void testB() {
     assertEquals(4, solveB(getTestInput()));
+  }
+
+  private Stream<String> getTestInput() {
+    return Stream.of( //
+        "2-4,6-8", //
+        "2-3,4-5", //
+        "5-7,7-9", //
+        "2-8,3-7", //
+        "6-6,4-6", //
+        "2-6,4-8");
+  }
+
+  private long solveA(Stream<String> lines) {
+    return lines //
+        .map(line -> line.split("[,-]")) //
+        .filter(parts -> {
+          int start1 = Integer.parseInt(parts[0]);
+          int end1 = Integer.parseInt(parts[1]);
+          int start2 = Integer.parseInt(parts[2]);
+          int end2 = Integer.parseInt(parts[3]);
+
+          return (start1 >= start2 && end1 <= end2 || //
+              (start2 >= start1) && end2 <= end1);
+        }).count();
+  }
+
+  private long solveB(Stream<String> lines) {
+    return lines //
+        .map(line -> line.split("[,-]")) //
+        .filter(parts -> {
+          int start1 = Integer.parseInt(parts[0]);
+          int end1 = Integer.parseInt(parts[1]);
+          int start2 = Integer.parseInt(parts[2]);
+          int end2 = Integer.parseInt(parts[3]);
+
+          return (start1 <= end2 && start2 <= end1);
+        }).count();
   }
 
 }

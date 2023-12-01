@@ -2,10 +2,10 @@ package org.varienaja.adventofcode2022;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
@@ -23,7 +23,7 @@ public class Puzzle25 extends PuzzleAbs {
   @Test
   public void doA() {
     announceResultA();
-    String result = solveA(getInput());
+    String result = solveA(getStreamingInput());
     System.out.println(result);
     assertEquals("2-=2-0=-0-=0200=--21", result);
   }
@@ -61,8 +61,8 @@ public class Puzzle25 extends PuzzleAbs {
     return String.copyValueOf(result, x, result.length - x);
   }
 
-  private List<String> getTestInput() {
-    return List.of("1=-0-2", //
+  private Stream<String> getTestInput() {
+    return Stream.of("1=-0-2", //
         "12111", //
         "2=0=", //
         "21", //
@@ -77,8 +77,8 @@ public class Puzzle25 extends PuzzleAbs {
         "122");
   }
 
-  private String solveA(List<String> lines) {
-    return lines.stream().reduce(this::addSnafu).orElseThrow();
+  private String solveA(Stream<String> lines) {
+    return lines.reduce(this::addSnafu).orElseThrow();
   }
 
 }

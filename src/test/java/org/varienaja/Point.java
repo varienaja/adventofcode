@@ -1,7 +1,5 @@
 package org.varienaja;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -56,7 +54,7 @@ public class Point {
   }
 
   public Set<Point> getAllNeighbours() {
-    return new HashSet<>(Arrays.asList(getWest(), getEast(), getNorth(), getSouth(), getNorthEast(), getNorthWest(), getSouthEast(), getSouthWest()));
+    return Set.of(getWest(), getEast(), getNorth(), getSouth(), getNorthEast(), getNorthWest(), getSouthEast(), getSouthWest());
   }
 
   public Point getEast() {
@@ -64,7 +62,7 @@ public class Point {
   }
 
   public Set<Point> getEastNeighbours() {
-    return new HashSet<>(Arrays.asList(getEast(), getNorthEast(), getSouthEast()));
+    return Set.of(getEast(), getNorthEast(), getSouthEast());
   }
 
   public Point getNorth() {
@@ -76,7 +74,7 @@ public class Point {
   }
 
   public Set<Point> getNorthNeighbours() {
-    return new HashSet<>(Arrays.asList(getNorth(), getNorthWest(), getNorthEast()));
+    return Set.of(getNorth(), getNorthWest(), getNorthEast());
   }
 
   public Point getNorthWest() {
@@ -84,7 +82,7 @@ public class Point {
   }
 
   public Set<Point> getNSWENeighbours() {
-    return new HashSet<>(Arrays.asList(getWest(), getEast(), getNorth(), getSouth()));
+    return Set.of(getWest(), getEast(), getNorth(), getSouth());
   }
 
   public Point getSouth() {
@@ -96,7 +94,7 @@ public class Point {
   }
 
   public Set<Point> getSouthNeighbours() {
-    return new HashSet<>(Arrays.asList(getSouth(), getSouthEast(), getSouthWest()));
+    return Set.of(getSouth(), getSouthEast(), getSouthWest());
   }
 
   public Point getSouthWest() {
@@ -108,7 +106,7 @@ public class Point {
   }
 
   public Set<Point> getWestNeighbours() {
-    return new HashSet<>(Arrays.asList(getWest(), getNorthWest(), getSouthWest()));
+    return Set.of(getWest(), getNorthWest(), getSouthWest());
   }
 
   @Override

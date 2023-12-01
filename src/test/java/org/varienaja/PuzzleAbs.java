@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PuzzleAbs {
 
@@ -20,8 +21,7 @@ public class PuzzleAbs {
 
   protected List<String> getInput() {
     try {
-      String resourceName = getMyYear() + "/day" + getMyNumber() + ".txt";
-      return Files.readAllLines(Paths.get(getClass().getClassLoader().getResource(resourceName).toURI()));
+      return Files.readAllLines(Paths.get(getClass().getClassLoader().getResource(getResourceName()).toURI()));
     } catch (Exception e) { // Ignore
     }
     return null;
@@ -33,6 +33,14 @@ public class PuzzleAbs {
 
   protected List<Long> getLongInput() {
     return getInput().stream().map(Long::parseLong).collect(Collectors.toCollection(ArrayList::new));
+  }
+
+  protected Stream<String> getStreamingInput() {
+    try {
+      return Files.lines(Paths.get(getClass().getClassLoader().getResource(getResourceName()).toURI()));
+    } catch (Exception e) { // Ignore
+    }
+    return null;
   }
 
   private void announceResult() {
@@ -56,6 +64,10 @@ public class PuzzleAbs {
     String packageName = getClass().getPackageName();
     String year = packageName.substring(packageName.length() - 4, packageName.length());
     return year;
+  }
+
+  private String getResourceName() {
+    return getMyYear() + "/day" + getMyNumber() + ".txt";
   }
 
 }

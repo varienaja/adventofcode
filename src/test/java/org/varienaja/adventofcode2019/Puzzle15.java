@@ -34,6 +34,22 @@ public class Puzzle15 extends PuzzleAbs {
   private int minY = 0;
   private int maxY = 0;
 
+  @Test
+  public void doA() {
+    announceResultA();
+    long sum = solveA(getInputString());
+    System.out.println(sum);
+    assertEquals(412, sum);
+  }
+
+  @Test
+  public void doB() {
+    announceResultB();
+    long sum = solveB(getInputString());
+    System.out.println(sum);
+    assertEquals(418, sum);
+  }
+
   private Map<Point, Character> buildMaze(String input) {
     Point start = new Point(0, 0);
     minX = 0;
@@ -50,7 +66,7 @@ public class Puzzle15 extends PuzzleAbs {
     Intcode.run(input, Map.of(), in, out);
     try {
       while (true) {
-        Set<Point> toAdd = here.getNSWENeighbours();
+        Set<Point> toAdd = new HashSet<>(here.getNSWENeighbours());
         toAdd.removeAll(unknown);
         toAdd.removeAll(world.keySet());
 
@@ -111,22 +127,6 @@ public class Puzzle15 extends PuzzleAbs {
       e.printStackTrace();
     }
     return world;
-  }
-
-  @Test
-  public void doA() {
-    announceResultA();
-    long sum = solveA(getInputString());
-    System.out.println(sum);
-    assertEquals(412, sum);
-  }
-
-  @Test
-  public void doB() {
-    announceResultB();
-    long sum = solveB(getInputString());
-    System.out.println(sum);
-    assertEquals(418, sum);
   }
 
   private List<Long> findWay(Point from, Point to, Map<Point, Character> world) {

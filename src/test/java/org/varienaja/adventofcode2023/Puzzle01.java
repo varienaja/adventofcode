@@ -2,12 +2,13 @@ package org.varienaja.adventofcode2023;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class Puzzle01 extends PuzzleAbs {
   @Test
   public void doA() {
     announceResultA();
-    long result = solveA(getInput().stream());
+    long result = solveA(getStreamingInput());
     System.out.println(result);
     assertEquals(55108L, result);
   }
@@ -39,9 +40,19 @@ public class Puzzle01 extends PuzzleAbs {
   @Test
   public void doB() {
     announceResultB();
-    long result = solveB(getInput().stream());
+    long result = solveB(getStreamingInput());
     System.out.println(result);
     assertEquals(56324L, result);
+  }
+
+  @Test
+  public void testA() {
+    assertEquals(142, solveA(getTestInputA()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(281, solveB(getTestInputB()));
   }
 
   private Stream<String> getTestInputA() {
@@ -67,18 +78,17 @@ public class Puzzle01 extends PuzzleAbs {
 
   private long solve(Stream<String> lines, Map<String, Integer> word2digit) {
     return lines.mapToInt(line -> {
-      Deque<Integer> digits = new LinkedList<>();
+      Deque<Integer> digits = word2digit.entrySet().stream() //
+          .filter(e -> line.contains(e.getKey())) //
+          .flatMap(e -> Stream.of( //
+              Map.entry(line.indexOf(e.getKey()), e.getValue()), //
+              Map.entry(line.lastIndexOf(e.getKey()), e.getValue()))) //
+          .distinct() //
+          .sorted(Comparator.comparing(Entry::getKey)) //
+          .map(Entry::getValue) //
+          .collect(Collectors.toCollection(LinkedList::new));
 
-      AtomicInteger ix = new AtomicInteger(0);
-      do {
-        word2digit.entrySet().stream() //
-            .filter(e -> line.indexOf(e.getKey(), ix.get()) == ix.get()) //
-            .mapToInt(Entry::getValue) //
-            .findFirst() //
-            .ifPresent(digits::add);
-      } while (ix.incrementAndGet() < line.length());
-
-      return 10 * digits.peekFirst() + digits.peekLast();
+      return 10 * digits.getFirst() + digits.getLast();
     }).sum();
   }
 
@@ -88,16 +98,6 @@ public class Puzzle01 extends PuzzleAbs {
 
   private long solveB(Stream<String> lines) {
     return solve(lines, WORD2DIGIT);
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(142, solveA(getTestInputA()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(281, solveB(getTestInputB()));
   }
 
 }

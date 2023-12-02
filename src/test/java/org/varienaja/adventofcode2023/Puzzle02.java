@@ -2,10 +2,7 @@ package org.varienaja.adventofcode2023;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,6 +16,32 @@ import org.varienaja.PuzzleAbs;
  * @see <a href="https://adventofcode.com/2023">adventofcode.com</a>
  */
 public class Puzzle02 extends PuzzleAbs {
+
+  public class Game {
+    int id;
+    Map<String, Integer> maxOutcome;
+
+    Game(String line) {
+      String[] parts = line.split(":\\s*");
+      id = Integer.parseInt(parts[0].split("\\s+")[1]);
+
+      maxOutcome = Stream.of(parts[1].split(";\\s*")) // e.g. "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
+          .flatMap(outcome -> Stream.of(outcome.split(",\\s*"))) //
+          .map(colorAmount -> colorAmount.split("\\s+")) // e.g. "6 red"
+          .collect(Collectors.toMap(ac -> ac[1], ac -> Integer.parseInt(ac[0]), Math::max));
+    }
+
+    int calcPower() {
+      return maxOutcome.values().stream() //
+          .mapToInt(Integer::intValue) //
+          .reduce((a, b) -> a * b).orElseThrow();
+    }
+
+    boolean isPossible(Map<String, Integer> requirements) {
+      return requirements.entrySet().stream() //
+          .allMatch(r -> maxOutcome.getOrDefault(r.getKey(), 0) <= r.getValue());
+    }
+  }
 
   @Test
   public void doA() {
@@ -56,46 +79,19 @@ public class Puzzle02 extends PuzzleAbs {
     );
   }
 
-  private Map<String, List<Map<String, Integer>>> parse(Stream<String> lines) {
-    return lines.map(line -> line.split(":\\s*")) //
-        .collect(Collectors.toMap(parts -> parts[0], parts -> parseSingleGameStates(parts[1])));
-  }
-
-  private Integer parseGameId(String gameName) {
-    return Integer.parseInt(gameName.split("\\s+")[1]); // e.g. "Game 4"
-  }
-
-  private List<Map<String, Integer>> parseSingleGameStates(String singleGame) {
-    return Stream.of(singleGame.split(";\\s*")) // e.g. "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
-        .map(outcome -> {
-          return Stream.of(outcome.split(",\\s*")) // e.g. "2 green, 6 blue"
-              .map(colorAmount -> colorAmount.split("\\s+")) // e.g. "6 red"
-              .collect(Collectors.toMap(ac -> ac[1], ac -> Integer.parseInt(ac[0])));
-        }).toList();
-  }
-
-  private long solve(Stream<String> lines, ToIntFunction<Entry<String, List<Map<String, Integer>>>> f) {
-    return parse(lines).entrySet().stream() //
-        .mapToInt(f) // value each Game according to the given method
-        .sum(); // sum it
-  }
-
   private long solveA(Stream<String> lines) {
     Map<String, Integer> requirements = Map.of("red", 12, "green", 13, "blue", 14);
 
-    return solve(lines, e -> e.getValue().stream() //
-        .filter(outcome -> requirements.entrySet().stream() // search for counter-examples...
-            .anyMatch(r -> outcome.getOrDefault(r.getKey(), 0) > r.getValue())) // ...that don't match a requirement
-        .mapToInt(x -> 0) // ..value those Games 0
-        .findAny().orElse(parseGameId(e.getKey()))); // otherwise GameId
+    return lines.map(Game::new) //
+        .filter(g -> g.isPossible(requirements)) //
+        .mapToInt(g -> g.id) //
+        .sum();
   }
 
   private long solveB(Stream<String> lines) {
-    return solve(lines, e -> e.getValue().stream() //
-        .flatMap(outcome -> outcome.entrySet().stream()) //
-        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Math::max)) // minimum red, greed, blue needed
-        .values().stream().mapToInt(Integer::intValue).reduce((a, b) -> a * b) // calc 'power'
-        .orElseThrow());
+    return lines.map(Game::new) //
+        .mapToInt(Game::calcPower) //
+        .sum();
   }
 
 }

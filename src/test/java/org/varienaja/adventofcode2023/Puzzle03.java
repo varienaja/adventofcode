@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -65,46 +67,41 @@ public class Puzzle03 extends PuzzleAbs {
   }
 
   private Stream<Entry<InfoPoint<Character>, Deque<Long>>> parse(List<String> lines) {
+    Map<InfoPoint<Character>, Deque<Long>> symbol2Partnumbers = parseSymbols(lines);
+    Pattern digits = Pattern.compile("\\d+");
+
+    for (int y = 0; y < lines.size(); ++y) {
+      Matcher m = digits.matcher(lines.get(y));
+      while (m.find()) {
+        String part = m.group();
+        for (int ix = m.start() - 1; ix <= m.end(); ++ix) {
+          for (int iy = y - 1; iy <= y + 1; ++iy) {
+            Point tester = new Point(ix, iy);
+            if (symbol2Partnumbers.containsKey(tester)) {
+              symbol2Partnumbers.get(tester).add(Long.parseLong(part));
+            }
+          }
+        }
+      }
+    }
+
+    return symbol2Partnumbers.entrySet().stream();
+  }
+
+  private Map<InfoPoint<Character>, Deque<Long>> parseSymbols(List<String> lines) {
     Map<InfoPoint<Character>, Deque<Long>> symbol2Partnumbers = new HashMap<>();
 
-    int y = 0;
-    for (String line : lines) {
+    for (int y = 0; y < lines.size(); ++y) {
       int x = 0;
-      for (char c : line.toCharArray()) {
+      for (char c : lines.get(y).toCharArray()) {
         if (c != '.' && !Character.isDigit(c)) {
           symbol2Partnumbers.put(new InfoPoint<>(x, y, c), new LinkedList<>());
         }
         ++x;
       }
-      ++y;
     }
 
-    y = 0;
-    for (String line : lines) {
-      StringBuilder sb = new StringBuilder();
-      int x = 0;
-      for (char c : (line + ".").toCharArray()) {
-        if (Character.isDigit(c)) {
-          sb.append(c);
-        } else {
-          if (!sb.isEmpty()) { // Scan around part number for symbols
-            for (int ix = x - sb.length() - 1; ix <= x; ++ix) {
-              for (int iy = y - 1; iy <= y + 1; ++iy) {
-                Point tester = new Point(ix, iy);
-                if (symbol2Partnumbers.containsKey(tester)) {
-                  symbol2Partnumbers.get(tester).add(Long.parseLong(sb.toString()));
-                }
-              }
-            }
-            sb.setLength(0);
-          }
-        }
-        ++x;
-      }
-      ++y;
-    }
-
-    return symbol2Partnumbers.entrySet().stream();
+    return symbol2Partnumbers;
   }
 
   private long solveA(List<String> lines) {

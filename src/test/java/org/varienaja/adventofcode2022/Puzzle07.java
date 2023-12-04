@@ -34,7 +34,18 @@ public class Puzzle07 extends PuzzleAbs {
     assertEquals(6999588L, result);
   }
 
-  private List<String> getTestInput() {
+  @Test
+  public void testA() {
+    assertEquals(95437L, solveA(getTestInput()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(24933642L, solveB(getTestInput()));
+  }
+
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "$ cd /", //
         "$ ls", //
@@ -103,16 +114,6 @@ public class Puzzle07 extends PuzzleAbs {
     long needToFree = usedTotal - usedMax;
 
     return dirname2size.values().stream().mapToLong(l -> l).filter(l -> l > needToFree).min().orElse(Long.MIN_VALUE);
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(95437L, solveA(getTestInput()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(24933642L, solveB(getTestInput()));
   }
 
 }

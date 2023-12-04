@@ -41,7 +41,8 @@ public class Puzzle02 extends PuzzleAbs {
     assertEquals("5DB3", solveB(getTestInput()));
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "ULL", //
         "RRDDD", //

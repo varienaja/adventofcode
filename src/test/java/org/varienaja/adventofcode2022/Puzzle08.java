@@ -43,6 +43,16 @@ public class Puzzle08 extends PuzzleAbs {
     assertEquals(8L, solveB(getTestInput()));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "30373", //
+        "25512", //
+        "65332", //
+        "33549", //
+        "35390");
+  }
+
   private long calcScenicScore(List<String> lines, Point treeHouseCandidate, long maxX, long maxY) {
     long score = 1;
     for (Point d : new Point(0, 0).getNSWENeighbours()) {
@@ -58,15 +68,6 @@ public class Puzzle08 extends PuzzleAbs {
       score *= treeHouseCandidate.manhattanDistance(tree);
     }
     return score;
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "30373", //
-        "25512", //
-        "65332", //
-        "33549", //
-        "35390");
   }
 
   private boolean isVisible(List<String> lines, Point start, long maxX, long maxY) {

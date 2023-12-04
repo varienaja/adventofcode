@@ -54,6 +54,34 @@ public class Puzzle13 extends PuzzleAbs {
     assertEquals(140L, solveB(getTestInput()));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "[1,1,3,1,1]", //
+        "[1,1,5,1,1]", //
+        "", //
+        "[[1],[2,3,4]]", //
+        "[[1],4]", //
+        "", //
+        "[9]", //
+        "[[8,7,6]]", //
+        "", //
+        "[[4,4],4,4]", //
+        "[[4,4],4,4,4]", //
+        "", //
+        "[7,7,7,7]", //
+        "[7,7,7]", //
+        "", //
+        "[]", //
+        "[3]", //
+        "", //
+        "[[[]]]", //
+        "[[]]", //
+        "", //
+        "[1,[2,[3,[4,[5,6,7]]]],8,9]", //
+        "[1,[2,[3,[4,[5,6,0]]]],8,9]");
+  }
+
   private int compare(List<Object> left, List<Object> right) {
     int result = 0;
 
@@ -85,33 +113,6 @@ public class Puzzle13 extends PuzzleAbs {
     }
     return compare(left instanceof List ? left : Collections.singletonList((Integer)left),
         right instanceof List ? right : Collections.singletonList((Integer)right));
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "[1,1,3,1,1]", //
-        "[1,1,5,1,1]", //
-        "", //
-        "[[1],[2,3,4]]", //
-        "[[1],4]", //
-        "", //
-        "[9]", //
-        "[[8,7,6]]", //
-        "", //
-        "[[4,4],4,4]", //
-        "[[4,4],4,4,4]", //
-        "", //
-        "[7,7,7,7]", //
-        "[7,7,7]", //
-        "", //
-        "[]", //
-        "[3]", //
-        "", //
-        "[[[]]]", //
-        "[[]]", //
-        "", //
-        "[1,[2,[3,[4,[5,6,7]]]],8,9]", //
-        "[1,[2,[3,[4,[5,6,0]]]],8,9]");
   }
 
   private Object jsonToJava(JsonValue v) {

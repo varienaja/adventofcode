@@ -18,10 +18,6 @@ import org.varienaja.PuzzleAbs;
  */
 public class Puzzle03 extends PuzzleAbs {
 
-  private Set<Character> collectChars(String s) {
-    return s.chars().mapToObj(i -> Character.valueOf((char)i)).collect(Collectors.toSet());
-  }
-
   @Test
   public void doA() {
     announceResultA();
@@ -38,7 +34,18 @@ public class Puzzle03 extends PuzzleAbs {
     System.out.println(result);
   }
 
-  private List<String> getTestInput() {
+  @Test
+  public void testA() {
+    assertEquals(157L, solveA(getTestInput()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(70L, solveB(getTestInput()));
+  }
+
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "vJrwpWtwJgWrhcsFMMfFFhFp", //
         "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", //
@@ -46,6 +53,10 @@ public class Puzzle03 extends PuzzleAbs {
         "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn", //
         "ttgJtRGJQctTZtZT", //
         "CrZsJsPPZsGzwwsLwLmpwMDw");
+  }
+
+  private Set<Character> collectChars(String s) {
+    return s.chars().mapToObj(i -> Character.valueOf((char)i)).collect(Collectors.toSet());
   }
 
   private long solveA(List<String> lines) {
@@ -74,16 +85,6 @@ public class Puzzle03 extends PuzzleAbs {
       result += comp1.stream().mapToInt(c -> Character.isLowerCase(c) ? 1 + c.charValue() - 'a' : 27 + c.charValue() - 'A').sum();
     }
     return result;
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(157L, solveA(getTestInput()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(70L, solveB(getTestInput()));
   }
 
 }

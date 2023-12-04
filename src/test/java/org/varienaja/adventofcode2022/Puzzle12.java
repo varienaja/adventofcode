@@ -51,6 +51,16 @@ public class Puzzle12 extends PuzzleAbs {
     assertEquals(29L, solveB(getTestInput()));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "Sabqponm", //
+        "abcryxxl", //
+        "accszExk", //
+        "acctuvwj", //
+        "abdefghi");
+  }
+
   private Integer findWay(Set<Point> from, Point to, Map<Point, Character> world) {
     // Dijkstra... find route to 'to', going 1 step, and no more than one step up (but more than one down!)
     Map<Point, Integer> visited = from.stream().collect(Collectors.toMap(Function.identity(), p -> 0, (p1, p2) -> p1, HashMap::new));
@@ -73,15 +83,6 @@ public class Puzzle12 extends PuzzleAbs {
           .forEach(queue::offer);
     }
     return null; // no way from 'from' to 'to'
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "Sabqponm", //
-        "abcryxxl", //
-        "accszExk", //
-        "acctuvwj", //
-        "abdefghi");
   }
 
   private long solve(List<String> lines, boolean partB) {

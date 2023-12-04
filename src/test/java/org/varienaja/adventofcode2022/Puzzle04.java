@@ -33,15 +33,16 @@ public class Puzzle04 extends PuzzleAbs {
 
   @Test
   public void testA() {
-    assertEquals(2L, solveA(getTestInput()));
+    assertEquals(2L, solveA(getStreamingTestInput()));
   }
 
   @Test
   public void testB() {
-    assertEquals(4, solveB(getTestInput()));
+    assertEquals(4, solveB(getStreamingTestInput()));
   }
 
-  private Stream<String> getTestInput() {
+  @Override
+  protected Stream<String> getStreamingTestInput() {
     return Stream.of( //
         "2-4,6-8", //
         "2-3,4-5", //

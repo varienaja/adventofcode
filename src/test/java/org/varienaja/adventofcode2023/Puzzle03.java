@@ -51,21 +51,6 @@ public class Puzzle03 extends PuzzleAbs {
     assertEquals(467835L, solveB(getTestInput()));
   }
 
-  private List<String> getTestInput() {
-    return List.of( //
-        "467..114..", //
-        "...*......", //
-        "..35..633.", //
-        "......#...", //
-        "617*......", //
-        ".....+.58.", //
-        "..592.....", //
-        "......755.", //
-        "...$.*....", //
-        ".664.598.." //
-    );
-  }
-
   private Stream<Entry<InfoPoint<Character>, Deque<Long>>> parse(List<String> lines) {
     Map<InfoPoint<Character>, Deque<Long>> symbol2Partnumbers = parseSymbols(lines);
     Pattern digits = Pattern.compile("\\d+");

@@ -47,33 +47,12 @@ public class Puzzle01 extends PuzzleAbs {
 
   @Test
   public void testA() {
-    assertEquals(142, solveA(getTestInputA()));
+    assertEquals(142, solveA(getStreamingTestInput('a')));
   }
 
   @Test
   public void testB() {
-    assertEquals(281, solveB(getTestInputB()));
-  }
-
-  private Stream<String> getTestInputA() {
-    return Stream.of( //
-        "1abc2", //
-        "pqr3stu8vwx", //
-        "a1b2c3d4e5f", //
-        "treb7uchet" //
-    );
-  }
-
-  private Stream<String> getTestInputB() {
-    return Stream.of( //
-        "two1nine", //
-        "eightwothree", //
-        "abcone2threexyz", //
-        "xtwone3four", //
-        "4nineeightseven2", //
-        "zoneight234", //
-        "7pqrstsixteen" //
-    );
+    assertEquals(281, solveB(getStreamingTestInput('b')));
   }
 
   private long solve(Stream<String> lines, Map<String, Integer> word2digit) {

@@ -33,7 +33,18 @@ public class Puzzle02 extends PuzzleAbs {
     System.out.println(result);
   }
 
-  private List<String> getTestInput() {
+  @Test
+  public void testA() {
+    assertEquals(15L, solveA(getTestInput()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals(12L, solveB(getTestInput()));
+  }
+
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "A Y", //
         "B X", //
@@ -77,16 +88,6 @@ public class Puzzle02 extends PuzzleAbs {
 
   private long solveB(List<String> lines) {
     return solve(lines, true);
-  }
-
-  @Test
-  public void testA() {
-    assertEquals(15L, solveA(getTestInput()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals(12L, solveB(getTestInput()));
   }
 
 }

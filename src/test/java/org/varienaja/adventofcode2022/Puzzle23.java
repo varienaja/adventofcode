@@ -59,6 +59,18 @@ public class Puzzle23 extends PuzzleAbs {
     assertEquals(20, solveB(getTestInput()));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "....#..", //
+        "..###.#", //
+        "#...#.#", //
+        ".#...##", //
+        "#.###..", //
+        "##.#.##", //
+        ".#..#..");
+  }
+
   private Point doCheck(int n, Point elf, Set<Point> elves) {
     for (Point scan : toScan[n]) {
       Point candidate = new Point(elf.x + scan.x, elf.y + scan.y);
@@ -97,17 +109,6 @@ public class Puzzle23 extends PuzzleAbs {
     }
 
     return moved;
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "....#..", //
-        "..###.#", //
-        "#...#.#", //
-        ".#...##", //
-        "#.###..", //
-        "##.#.##", //
-        ".#..#..");
   }
 
   private Set<Point> parse(List<String> lines) {

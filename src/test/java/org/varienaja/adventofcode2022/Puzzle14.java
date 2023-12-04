@@ -45,7 +45,8 @@ public class Puzzle14 extends PuzzleAbs {
     assertEquals(93L, solveB(getTestInput()));
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "498,4 -> 498,6 -> 496,6", //
         "503,4 -> 502,4 -> 502,9 -> 494,9");

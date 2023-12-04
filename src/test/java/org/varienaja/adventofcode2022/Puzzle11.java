@@ -106,7 +106,8 @@ public class Puzzle11 extends PuzzleAbs {
     assertEquals(2713310158L, solveB(getTestInput()));
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "Monkey 0:", //
         "  Starting items: 79, 98", //

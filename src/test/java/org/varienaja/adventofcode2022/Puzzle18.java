@@ -49,14 +49,8 @@ public class Puzzle18 extends PuzzleAbs {
     assertEquals(58, solveB(getTestInput()));
   }
 
-  private long countNeighbours(Set<Point3D> points, Predicate<Point3D> filter) {
-    return points.stream() //
-        .flatMap(p -> p.getNSWEUDNeighbours().stream()) //
-        .filter(filter) //
-        .count();
-  }
-
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "2,2,2", //
         "1,2,2", //
@@ -71,6 +65,13 @@ public class Puzzle18 extends PuzzleAbs {
         "3,2,5", //
         "2,1,5", //
         "2,3,5");
+  }
+
+  private long countNeighbours(Set<Point3D> points, Predicate<Point3D> filter) {
+    return points.stream() //
+        .flatMap(p -> p.getNSWEUDNeighbours().stream()) //
+        .filter(filter) //
+        .count();
   }
 
   private Set<Point3D> parse(List<String> lines) {

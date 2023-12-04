@@ -43,6 +43,17 @@ public class Puzzle10 extends PuzzleAbs {
     assertEquals(2, calculateSolution10a(getTestInput(), 5, 2));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "value 5 goes to bot 2", //
+        "bot 2 gives low to bot 1 and high to bot 0", //
+        "value 3 goes to bot 1", //
+        "bot 1 gives low to output 1 and high to bot 0", //
+        "bot 0 gives low to output 2 and high to output 0", //
+        "value 2 goes to bot 2");
+  }
+
   private int calculateSolution10a(List<String> inInstructions, int inV1, int inV2) {
     // We're interested in which bot compares V1 with V2
     List<String> lines = new LinkedList<>();
@@ -199,16 +210,6 @@ public class Puzzle10 extends PuzzleAbs {
     }
 
     return outputs.get(0) * outputs.get(1) * outputs.get(2);
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "value 5 goes to bot 2", //
-        "bot 2 gives low to bot 1 and high to bot 0", //
-        "value 3 goes to bot 1", //
-        "bot 1 gives low to output 1 and high to bot 0", //
-        "bot 0 gives low to output 2 and high to output 0", //
-        "value 2 goes to bot 2");
   }
 
   private long solveA(List<String> lines) {

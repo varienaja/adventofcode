@@ -44,7 +44,8 @@ public class Puzzle22 extends PuzzleAbs {
   public void testB() {
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "        ...#", //
         "        .#..", //

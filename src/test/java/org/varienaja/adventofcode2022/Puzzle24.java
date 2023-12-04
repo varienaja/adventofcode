@@ -52,6 +52,17 @@ public class Puzzle24 extends PuzzleAbs {
     assertEquals(54, solveB(getTestInput()));
   }
 
+  @Override
+  protected List<String> getTestInput() {
+    return List.of( //
+        "#.######", //
+        "#>>.<^<#", //
+        "#.<..<<#", //
+        "#>v.><>#", //
+        "#<^v^^>#", //
+        "######.#");
+  }
+
   private int findWay(Set<Point> from, Point to, Map<Point, Character> world, int startMinute) {
     int minute = startMinute;
     Set<Point> toAdd = new HashSet<>(from);
@@ -67,16 +78,6 @@ public class Puzzle24 extends PuzzleAbs {
       toAdd.retainAll(world.keySet()); // And within world
     }
     throw new IllegalStateException("Cannot find way out");
-  }
-
-  private List<String> getTestInput() {
-    return List.of( //
-        "#.######", //
-        "#>>.<^<#", //
-        "#.<..<<#", //
-        "#>v.><>#", //
-        "#<^v^^>#", //
-        "######.#");
   }
 
   private Set<Point> getWinds(int minute, Map<Point, Character> world) {

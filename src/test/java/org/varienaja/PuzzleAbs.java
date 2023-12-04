@@ -1,6 +1,8 @@
 package org.varienaja;
 
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,11 +27,7 @@ public class PuzzleAbs {
   }
 
   protected List<String> getInput() {
-    try {
-      return Files.readAllLines(Paths.get(getClass().getClassLoader().getResource(getResourceName()).toURI()));
-    } catch (Exception e) { // Ignore
-    }
-    return null;
+    return getInput(getResourceName());
   }
 
   protected String getInputString() {
@@ -41,16 +39,41 @@ public class PuzzleAbs {
   }
 
   protected Stream<String> getStreamingInput() {
-    try {
-      return Files.lines(Paths.get(getClass().getClassLoader().getResource(getResourceName()).toURI()));
-    } catch (Exception e) { // Ignore
-    }
-    return null;
+    return getStreamingInput(getResourceName());
+  }
+
+  protected Stream<String> getStreamingTestInput() {
+    return getStreamingTestInput((Character)null);
+  }
+
+  protected Stream<String> getStreamingTestInput(Character c) {
+    return getStreamingInput(getTestResourceName(c));
+  }
+
+  protected List<String> getTestInput() {
+    return getInput(getTestResourceName(null));
+  }
+
+  protected String getTestInputString() {
+    return getTestInput().get(0);
+  }
+
+  Path getPath(String resource) throws URISyntaxException {
+    return Paths.get(getClass().getClassLoader().getResource(getResourceName()).toURI());
   }
 
   private void announceResult() {
     System.out.print("Solution ");
     System.out.print(getMyNumber());
+  }
+
+  private List<String> getInput(String resourceName) {
+    try {
+      return Files.readAllLines(Paths.get(getClass().getClassLoader().getResource(resourceName).toURI()));
+    } catch (Exception e) { // Ignore
+    }
+    return null;
+
   }
 
   private String getMyNumber() {
@@ -72,6 +95,18 @@ public class PuzzleAbs {
 
   private String getResourceName() {
     return getMyYear() + "/day" + getMyNumber() + ".txt";
+  }
+
+  private Stream<String> getStreamingInput(String resourceName) {
+    try {
+      return Files.lines(Paths.get(getClass().getClassLoader().getResource(resourceName).toURI()));
+    } catch (Exception e) { // Ignore
+    }
+    return null;
+  }
+
+  private String getTestResourceName(Character c) {
+    return getMyYear() + "/day" + getMyNumber() + "-test" + (c == null ? "" : "-" + c) + ".txt";
   }
 
 }

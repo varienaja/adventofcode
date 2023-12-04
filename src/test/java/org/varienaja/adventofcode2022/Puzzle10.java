@@ -45,7 +45,8 @@ public class Puzzle10 extends PuzzleAbs {
     assertEquals(-1, solveB(getTestInput()));
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of();
   }
 

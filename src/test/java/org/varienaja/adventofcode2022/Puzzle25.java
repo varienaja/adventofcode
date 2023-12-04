@@ -30,7 +30,24 @@ public class Puzzle25 extends PuzzleAbs {
 
   @Test
   public void testA() {
-    assertEquals("2=-1=0", solveA(getTestInput()));
+    assertEquals("2=-1=0", solveA(getStreamingTestInput()));
+  }
+
+  @Override
+  protected Stream<String> getStreamingTestInput() {
+    return Stream.of("1=-0-2", //
+        "12111", //
+        "2=0=", //
+        "21", //
+        "2=01", //
+        "111", //
+        "20012", //
+        "112", //
+        "1=-1=", //
+        "1-12", //
+        "12", //
+        "1=", //
+        "122");
   }
 
   private String addSnafu(String s1, String s2) {
@@ -59,22 +76,6 @@ public class Puzzle25 extends PuzzleAbs {
 
     int x = result[0] == '0' ? 1 : 0; // Remove prefix-zero, if exists
     return String.copyValueOf(result, x, result.length - x);
-  }
-
-  private Stream<String> getTestInput() {
-    return Stream.of("1=-0-2", //
-        "12111", //
-        "2=0=", //
-        "21", //
-        "2=01", //
-        "111", //
-        "20012", //
-        "112", //
-        "1=-1=", //
-        "1-12", //
-        "12", //
-        "1=", //
-        "122");
   }
 
   private String solveA(Stream<String> lines) {

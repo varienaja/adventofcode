@@ -38,7 +38,18 @@ public class Puzzle05 extends PuzzleAbs {
     System.out.println(result);
   }
 
-  private List<String> getTestInput() {
+  @Test
+  public void testA() {
+    assertEquals("CMZ", solveA(getTestInput()));
+  }
+
+  @Test
+  public void testB() {
+    assertEquals("MCD", solveB(getTestInput()));
+  }
+
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "    [D]    ", //
         "[N] [C]    ", //
@@ -105,16 +116,6 @@ public class Puzzle05 extends PuzzleAbs {
 
   private String solveB(List<String> lines) {
     return solve(lines, false);
-  }
-
-  @Test
-  public void testA() {
-    assertEquals("CMZ", solveA(getTestInput()));
-  }
-
-  @Test
-  public void testB() {
-    assertEquals("MCD", solveB(getTestInput()));
   }
 
 }

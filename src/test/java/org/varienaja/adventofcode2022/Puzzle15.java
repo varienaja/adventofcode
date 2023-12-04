@@ -51,7 +51,8 @@ public class Puzzle15 extends PuzzleAbs {
     assertEquals(56000011L, solveB(getTestInput(), 20, 20));
   }
 
-  private List<String> getTestInput() {
+  @Override
+  protected List<String> getTestInput() {
     return List.of( //
         "Sensor at x=2, y=18: closest beacon is at x=-2, y=15", //
         "Sensor at x=9, y=16: closest beacon is at x=10, y=16", //

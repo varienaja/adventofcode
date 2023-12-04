@@ -49,15 +49,16 @@ public class Puzzle17 extends PuzzleAbs {
 
   @Test
   public void testA() {
-    assertEquals(3068L, solveA(getTestInput()));
+    assertEquals(3068L, solveA(getTestInputString()));
   }
 
   @Test
   public void testB() {
-    assertEquals(1514285714288L, solveB(getTestInput()));
+    assertEquals(1514285714288L, solveB(getTestInputString()));
   }
 
-  private String getTestInput() {
+  @Override
+  protected String getTestInputString() {
     return ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
   }
 

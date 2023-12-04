@@ -3,11 +3,16 @@ package org.varienaja;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PuzzleAbs {
+
+  public List<Long> parseNumbers(String numbers, String separatorRegex) {
+    return Arrays.stream(numbers.split(separatorRegex)).mapToLong(Long::parseLong).boxed().toList();
+  }
 
   protected void announceResultA() {
     announceResult();
@@ -62,8 +67,7 @@ public class PuzzleAbs {
 
   private String getMyYear() {
     String packageName = getClass().getPackageName();
-    String year = packageName.substring(packageName.length() - 4, packageName.length());
-    return year;
+    return packageName.substring(packageName.length() - 4);
   }
 
   private String getResourceName() {

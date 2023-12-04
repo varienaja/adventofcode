@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.varienaja.InfoPoint;
-import org.varienaja.Point;
 import org.varienaja.PuzzleAbs;
+import org.varienaja.SquareShape;
 
 /**
  * Solutions for Advent of Code 2023.
@@ -73,15 +73,9 @@ public class Puzzle03 extends PuzzleAbs {
     for (int y = 0; y < lines.size(); ++y) {
       Matcher m = digits.matcher(lines.get(y));
       while (m.find()) {
-        String part = m.group();
-        for (int ix = m.start() - 1; ix <= m.end(); ++ix) {
-          for (int iy = y - 1; iy <= y + 1; ++iy) {
-            Point tester = new Point(ix, iy);
-            if (symbol2Partnumbers.containsKey(tester)) {
-              symbol2Partnumbers.get(tester).add(Long.parseLong(part));
-            }
-          }
-        }
+        new SquareShape(m.start(), y, m.end() - 1, y).getNeighbours().stream() //
+            .filter(symbol2Partnumbers::containsKey) //
+            .forEach(symbolPos -> symbol2Partnumbers.get(symbolPos).add(Long.parseLong(m.group())));
       }
     }
 
@@ -92,12 +86,11 @@ public class Puzzle03 extends PuzzleAbs {
     Map<InfoPoint<Character>, Deque<Long>> symbol2Partnumbers = new HashMap<>();
 
     for (int y = 0; y < lines.size(); ++y) {
-      int x = 0;
-      for (char c : lines.get(y).toCharArray()) {
+      for (int x = 0; x < lines.size(); ++x) {
+        char c = lines.get(y).charAt(x);
         if (c != '.' && !Character.isDigit(c)) {
           symbol2Partnumbers.put(new InfoPoint<>(x, y, c), new LinkedList<>());
         }
-        ++x;
       }
     }
 

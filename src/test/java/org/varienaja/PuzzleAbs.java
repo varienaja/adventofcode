@@ -12,6 +12,13 @@ import java.util.stream.Stream;
 
 public class PuzzleAbs {
 
+  public long lcm(long a, long b) { // Least common multiple
+    long lcm = 0;
+    while ((lcm += Math.max(a, b)) % Math.min(a, b) != 0) {
+    }
+    return lcm;
+  }
+
   public List<Long> parseNumbers(String numbers, String separatorRegex) {
     return Arrays.stream(numbers.split(separatorRegex)).mapToLong(Long::parseLong).boxed().toList();
   }
@@ -54,6 +61,10 @@ public class PuzzleAbs {
     return getInput(getTestResourceName(null));
   }
 
+  protected List<String> getTestInput(Character c) {
+    return getInput(getTestResourceName(c));
+  }
+
   protected String getTestInputString() {
     return getTestInput().get(0);
   }
@@ -73,7 +84,6 @@ public class PuzzleAbs {
     } catch (Exception e) { // Ignore
     }
     return null;
-
   }
 
   private String getMyNumber() {

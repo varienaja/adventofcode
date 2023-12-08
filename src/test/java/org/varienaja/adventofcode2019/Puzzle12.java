@@ -51,14 +51,6 @@ public class Puzzle12 extends PuzzleAbs {
     assertEquals(4686774924L, solveB(testInput2()));
   }
 
-  long lcm(long a, long b) { // Least common multiple
-    long lcm = 0;
-    while ((lcm += Math.max(a, b)) % Math.min(a, b) != 0) {
-      ;
-    }
-    return lcm;
-  }
-
   private List<int[]> parse(List<String> input) {
     List<int[] /* Pos(x,y,z) Velocity(x,y,z) */> moons = new ArrayList<>();
     // Parse
@@ -101,7 +93,6 @@ public class Puzzle12 extends PuzzleAbs {
         moon[axis] += moon[axis + 3];
       }
     }
-
   }
 
   private long solveA(List<String> input, int steps) {
@@ -133,7 +124,7 @@ public class Puzzle12 extends PuzzleAbs {
 
     long counter = 0;
     while (cycleCount != 3) {
-      List<List<Point>> poss = List.of(new LinkedList<Point>(), new LinkedList<Point>(), new LinkedList<Point>());
+      List<List<Point>> poss = List.of(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
       for (int axis = 0; axis < 3; axis++) {
         if (cycles[axis] == 0) {
           for (int[] moon : moons) {

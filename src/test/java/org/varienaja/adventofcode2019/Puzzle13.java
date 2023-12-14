@@ -111,13 +111,7 @@ public class Puzzle13 extends PuzzleAbs {
       }
 
       if (DEBUG) {
-        for (int y = 0; y <= maxY; y++) {
-          for (int x = 0; x <= maxX; x++) {
-            System.out.print(field.getOrDefault(new Point(x, y), ' '));
-          }
-          System.out.println();
-        }
-        System.out.println(score);
+        print(field);
       }
 
       long joystick = Integer.signum(ball.x - paddle.x);

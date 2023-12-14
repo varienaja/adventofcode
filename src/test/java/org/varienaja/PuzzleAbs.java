@@ -7,10 +7,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PuzzleAbs {
+
+  public static void print(Map<Point, Character> world) {
+    Map<Integer, StringBuilder> toPrint = new TreeMap<>();
+    for (Entry<Point, Character> e : world.entrySet()) {
+      StringBuilder sb = toPrint.computeIfAbsent(e.getKey().y, StringBuilder::new);
+      while (sb.length() < e.getKey().x + 1) {
+        sb.append(" ");
+      }
+      sb.setCharAt(e.getKey().x, e.getValue());
+    }
+    for (StringBuilder sb : toPrint.values()) {
+      System.out.println(sb.toString());
+    }
+  }
 
   public long lcm(long a, long b) { // Least common multiple
     long lcm = 0;

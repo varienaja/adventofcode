@@ -201,12 +201,7 @@ public class Puzzle15 extends PuzzleAbs {
       }
 
       if (DEBUG) {
-        for (int y = minY; y <= maxY; y++) {
-          for (int x = minX; x <= maxX; x++) {
-            System.out.print(world.getOrDefault(new Point(x, y), ' '));
-          }
-          System.out.println();
-        }
+        print(world);
       }
     }
 

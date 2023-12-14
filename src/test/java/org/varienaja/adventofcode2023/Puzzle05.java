@@ -110,7 +110,7 @@ public class Puzzle05 extends PuzzleAbs {
     List<Long> seedsAndCounts = parseNumbers(lines.get(0).split(":\\s+")[1], "\\s+");
     Map<String, List<Transformation>> rules = parse(lines);
 
-    for (long seed = 0; seed < Long.MAX_VALUE; ++seed) {
+    for (long seed = 0L; seed < Long.MAX_VALUE; ++seed) {
       long result = seed;
       for (String t : transformations) {
 

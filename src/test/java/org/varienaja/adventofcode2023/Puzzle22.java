@@ -2,11 +2,10 @@ package org.varienaja.adventofcode2023;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.varienaja.Point;
@@ -89,17 +88,21 @@ public class Puzzle22 extends PuzzleAbs {
    * @param b the Brick
    * @return the amount of distance that the Brick was lowered
    */
-  int lower(Map<Point, Integer> bottom2Height, Brick b) {
-    int minDist = bottom2Height.entrySet().stream() //
-        .filter(e -> b.isOver(e.getKey())) //
-        .mapToInt(e -> b.minZ() - 1 - e.getValue()) //
-        .min().orElseThrow();
+  int lower(int[][] bottom2Height, Brick b) {
+    int minDist = Integer.MAX_VALUE;
+    for (int x = b.minX(); x <= b.maxX(); ++x) {
+      for (int y = b.minY(); y <= b.maxY(); ++y) {
+        minDist = Math.min(minDist, b.minZ() - 1 - bottom2Height[x][y]);
+      }
+    }
 
     b.lowerBy(minDist);
 
-    bottom2Height.entrySet().stream() //
-        .filter(e -> b.isOver(e.getKey())) //
-        .forEach(e -> e.setValue(b.maxZ()));
+    for (int x = b.minX(); x <= b.maxX(); ++x) {
+      for (int y = b.minY(); y <= b.maxY(); ++y) {
+        bottom2Height[x][y] = b.maxZ();
+      }
+    }
 
     return minDist;
   }
@@ -129,11 +132,9 @@ public class Puzzle22 extends PuzzleAbs {
     }
 
     // Init bottom
-    Map<Point, Integer> bottom2Height = new HashMap<>();
+    int[][] bottom2Height = new int[maxX + 1][maxY + 1];
     for (int x = minX; x <= maxX; x++) {
-      for (int y = minX; y <= maxY; y++) {
-        bottom2Height.put(new Point(x, y), 0);
-      }
+      Arrays.fill(bottom2Height[x], 0);
     }
 
     // Settle
@@ -144,7 +145,9 @@ public class Puzzle22 extends PuzzleAbs {
     int disintegrateOKCount = 0;
     int fallenBricksSum = 0;
     for (int i = 0; i < bricks.size(); ++i) {
-      bottom2Height.entrySet().forEach(e -> e.setValue(0)); // Reset bottom heights
+      for (int x = minX; x <= maxX; x++) {
+        Arrays.fill(bottom2Height[x], 0);
+      }
 
       List<Brick> tester = new LinkedList<>();
       for (Brick b : bricks) {

@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Point3D extends Point {
-  public final int z;
+  public int z;
 
   public Point3D(int x, int y, int z) {
     super(x, y);

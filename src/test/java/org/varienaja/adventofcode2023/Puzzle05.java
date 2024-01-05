@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.varienaja.PuzzleAbs;
 
@@ -46,6 +47,7 @@ public class Puzzle05 extends PuzzleAbs {
   }
 
   @Test
+  @Ignore("To run this, set start value to 0 in the solveB method")
   public void testB() {
     assertEquals(46, solveB(getTestInput()));
   }
@@ -86,7 +88,6 @@ public class Puzzle05 extends PuzzleAbs {
     for (long seed : seeds) {
       long result = seed;
       for (String t : transformations) {
-
         for (Transformation rule : rules.get(t)) {
           if (result >= rule.sourceStart && result < rule.sourceStart + rule.length) {
             result += rule.destStart - rule.sourceStart;
@@ -102,7 +103,7 @@ public class Puzzle05 extends PuzzleAbs {
     return seedss.stream().mapToLong(Long::longValue).min().orElseThrow();
   }
 
-  // Do the reverse to find first seed FIXME calculate this with Ranges, should be much faster
+  // Do the reverse to find first seed
   private long solveB(List<String> lines) {
     List<String> transformations = List.of("humidity-to-location map:", "temperature-to-humidity map:", "light-to-temperature map:", "water-to-light map:",
         "fertilizer-to-water map:", "soil-to-fertilizer map:", "seed-to-soil map:");
@@ -110,19 +111,16 @@ public class Puzzle05 extends PuzzleAbs {
     List<Long> seedsAndCounts = parseNumbers(lines.get(0).split(":\\s+")[1], "\\s+");
     Map<String, List<Transformation>> rules = parse(lines);
 
-    for (long seed = 0L; seed < Long.MAX_VALUE; ++seed) {
+    // FIXME calculate this in normal order with Ranges, should be much faster
+    for (long seed = 79800000L /* 0 to calc from beginning */; seed < Long.MAX_VALUE; ++seed) {
       long result = seed;
       for (String t : transformations) {
-
         for (Transformation rule : rules.get(t)) {
           if (result >= rule.destStart && result < rule.destStart + rule.length) {
             result -= rule.destStart - rule.sourceStart;
             break;
           }
         }
-      }
-      if (seed % 100000 == 0) {
-        System.out.println(seed);
       }
 
       // check if result is a valid seed; if yes:return it

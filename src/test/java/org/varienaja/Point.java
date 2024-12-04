@@ -13,6 +13,9 @@ public class Point {
   public static Point dWest = new Point(-1, 0);
   public static Point dEast = new Point(1, 0);
 
+  public static final Set<Point> ALLDIRECTIONS = Set.of(Point.dEast, Point.dSouthEast, Point.dSouth, Point.dSouthWest, Point.dWest, Point.dNorthWest,
+      Point.dNorth, Point.dNorthEast);
+
   public static Point directionFromChar(char c) {
     if (c == 'U' || c == 'N') { // Up, North
       return dNorth;

@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +31,29 @@ public class PuzzleAbs {
     }
   }
 
+  public static void print(Map<Point, Character> world, Collection<Point> things) {
+    Map<Integer, StringBuilder> toPrint = new TreeMap<>();
+    for (Entry<Point, Character> e : world.entrySet()) {
+      StringBuilder sb = toPrint.computeIfAbsent(e.getKey().y, StringBuilder::new);
+      while (sb.length() < e.getKey().x + 1) {
+        sb.append(" ");
+      }
+      sb.setCharAt(e.getKey().x, e.getValue());
+    }
+
+    for (Point p : things) {
+      StringBuilder sb = toPrint.computeIfAbsent(p.y, StringBuilder::new);
+      while (sb.length() < p.x + 1) {
+        sb.append(" ");
+      }
+      sb.setCharAt(p.x, 'o');
+    }
+
+    for (StringBuilder sb : toPrint.values()) {
+      System.out.println(sb.toString());
+    }
+  }
+
   public long lcm(long a, long b) { // Least common multiple
     long lcm = 0;
     while ((lcm += Math.max(a, b)) % Math.min(a, b) != 0) {
@@ -38,6 +63,18 @@ public class PuzzleAbs {
 
   public List<Long> parseNumbers(String numbers, String separatorRegex) {
     return Arrays.stream(numbers.split(separatorRegex)).mapToLong(Long::parseLong).boxed().toList();
+  }
+
+  public Map<Point, Character> parseWorld(List<String> lines) {
+    Map<Point, Character> world = new HashMap<>();
+    for (int y = 0; y < lines.size(); ++y) {
+      String line = lines.get(y);
+      for (int x = 0; x < line.length(); ++x) {
+        world.put(new Point(x, y), line.charAt(x));
+      }
+    }
+
+    return world;
   }
 
   protected void announceResultA() {

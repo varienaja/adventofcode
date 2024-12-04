@@ -69,17 +69,17 @@ public class Puzzle02 extends PuzzleAbs {
     return lines.filter(l -> {
       String[] parts = l.split("\s+");
       List<Integer> report = Stream.of(parts).map(Integer::parseInt).collect(Collectors.toList());
-      if (!isSafe(report)) {
-        for (int i = 0; i < report.size(); ++i) {
-          List<Integer> rr = new ArrayList<>(report);
-          rr.remove(i);
-          if (isSafe(rr)) {
-            return true;
-          }
-        }
-        return false;
+      if (isSafe(report)) {
+        return true;
       }
-      return true;
+      for (int i = 0; i < report.size(); ++i) {
+        List<Integer> rr = new ArrayList<>(report);
+        rr.remove(i);
+        if (isSafe(rr)) {
+          return true;
+        }
+      }
+      return false;
     }).count();
   }
 

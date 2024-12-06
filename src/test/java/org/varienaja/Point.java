@@ -17,11 +17,11 @@ public class Point {
       Point.dNorth, Point.dNorthEast);
 
   public static Point directionFromChar(char c) {
-    if (c == 'U' || c == 'N') { // Up, North
+    if (c == 'U' || c == 'N' || c == '^') { // Up, North
       return dNorth;
-    } else if (c == 'D' || c == 'S') {// Down, South
+    } else if (c == 'D' || c == 'S' || c == 'v') { // Down, South
       return dSouth;
-    } else if (c == 'R' || c == 'E') { // Right, East
+    } else if (c == 'R' || c == 'E' || c == '>') { // Right, East
       return dEast;
     }
     return dWest;

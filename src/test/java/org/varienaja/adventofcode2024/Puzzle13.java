@@ -62,10 +62,10 @@ public class Puzzle13 extends PuzzleAbs {
                                                              // we can use a long instead of a double)
 
       // We multiply the fractions with denominator of the other, so we can subtract them
-      numerator1 *= denominator2;
-      demoninator1 *= denominator2;
-      numerator2 *= demoninator1;
-      denominator2 *= demoninator1;
+      numerator1 *= xB;
+      demoninator1 *= xB;
+      numerator2 *= xA;
+      denominator2 *= xA;
 
       // Now we calculate where these two functions cross
       // 748/2068 * x = 6298/2068 * x - 20181.82 --> 5550/2068 * x = 20181.82 --> x = 7520 -> a = 80, b = 40

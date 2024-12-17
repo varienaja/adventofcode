@@ -70,7 +70,7 @@ public class Puzzle15 extends PuzzleAbs {
 
   /**
    * Tries to move big blocks up or down.
-   * 
+   *
    * @param world our world
    * @param where where top push
    * @param direction in what direction to push
@@ -124,6 +124,8 @@ public class Puzzle15 extends PuzzleAbs {
         for (char c : line.toCharArray()) {
           if (c == 'O') {
             sbb.append("[]");
+          } else if (c == '@') {
+            sbb.append("@.");
           } else {
             sbb.append(c).append(c);
           }
@@ -138,14 +140,6 @@ public class Puzzle15 extends PuzzleAbs {
     String instructions = sb.toString();
     Map<Point, Character> world = parseWorld(maze);
     Point me = find(world, '@');
-    if (!partA) { // Shrink myself back to only one point
-      if (world.get(me.add(Point.dEast)) == '@') { // find found the west me
-        world.put(me.add(Point.dEast), '.');
-      } else { // find found the east me
-        world.put(me, '.');
-        me = me.add(Point.dWest);
-      }
-    }
 
     // execute instructions according to rules
     for (char c : instructions.toCharArray()) {

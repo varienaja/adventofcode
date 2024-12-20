@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -58,15 +57,6 @@ public class Puzzle16 extends PuzzleAbs {
     assertEquals(64, solveB(getTestInput('b')));
   }
 
-  private Point find(Map<Point, Character> world, char c) {
-    for (Entry<Point, Character> e : world.entrySet()) {
-      if (e.getValue() == c) { // found
-        return e.getKey();
-      }
-    }
-    throw new IllegalStateException("No " + c + " in world");
-  }
-
   private Set<QueueElement> findShortestWays(Point from, int direction, Point to, Map<Point, Character> world) {
     // Dijkstra... find route to 'to', going 1 step, or do a costly turn
     Map<Integer, Point> dirc2dir = Map.of(1, Point.dNorth, 2, Point.dSouth, 3, Point.dEast, 4, Point.dWest);
@@ -80,20 +70,17 @@ public class Puzzle16 extends PuzzleAbs {
 
     while (!queue.isEmpty()) {
       QueueElement qe = queue.poll();
-      // print(world, qe.way);
       if (qe.position.equals(to)) {
-        // print(world, qe.way);
-        if (qe.cost <= minCost) {
-          minCost = qe.cost;
-          result.add(qe);
-        } else {
+        if (qe.cost > minCost) {
           return result;
         }
+        minCost = qe.cost;
+        result.add(qe);
       }
 
       for (Map.Entry<Integer, Point> e : dirc2dir.entrySet()) {
-        if ((qe.direction == 1 && e.getKey() == 2) || (qe.direction == 2 && e.getKey() == 1) || (qe.direction == 3 && e.getKey() == 4)
-            || (qe.direction == 4 && e.getKey() == 3)) {// n )
+        if (qe.direction == 1 && e.getKey() == 2 || qe.direction == 2 && e.getKey() == 1 || qe.direction == 3 && e.getKey() == 4
+            || qe.direction == 4 && e.getKey() == 3) {// n )
           // TODO Don't go back to where you came from... that is stupid //FIXME nicer solution!
           continue;
         }

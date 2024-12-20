@@ -17,6 +17,15 @@ import java.util.stream.Stream;
 
 public class PuzzleAbs {
 
+  public static Point find(Map<Point, Character> world, char c) {
+    for (Entry<Point, Character> e : world.entrySet()) {
+      if (e.getValue() == c) {
+        return e.getKey();
+      }
+    }
+    throw new IllegalStateException("No " + c + " in world");
+  }
+
   public static void print(Map<Point, Character> world) {
     Map<Integer, StringBuilder> toPrint = new TreeMap<>();
     for (Entry<Point, Character> e : world.entrySet()) {

@@ -104,7 +104,7 @@ public class Puzzle17 extends PuzzleAbs {
             b = b ^ c;
             break;
           case 5: // out
-            int result = (int)op & 7; // & 7 works better than % 8 (for negative numbers)
+            int result = (int)(op & 7); // & 7 works better than % 8 (for negative numbers)
             out.add(result);
             break;
           case 6: // bdv

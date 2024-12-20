@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.junit.Test;
 import org.varienaja.Point;
@@ -54,7 +53,8 @@ public class Puzzle15 extends PuzzleAbs {
     char what = world.get(dest);
     if (what == '#') {
       return false;
-    } else if (what == 'O' || (direction.y == 0 && (what == '[' || what == ']'))) {
+    }
+    if (what == 'O' || direction.y == 0 && (what == '[' || what == ']')) {
       if (!tryMove(world, dest, direction)) {
         return false;
       }
@@ -82,7 +82,8 @@ public class Puzzle15 extends PuzzleAbs {
     char what1 = world.get(dest);
     if (what1 == '#') {
       return false;
-    } else if (what1 == '[') { // Try to move right (east) ']' too
+    }
+    if (what1 == '[') { // Try to move right (east) ']' too
       boolean couldMove = tryMoveBigBlock(world, dest, direction) //
           && tryMoveBigBlock(world, dest.add(Point.dEast), direction);
       if (!couldMove) {
@@ -101,15 +102,6 @@ public class Puzzle15 extends PuzzleAbs {
     world.put(where, '.');
 
     return true;
-  }
-
-  private Point find(Map<Point, Character> world, char c) {
-    for (Entry<Point, Character> e : world.entrySet()) {
-      if (e.getValue() == c) { // Box
-        return e.getKey();
-      }
-    }
-    throw new IllegalStateException("No " + c + " in world");
   }
 
   private long solve(List<String> input, boolean partA) {

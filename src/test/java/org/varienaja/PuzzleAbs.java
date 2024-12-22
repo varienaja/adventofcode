@@ -96,6 +96,18 @@ public class PuzzleAbs {
     System.out.print("b: ");
   }
 
+  protected String extractDigits(String s) {
+    StringBuilder result = new StringBuilder();
+
+    for (char c : s.toCharArray()) {
+      if (Character.isDigit(c)) {
+        result.append(c);
+      }
+    }
+
+    return result.toString();
+  }
+
   protected List<String> getInput() {
     return getInput(getResourceName());
   }
@@ -150,15 +162,7 @@ public class PuzzleAbs {
   }
 
   private String getMyNumber() {
-    StringBuilder result = new StringBuilder();
-
-    for (char c : getClass().getSimpleName().toCharArray()) {
-      if (Character.isDigit(c)) {
-        result.append(c);
-      }
-    }
-
-    return result.toString();
+    return extractDigits(getClass().getSimpleName());
   }
 
   private String getMyYear() {

@@ -17,11 +17,14 @@ public class Point3D extends Point {
 
   @Override
   public boolean equals(Object other) {
-    if (other instanceof Point3D) {
-      Point3D o = (Point3D)other;
+    if (other instanceof Point3D o) {
       return x == o.x && y == o.y && z == o.z;
     }
     return false;
+  }
+
+  public double euclidianDistance(Point3D other) {
+    return Math.sqrt(Math.pow(Math.abs(x - other.x), 2) + Math.pow(Math.abs(y - other.y), 2) + Math.pow(Math.abs(z - other.z), 2));
   }
 
   public Set<Point3D> getNSWEUDNeighbours() {
